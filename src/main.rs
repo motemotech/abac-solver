@@ -235,10 +235,10 @@ fn main() {
     let z3_setup_duration = z3_setup_start.elapsed();
     println!("⏱️  Z3 setup time: {:.2?}", z3_setup_duration);
 
-    // 4. 汎用的なZ3分析
-    println!("\n🔬 Starting Z3 Analysis...");
+    // 4. 各ルールの個別Z3分析
+    println!("\n🔬 Starting Individual Rule Analysis...");
     let z3_analysis_start = Instant::now();
-    analyze_with_z3_generic(&ctx, &policy, args.max_solutions);
+    analyze_all_rules_individually(&ctx, &policy);
     let z3_analysis_duration = z3_analysis_start.elapsed();
     println!("⏱️  Z3 analysis time: {:.2?}", z3_analysis_duration);
     
@@ -325,9 +325,30 @@ fn analyze_policy_structure(policy: &AbacPolicy, verbose: bool) {
     }
 }
 
-fn analyze_with_z3_generic(ctx: &Context, policy: &AbacPolicy, max_solutions: usize) {
-    println!("🔬 Analyzing ABAC policies with Z3 constraints...");
+fn analyze_all_rules_individually(ctx: &Context, policy: &AbacPolicy) {
+    println!("🔬 Analyzing each rule individually with Z3 constraints...");
     
+    // 各ルールを個別に分析
+    for rule in &policy.rules {
+        println!("\n{}", "=".repeat(80));
+        println!("🎯 Analyzing Rule {}: {}", rule.id, rule.description);
+        println!("📝 Rule content: {}", rule.raw_content);
+        
+        let rule_start = Instant::now();
+        let solutions = analyze_single_rule(ctx, policy, rule);
+        let rule_duration = rule_start.elapsed();
+        
+        if solutions.is_empty() {
+            println!("  ❌ No valid access combinations found for this rule");
+        } else {
+            println!("\n📈 Rule {} Summary: Found {} accessible combinations", rule.id, solutions.len());
+        }
+        
+        println!("⏱️  Rule {} analysis time: {:.2?}", rule.id, rule_duration);
+    }
+}
+
+fn analyze_single_rule(ctx: &Context, policy: &AbacPolicy, rule: &Rule) -> Vec<(i64, i64)> {
     let solver = Solver::new(ctx);
     
     // 変数の作成
@@ -344,18 +365,19 @@ fn analyze_with_z3_generic(ctx: &Context, policy: &AbacPolicy, max_solutions: us
     solver.assert(&resource_id.ge(&Int::from_i64(ctx, 0)));
     solver.assert(&resource_id.lt(&Int::from_i64(ctx, num_resources)));
     
-    // 汎用的な制約の追加
-    add_generic_constraints(ctx, &solver, policy, &user_id, &resource_id, &can_access);
+    // 特定のルールに対する制約の追加
+    add_rule_constraints(ctx, &solver, policy, rule, &user_id, &resource_id, &can_access);
     
-    // アクセス可能な組み合わせを検索
+    // アクセス可能な組み合わせを検索（すべての組み合わせ）
     solver.push();
     solver.assert(&can_access);
     
-    println!("\n🎯 Finding accessible combinations (max {}):", max_solutions);
-    let mut count = 0;
+    println!("\n🔍 Finding all accessible combinations for Rule {}...", rule.id);
     let mut solutions = Vec::new();
+    let mut count = 0;
     
-    while solver.check() == SatResult::Sat && count < max_solutions {
+    // すべての解を見つける（制限なし）
+    while solver.check() == SatResult::Sat {
         let model = solver.get_model().unwrap();
         let user_val = model.eval(&user_id, true).unwrap().as_i64().unwrap();
         let resource_val = model.eval(&resource_id, true).unwrap().as_i64().unwrap();
@@ -363,30 +385,34 @@ fn analyze_with_z3_generic(ctx: &Context, policy: &AbacPolicy, max_solutions: us
         let user_name = &policy.users[user_val as usize].name;
         let resource_name = &policy.resources[resource_val as usize].name;
         
-        println!("  ✅ {}: {} can access {}", count + 1, user_name, resource_name);
+        count += 1;
+        println!("  ✅ {}: {} can access {}", count, user_name, resource_name);
         
-        // 解の詳細表示
-        let user = &policy.users[user_val as usize];
-        let resource = &policy.resources[resource_val as usize];
-        show_access_details(user, resource);
+        // 簡潔な詳細表示
+        show_access_summary(&policy.users[user_val as usize], &policy.resources[resource_val as usize]);
         
         solutions.push((user_val, resource_val));
-        count += 1;
         
         // 同じ解を避けるための制約を追加
         solver.assert(&Bool::not(&Bool::and(ctx, &[
             &user_id._eq(&Int::from_i64(ctx, user_val)),
             &resource_id._eq(&Int::from_i64(ctx, resource_val))
         ])));
+        
+        // 進行状況の表示（1000個ごと）
+        if count % 1000 == 0 {
+            println!("    📊 Progress: {} combinations found so far...", count);
+        }
+        
+        // 安全装置：非常に多くの解がある場合の制限
+        if count >= 500000 {
+            println!("    ⚠️  Reached maximum limit of 50,000 combinations for safety");
+            break;
+        }
     }
     
     solver.pop(1);
-    
-    if count == 0 {
-        println!("  ❌ No valid access combinations found");
-    } else {
-        println!("\n📈 Analysis Summary: Found {} accessible combinations", count);
-    }
+    solutions
 }
 
 fn add_generic_constraints(
@@ -407,6 +433,371 @@ fn add_generic_constraints(
     } else {
         // 汎用的な制約
         add_fallback_constraints(ctx, solver, policy, user_id, resource_id, can_access);
+    }
+}
+
+fn add_rule_constraints(
+    ctx: &Context, 
+    solver: &Solver, 
+    policy: &AbacPolicy, 
+    rule: &Rule,
+    user_id: &Int, 
+    resource_id: &Int, 
+    can_access: &Bool
+) {
+    // ルールの内容を解析して適切な制約を追加
+    let rule_content = &rule.raw_content;
+    
+    // ルール内容に基づいて制約を判定
+    if rule_content.contains("role [ {customer}") && rule_content.contains("registered [ {False}") {
+        // Rule 1: 未登録顧客ルール
+        add_unregistered_customer_constraints(ctx, solver, policy, user_id, resource_id, can_access);
+    } else if rule_content.contains("role [ {helpdesk}") && rule_content.contains("{search readMetaInfo}") {
+        // Rule 2: ヘルプデスクのメタ情報ルール
+        add_helpdesk_meta_constraints(ctx, solver, policy, user_id, resource_id, can_access);
+    } else if rule_content.contains("role [ {helpdesk}") && rule_content.contains("isConfidential [ {False}") {
+        // Rule 3: ヘルプデスクの非機密文書ルール
+        add_helpdesk_nonconfidential_constraints(ctx, solver, policy, user_id, resource_id, can_access);
+    } else if rule_content.contains("role [ {admin}") && rule_content.contains("isConfidential [ {False}") {
+        // Rule 4: 管理者の非機密文書ルール
+        add_admin_nonconfidential_constraints(ctx, solver, policy, user_id, resource_id, can_access);
+    } else if rule_content.contains("supervisee ] owner") {
+        // Rule 5: 上司による部下の文書アクセス
+        add_supervisor_constraints(ctx, solver, policy, user_id, resource_id, can_access);
+    } else if rule_content.contains("currentProjects ] projectId") {
+        // Rule 6 & 16: プロジェクトメンバーのアクセス
+        add_project_member_constraints(ctx, solver, policy, user_id, resource_id, can_access);
+    } else if rule_content.contains("securityClearance [") && rule_content.contains("securityLevel [") {
+        // Rule 7 & 21: セキュリティクリアランス
+        add_security_clearance_constraints(ctx, solver, policy, user_id, resource_id, can_access);
+    } else if rule_content.contains("role [ {financialOfficer}") {
+        // Rule 8: 財務担当者
+        add_financial_officer_constraints(ctx, solver, policy, user_id, resource_id, can_access);
+    } else if rule_content.contains("role [ {legalOfficer}") {
+        // Rule 9: 法務担当者
+        add_legal_officer_constraints(ctx, solver, policy, user_id, resource_id, can_access);
+    } else if rule_content.contains("role [ {auditor}") && rule_content.contains("containsPersonalInfo [ {False}") {
+        // Rule 10: 監査人
+        add_auditor_constraints(ctx, solver, policy, user_id, resource_id, can_access);
+    } else if rule_content.contains("uid [ recipients") {
+        // Rule 13: コンサルタントや受信者ルール
+        add_recipient_constraints(ctx, solver, policy, user_id, resource_id, can_access);
+    } else if rule_content.contains("language = language") && rule_content.contains("region = region") {
+        // Rule 20: 言語・地域ルール
+        add_language_region_constraints(ctx, solver, policy, user_id, resource_id, can_access);
+    } else {
+        // フォールバック：基本的な制約
+        add_basic_constraints(ctx, solver, policy, user_id, resource_id, can_access);
+    }
+}
+
+fn add_unregistered_customer_constraints(
+    ctx: &Context, solver: &Solver, policy: &AbacPolicy, 
+    user_id: &Int, resource_id: &Int, can_access: &Bool
+) {
+    for (u_idx, user) in policy.users.iter().enumerate() {
+        let user_condition = user_id._eq(&Int::from_i64(ctx, u_idx as i64));
+        
+        if let Some(AttributeValue::String(role)) = user.attributes.get("role") {
+            if role == "customer" {
+                if let Some(AttributeValue::Boolean(false)) = user.attributes.get("registered") {
+                    for (r_idx, resource) in policy.resources.iter().enumerate() {
+                        let resource_condition = resource_id._eq(&Int::from_i64(ctx, r_idx as i64));
+                        let combined_condition = Bool::and(ctx, &[&user_condition, &resource_condition]);
+                        
+                        if let Some(AttributeValue::StringSet(recipients)) = resource.attributes.get("recipients") {
+                            if recipients.contains(&user.name) {
+                                solver.assert(&Bool::implies(&combined_condition, can_access));
+                            } else {
+                                solver.assert(&Bool::implies(&combined_condition, &Bool::not(can_access)));
+                            }
+                        } else {
+                            solver.assert(&Bool::implies(&combined_condition, &Bool::not(can_access)));
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+fn add_helpdesk_meta_constraints(
+    ctx: &Context, solver: &Solver, policy: &AbacPolicy, 
+    user_id: &Int, resource_id: &Int, can_access: &Bool
+) {
+    for (u_idx, user) in policy.users.iter().enumerate() {
+        if let Some(AttributeValue::String(role)) = user.attributes.get("role") {
+            if role == "helpdesk" {
+                let user_condition = user_id._eq(&Int::from_i64(ctx, u_idx as i64));
+                for r_idx in 0..policy.resources.len() {
+                    let resource_condition = resource_id._eq(&Int::from_i64(ctx, r_idx as i64));
+                    let combined_condition = Bool::and(ctx, &[&user_condition, &resource_condition]);
+                    solver.assert(&Bool::implies(&combined_condition, can_access));
+                }
+            }
+        }
+    }
+}
+
+fn add_helpdesk_nonconfidential_constraints(
+    ctx: &Context, solver: &Solver, policy: &AbacPolicy, 
+    user_id: &Int, resource_id: &Int, can_access: &Bool
+) {
+    for (u_idx, user) in policy.users.iter().enumerate() {
+        if let Some(AttributeValue::String(role)) = user.attributes.get("role") {
+            if role == "helpdesk" {
+                let user_condition = user_id._eq(&Int::from_i64(ctx, u_idx as i64));
+                let user_tenant = user.attributes.get("tenant");
+                
+                for (r_idx, resource) in policy.resources.iter().enumerate() {
+                    if let Some(AttributeValue::Boolean(false)) = resource.attributes.get("isConfidential") {
+                        let resource_condition = resource_id._eq(&Int::from_i64(ctx, r_idx as i64));
+                        let combined_condition = Bool::and(ctx, &[&user_condition, &resource_condition]);
+                        
+                        // テナントチェック
+                        if let (Some(AttributeValue::String(u_tenant)), Some(AttributeValue::String(r_tenant))) = (user_tenant, resource.attributes.get("tenant")) {
+                            if u_tenant == r_tenant {
+                                solver.assert(&Bool::implies(&combined_condition, can_access));
+                            } else {
+                                solver.assert(&Bool::implies(&combined_condition, &Bool::not(can_access)));
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+fn add_admin_nonconfidential_constraints(
+    ctx: &Context, solver: &Solver, policy: &AbacPolicy, 
+    user_id: &Int, resource_id: &Int, can_access: &Bool
+) {
+    for (u_idx, user) in policy.users.iter().enumerate() {
+        if let Some(AttributeValue::String(role)) = user.attributes.get("role") {
+            if role == "admin" {
+                let user_condition = user_id._eq(&Int::from_i64(ctx, u_idx as i64));
+                for (r_idx, resource) in policy.resources.iter().enumerate() {
+                    if let Some(AttributeValue::Boolean(false)) = resource.attributes.get("isConfidential") {
+                        let resource_condition = resource_id._eq(&Int::from_i64(ctx, r_idx as i64));
+                        let combined_condition = Bool::and(ctx, &[&user_condition, &resource_condition]);
+                        solver.assert(&Bool::implies(&combined_condition, can_access));
+                    }
+                }
+            }
+        }
+    }
+}
+
+fn add_supervisor_constraints(
+    ctx: &Context, solver: &Solver, policy: &AbacPolicy, 
+    user_id: &Int, resource_id: &Int, can_access: &Bool
+) {
+    for (u_idx, user) in policy.users.iter().enumerate() {
+        let user_condition = user_id._eq(&Int::from_i64(ctx, u_idx as i64));
+        
+        if let Some(AttributeValue::StringSet(supervisees)) = user.attributes.get("supervisee") {
+            for (r_idx, resource) in policy.resources.iter().enumerate() {
+                if let Some(AttributeValue::String(owner)) = resource.attributes.get("owner") {
+                    if supervisees.contains(owner) {
+                        let resource_condition = resource_id._eq(&Int::from_i64(ctx, r_idx as i64));
+                        let combined_condition = Bool::and(ctx, &[&user_condition, &resource_condition]);
+                        solver.assert(&Bool::implies(&combined_condition, can_access));
+                    }
+                }
+            }
+        }
+    }
+}
+
+fn add_project_member_constraints(
+    ctx: &Context, solver: &Solver, policy: &AbacPolicy, 
+    user_id: &Int, resource_id: &Int, can_access: &Bool
+) {
+    for (u_idx, user) in policy.users.iter().enumerate() {
+        let user_condition = user_id._eq(&Int::from_i64(ctx, u_idx as i64));
+        
+        if let Some(AttributeValue::StringSet(user_projects)) = user.attributes.get("currentProjects") {
+            for (r_idx, resource) in policy.resources.iter().enumerate() {
+                if let Some(AttributeValue::String(project_id)) = resource.attributes.get("projectId") {
+                    if user_projects.contains(project_id) {
+                        let resource_condition = resource_id._eq(&Int::from_i64(ctx, r_idx as i64));
+                        let combined_condition = Bool::and(ctx, &[&user_condition, &resource_condition]);
+                        solver.assert(&Bool::implies(&combined_condition, can_access));
+                    }
+                }
+            }
+        }
+    }
+}
+
+fn add_security_clearance_constraints(
+    ctx: &Context, solver: &Solver, policy: &AbacPolicy, 
+    user_id: &Int, resource_id: &Int, can_access: &Bool
+) {
+    let clearance_levels = vec!["public", "internal", "confidential", "secret", "topSecret"];
+    
+    for (u_idx, user) in policy.users.iter().enumerate() {
+        let user_condition = user_id._eq(&Int::from_i64(ctx, u_idx as i64));
+        
+        if let Some(AttributeValue::String(user_clearance)) = user.attributes.get("securityClearance") {
+            let user_level = clearance_levels.iter().position(|&x| x == user_clearance).unwrap_or(0);
+            
+            for (r_idx, resource) in policy.resources.iter().enumerate() {
+                if let Some(AttributeValue::String(resource_level)) = resource.attributes.get("securityLevel") {
+                    let resource_level_idx = clearance_levels.iter().position(|&x| x == resource_level).unwrap_or(0);
+                    
+                    let resource_condition = resource_id._eq(&Int::from_i64(ctx, r_idx as i64));
+                    let combined_condition = Bool::and(ctx, &[&user_condition, &resource_condition]);
+                    
+                    if user_level >= resource_level_idx {
+                        solver.assert(&Bool::implies(&combined_condition, can_access));
+                    } else {
+                        solver.assert(&Bool::implies(&combined_condition, &Bool::not(can_access)));
+                    }
+                }
+            }
+        }
+    }
+}
+
+fn add_financial_officer_constraints(
+    ctx: &Context, solver: &Solver, policy: &AbacPolicy, 
+    user_id: &Int, resource_id: &Int, can_access: &Bool
+) {
+    for (u_idx, user) in policy.users.iter().enumerate() {
+        if let Some(AttributeValue::String(role)) = user.attributes.get("role") {
+            if role == "financialOfficer" {
+                let user_condition = user_id._eq(&Int::from_i64(ctx, u_idx as i64));
+                for (r_idx, resource) in policy.resources.iter().enumerate() {
+                    if let Some(AttributeValue::StringSet(tags)) = resource.attributes.get("tags") {
+                        if tags.contains("financial") {
+                            let resource_condition = resource_id._eq(&Int::from_i64(ctx, r_idx as i64));
+                            let combined_condition = Bool::and(ctx, &[&user_condition, &resource_condition]);
+                            solver.assert(&Bool::implies(&combined_condition, can_access));
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+fn add_legal_officer_constraints(
+    ctx: &Context, solver: &Solver, policy: &AbacPolicy, 
+    user_id: &Int, resource_id: &Int, can_access: &Bool
+) {
+    for (u_idx, user) in policy.users.iter().enumerate() {
+        if let Some(AttributeValue::String(role)) = user.attributes.get("role") {
+            if role == "legalOfficer" {
+                let user_condition = user_id._eq(&Int::from_i64(ctx, u_idx as i64));
+                for (r_idx, resource) in policy.resources.iter().enumerate() {
+                    if let Some(AttributeValue::StringSet(tags)) = resource.attributes.get("tags") {
+                        if tags.contains("legal") {
+                            let resource_condition = resource_id._eq(&Int::from_i64(ctx, r_idx as i64));
+                            let combined_condition = Bool::and(ctx, &[&user_condition, &resource_condition]);
+                            solver.assert(&Bool::implies(&combined_condition, can_access));
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+fn add_auditor_constraints(
+    ctx: &Context, solver: &Solver, policy: &AbacPolicy, 
+    user_id: &Int, resource_id: &Int, can_access: &Bool
+) {
+    for (u_idx, user) in policy.users.iter().enumerate() {
+        if let Some(AttributeValue::String(role)) = user.attributes.get("role") {
+            if role == "auditor" {
+                let user_condition = user_id._eq(&Int::from_i64(ctx, u_idx as i64));
+                for (r_idx, resource) in policy.resources.iter().enumerate() {
+                    if let Some(AttributeValue::Boolean(false)) = resource.attributes.get("containsPersonalInfo") {
+                        let resource_condition = resource_id._eq(&Int::from_i64(ctx, r_idx as i64));
+                        let combined_condition = Bool::and(ctx, &[&user_condition, &resource_condition]);
+                        solver.assert(&Bool::implies(&combined_condition, can_access));
+                    }
+                }
+            }
+        }
+    }
+}
+
+fn add_recipient_constraints(
+    ctx: &Context, solver: &Solver, policy: &AbacPolicy, 
+    user_id: &Int, resource_id: &Int, can_access: &Bool
+) {
+    for (u_idx, user) in policy.users.iter().enumerate() {
+        let user_condition = user_id._eq(&Int::from_i64(ctx, u_idx as i64));
+        
+        for (r_idx, resource) in policy.resources.iter().enumerate() {
+            if let Some(AttributeValue::StringSet(recipients)) = resource.attributes.get("recipients") {
+                if recipients.contains(&user.name) {
+                    let resource_condition = resource_id._eq(&Int::from_i64(ctx, r_idx as i64));
+                    let combined_condition = Bool::and(ctx, &[&user_condition, &resource_condition]);
+                    solver.assert(&Bool::implies(&combined_condition, can_access));
+                }
+            }
+        }
+    }
+}
+
+fn add_language_region_constraints(
+    ctx: &Context, solver: &Solver, policy: &AbacPolicy, 
+    user_id: &Int, resource_id: &Int, can_access: &Bool
+) {
+    for (u_idx, user) in policy.users.iter().enumerate() {
+        let user_condition = user_id._eq(&Int::from_i64(ctx, u_idx as i64));
+        
+        for (r_idx, resource) in policy.resources.iter().enumerate() {
+            let resource_condition = resource_id._eq(&Int::from_i64(ctx, r_idx as i64));
+            let combined_condition = Bool::and(ctx, &[&user_condition, &resource_condition]);
+            
+            let same_language = match (user.attributes.get("language"), resource.attributes.get("language")) {
+                (Some(AttributeValue::String(u_lang)), Some(AttributeValue::String(r_lang))) => u_lang == r_lang,
+                _ => false
+            };
+            
+            let same_region = match (user.attributes.get("region"), resource.attributes.get("region")) {
+                (Some(AttributeValue::String(u_region)), Some(AttributeValue::String(r_region))) => u_region == r_region,
+                _ => false
+            };
+            
+            if same_language && same_region {
+                solver.assert(&Bool::implies(&combined_condition, can_access));
+            } else {
+                solver.assert(&Bool::implies(&combined_condition, &Bool::not(can_access)));
+            }
+        }
+    }
+}
+
+fn add_basic_constraints(
+    ctx: &Context, solver: &Solver, policy: &AbacPolicy, 
+    user_id: &Int, resource_id: &Int, can_access: &Bool
+) {
+    // 基本的な制約：同じテナントのリソースにアクセス可能
+    for (u_idx, user) in policy.users.iter().enumerate() {
+        let user_condition = user_id._eq(&Int::from_i64(ctx, u_idx as i64));
+        
+        if let Some(user_tenant) = user.attributes.get("tenant") {
+            for (r_idx, resource) in policy.resources.iter().enumerate() {
+                let resource_condition = resource_id._eq(&Int::from_i64(ctx, r_idx as i64));
+                let combined_condition = Bool::and(ctx, &[&user_condition, &resource_condition]);
+                
+                if let (AttributeValue::String(u_tenant), Some(AttributeValue::String(r_tenant))) = (user_tenant, resource.attributes.get("tenant")) {
+                    if u_tenant == r_tenant {
+                        solver.assert(&Bool::implies(&combined_condition, can_access));
+                    } else {
+                        solver.assert(&Bool::implies(&combined_condition, &Bool::not(can_access)));
+                    }
+                } else {
+                    solver.assert(&Bool::implies(&combined_condition, &Bool::not(can_access)));
+                }
+            }
+        }
     }
 }
 
@@ -590,4 +981,27 @@ fn show_access_details(user: &UserAttribute, resource: &ResourceAttribute) {
         }
     }
     println!();
+}
+
+fn show_access_summary(user: &UserAttribute, resource: &ResourceAttribute) {
+    let user_role = user.attributes.get("role")
+        .map(|v| match v {
+            AttributeValue::String(s) => s.as_str(),
+            _ => "unknown"
+        }).unwrap_or("unknown");
+    
+    let user_dept = user.attributes.get("department")
+        .map(|v| match v {
+            AttributeValue::String(s) => s.as_str(),
+            _ => "unknown"
+        }).unwrap_or("unknown");
+    
+    let resource_type = resource.attributes.get("type")
+        .map(|v| match v {
+            AttributeValue::String(s) => s.as_str(),
+            _ => "unknown"
+        }).unwrap_or("unknown");
+    
+    println!("      👤 {} ({}, {}) → 📄 {} ({})", 
+             user.name, user_role, user_dept, resource.name, resource_type);
 }
