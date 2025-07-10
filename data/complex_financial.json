@@ -1,0 +1,378 @@
+{
+  "description": "Complex Financial Services ABAC Policy - Testing Z3 vs Loop Performance",
+  "scenario": "E-commerce platform with budget constraints, time-based access, organizational hierarchy, and regional compliance",
+  
+  "users": [
+    {
+      "id": "user_001",
+      "name": "Alice Johnson", 
+      "attributes": {
+        "position": "manager",
+        "department": "sales",
+        "region": "EU",
+        "budget": 50000.0,
+        "security_level": 3,
+        "start_time": "08:00",
+        "end_time": "18:00",
+        "timezone": "CET",
+        "reports_to": null,
+        "manages": ["user_002", "user_003"],
+        "gdpr_trained": true,
+        "annual_spend_limit": 100000.0
+      }
+    },
+    {
+      "id": "user_002", 
+      "name": "Bob Smith",
+      "attributes": {
+        "position": "analyst",
+        "department": "sales", 
+        "region": "US",
+        "budget": 25000.0,
+        "security_level": 2,
+        "start_time": "09:00",
+        "end_time": "17:00", 
+        "timezone": "PST",
+        "reports_to": "user_001",
+        "manages": [],
+        "gdpr_trained": false,
+        "annual_spend_limit": 50000.0
+      }
+    },
+    {
+      "id": "user_003",
+      "name": "Claire Wilson",
+      "attributes": {
+        "position": "analyst", 
+        "department": "sales",
+        "region": "EU",
+        "budget": 30000.0,
+        "security_level": 2,
+        "start_time": "07:00", 
+        "end_time": "16:00",
+        "timezone": "GMT",
+        "reports_to": "user_001",
+        "manages": [],
+        "gdpr_trained": true,
+        "annual_spend_limit": 60000.0
+      }
+    },
+    {
+      "id": "user_004",
+      "name": "David Chen",
+      "attributes": {
+        "position": "director",
+        "department": "finance",
+        "region": "APAC", 
+        "budget": 200000.0,
+        "security_level": 4,
+        "start_time": "08:30",
+        "end_time": "19:00",
+        "timezone": "JST", 
+        "reports_to": null,
+        "manages": ["user_005", "user_006"],
+        "gdpr_trained": false,
+        "annual_spend_limit": 500000.0
+      }
+    },
+    {
+      "id": "user_005",
+      "name": "Emma Davis",
+      "attributes": {
+        "position": "accountant",
+        "department": "finance",
+        "region": "US",
+        "budget": 15000.0,
+        "security_level": 3,
+        "start_time": "08:00",
+        "end_time": "17:00", 
+        "timezone": "EST",
+        "reports_to": "user_004",
+        "manages": [],
+        "gdpr_trained": false,
+        "annual_spend_limit": 30000.0
+      }
+    },
+    {
+      "id": "user_006",
+      "name": "Frank Mueller",
+      "attributes": {
+        "position": "accountant",
+        "department": "finance", 
+        "region": "EU",
+        "budget": 20000.0,
+        "security_level": 3,
+        "start_time": "09:00",
+        "end_time": "18:00",
+        "timezone": "CET",
+        "reports_to": "user_004", 
+        "manages": [],
+        "gdpr_trained": true,
+        "annual_spend_limit": 40000.0
+      }
+    }
+  ],
+
+  "resources": [
+    {
+      "id": "resource_001",
+      "name": "Premium Marketing Campaign",
+      "attributes": {
+        "type": "marketing_campaign",
+        "cost": 35000.0,
+        "tax_rate": 0.15,
+        "available_start": "09:00",
+        "available_end": "17:00", 
+        "timezone": "UTC",
+        "security_requirement": 2,
+        "region_restrictions": ["US", "EU"],
+        "owned_by": "user_001",
+        "department": "sales",
+        "gdpr_compliant": true,
+        "approval_required": true,
+        "min_budget_required": 40000.0
+      }
+    },
+    {
+      "id": "resource_002", 
+      "name": "Financial Report Q4",
+      "attributes": {
+        "type": "financial_report",
+        "cost": 0.0,
+        "tax_rate": 0.0,
+        "available_start": "08:00",
+        "available_end": "20:00",
+        "timezone": "UTC", 
+        "security_requirement": 4,
+        "region_restrictions": ["US", "EU", "APAC"],
+        "owned_by": "user_004",
+        "department": "finance",
+        "gdpr_compliant": true,
+        "approval_required": false,
+        "min_budget_required": 0.0
+      }
+    },
+    {
+      "id": "resource_003",
+      "name": "Customer Analytics Tool",
+      "attributes": {
+        "type": "analytics_tool",
+        "cost": 15000.0,
+        "tax_rate": 0.08,
+        "available_start": "00:00", 
+        "available_end": "23:59",
+        "timezone": "UTC",
+        "security_requirement": 2,
+        "region_restrictions": ["US", "EU"],
+        "owned_by": "user_002", 
+        "department": "sales",
+        "gdpr_compliant": false,
+        "approval_required": true,
+        "min_budget_required": 20000.0
+      }
+    },
+    {
+      "id": "resource_004",
+      "name": "EU GDPR Compliance Dashboard", 
+      "attributes": {
+        "type": "compliance_tool",
+        "cost": 25000.0,
+        "tax_rate": 0.20,
+        "available_start": "06:00",
+        "available_end": "22:00",
+        "timezone": "CET",
+        "security_requirement": 3, 
+        "region_restrictions": ["EU"],
+        "owned_by": "user_006",
+        "department": "finance",
+        "gdpr_compliant": true,
+        "approval_required": true,
+        "min_budget_required": 30000.0
+      }
+    },
+    {
+      "id": "resource_005",
+      "name": "High-Frequency Trading System",
+      "attributes": {
+        "type": "trading_system", 
+        "cost": 150000.0,
+        "tax_rate": 0.10,
+        "available_start": "04:00",
+        "available_end": "20:00",
+        "timezone": "JST",
+        "security_requirement": 4,
+        "region_restrictions": ["APAC", "US"],
+        "owned_by": "user_004",
+        "department": "finance", 
+        "gdpr_compliant": false,
+        "approval_required": true,
+        "min_budget_required": 180000.0
+      }
+    }
+  ],
+
+  "rules": [
+    {
+      "id": "rule_001",
+      "description": "Budget constraint with tax calculation",
+      "logic": "user.budget >= (resource.cost * (1 + resource.tax_rate))",
+      "user_conditions": {
+        "position": ["manager", "director", "analyst", "accountant"]
+      },
+      "resource_conditions": {
+        "type": ["marketing_campaign", "analytics_tool", "compliance_tool", "trading_system"]
+      },
+      "numerical_constraints": [
+        {
+          "expression": "user.budget >= (resource.cost * (1 + resource.tax_rate))",
+          "variables": ["user.budget", "resource.cost", "resource.tax_rate"]
+        }
+      ]
+    },
+    {
+      "id": "rule_002", 
+      "description": "Time-based access control with timezone conversion",
+      "logic": "current_time BETWEEN resource.available_start AND resource.available_end (adjusted for user timezone)",
+      "user_conditions": {},
+      "resource_conditions": {},
+      "temporal_constraints": [
+        {
+          "type": "time_window",
+          "user_timezone": "user.timezone", 
+          "resource_timezone": "resource.timezone",
+          "available_start": "resource.available_start",
+          "available_end": "resource.available_end",
+          "user_start": "user.start_time",
+          "user_end": "user.end_time"
+        }
+      ]
+    },
+    {
+      "id": "rule_003",
+      "description": "Transitive ownership - manager can access resources owned by their reports",
+      "logic": "user.manages CONTAINS resource.owned_by OR user.id == resource.owned_by", 
+      "user_conditions": {},
+      "resource_conditions": {},
+      "transitive_constraints": [
+        {
+          "type": "ownership",
+          "relation": "manages",
+          "target": "owned_by"
+        },
+        {
+          "type": "direct_ownership", 
+          "relation": "user.id == resource.owned_by"
+        }
+      ]
+    },
+    {
+      "id": "rule_004",
+      "description": "GDPR compliance - EU users need GDPR training for non-compliant resources",
+      "logic": "IF user.region == 'EU' AND resource.gdpr_compliant == false THEN user.gdpr_trained == true",
+      "user_conditions": {},
+      "resource_conditions": {},
+      "conditional_constraints": [
+        {
+          "condition": "user.region == 'EU' AND resource.gdpr_compliant == false",
+          "requirement": "user.gdpr_trained == true"
+        }
+      ]
+    },
+    {
+      "id": "rule_005",
+      "description": "Security level requirement",
+      "logic": "user.security_level >= resource.security_requirement",
+      "user_conditions": {},
+      "resource_conditions": {},
+      "numerical_constraints": [
+        {
+          "expression": "user.security_level >= resource.security_requirement", 
+          "variables": ["user.security_level", "resource.security_requirement"]
+        }
+      ]
+    },
+    {
+      "id": "rule_006",
+      "description": "Regional access restrictions",
+      "logic": "user.region IN resource.region_restrictions",
+      "user_conditions": {},
+      "resource_conditions": {},
+      "set_constraints": [
+        {
+          "type": "membership",
+          "element": "user.region",
+          "set": "resource.region_restrictions"
+        }
+      ]
+    },
+    {
+      "id": "rule_007",
+      "description": "Annual spending limit check", 
+      "logic": "user.annual_spend_limit >= (resource.cost * (1 + resource.tax_rate))",
+      "user_conditions": {},
+      "resource_conditions": {},
+      "numerical_constraints": [
+        {
+          "expression": "user.annual_spend_limit >= (resource.cost * (1 + resource.tax_rate))",
+          "variables": ["user.annual_spend_limit", "resource.cost", "resource.tax_rate"]
+        }
+      ]
+    },
+    {
+      "id": "rule_008",
+      "description": "Complex hierarchical approval - directors can approve for their department",
+      "logic": "IF resource.approval_required == true THEN (user.position == 'director' AND user.department == resource.department) OR (user.manages CONTAINS resource.owned_by)",
+      "user_conditions": {},
+      "resource_conditions": {},
+      "conditional_constraints": [
+        {
+          "condition": "resource.approval_required == true",
+          "requirement": "(user.position == 'director' AND user.department == resource.department) OR (user.manages CONTAINS resource.owned_by)"
+        }
+      ]
+    }
+  ],
+
+  "test_scenarios": [
+    {
+      "name": "Complex Budget Calculation",
+      "description": "Alice (EU manager, 50k budget) accessing Premium Marketing Campaign (35k + 15% tax = 40.25k)",
+      "user_id": "user_001",
+      "resource_id": "resource_001", 
+      "expected_access": true,
+      "reasoning": "Budget 50k > Cost 40.25k, EU region allowed, security level sufficient"
+    },
+    {
+      "name": "Time Zone Complex Access",
+      "description": "David (APAC director, JST timezone) accessing Trading System during APAC market hours",
+      "user_id": "user_004",
+      "resource_id": "resource_005",
+      "expected_access": true,
+      "reasoning": "Time window overlap, budget sufficient, security level 4 >= 4"
+    },
+    {
+      "name": "GDPR Compliance Failure",
+      "description": "Bob (US analyst, no GDPR training) accessing Analytics Tool (non-GDPR compliant)",
+      "user_id": "user_002", 
+      "resource_id": "resource_003",
+      "expected_access": true,
+      "reasoning": "US user not subject to GDPR requirements for non-compliant resources"
+    },
+    {
+      "name": "Transitive Ownership",
+      "description": "Alice (manager) accessing Analytics Tool owned by Bob (her report)",
+      "user_id": "user_001",
+      "resource_id": "resource_003", 
+      "expected_access": true,
+      "reasoning": "Alice manages Bob who owns the resource"
+    },
+    {
+      "name": "Complex Denial - Budget + GDPR",
+      "description": "Claire (EU analyst, 30k budget) accessing GDPR Dashboard (25k + 20% tax = 30k) but needs GDPR training",
+      "user_id": "user_003",
+      "resource_id": "resource_004",
+      "expected_access": true,
+      "reasoning": "Budget exactly sufficient (30k = 30k), EU region allowed, has GDPR training"
+    }
+  ]
+} 
