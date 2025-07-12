@@ -1,27 +1,7 @@
 use z3::{Config, Context, Solver, Sort, FuncDecl, Symbol, DatatypeBuilder, ast::{Ast, Dynamic}};
 use std::collections::HashMap;
-use std::fs;
 
-// 新しく追加されたモジュールをインポート
-mod universityTypes;
-mod parser;
-
-use universityTypes::*;
-use parser::{UniversityAbacParser, ParseError};
-
-fn main() -> Result<(), Box<dyn std::error::Error>> {
-    // 従来のZ3の例
-    println!("=== Z3 Simple Example ===");
-    z3_simple_example();
-    
-    // 新しいABACパーサーの例
-    println!("\n=== University ABAC Parser Example ===");
-    university_abac_example()?;
-    
-    Ok(())
-}
-
-fn z3_simple_example() {
+fn main() {
     let cfg = Config::new();
     let ctx = Context::new(&cfg);
     let solver = Solver::new(&ctx);
@@ -126,96 +106,4 @@ fn z3_simple_example() {
             }
         }
     }
-}
-
-fn university_abac_example() -> Result<(), Box<dyn std::error::Error>> {
-    let parser = UniversityAbacParser::new();
-    
-    // サンプルABACデータ
-    let sample_abac = r#"
-        # University ABAC Sample Data
-        
-        # User attributes
-        userAttrib(applicant1, position=applicant)
-        userAttrib(csStu1, position=student, department=cs, crsTaken={cs101})
-        userAttrib(csStu2, position=student, department=cs, crsTaken={cs601}, crsTaught={cs101 cs602})
-        userAttrib(csFac1, position=faculty, department=cs, crsTaught={cs101})
-        userAttrib(csChair, isChair=True, department=cs)
-        userAttrib(registrar1, position=staff, department=registrar)
-        
-        # Resource attributes
-        resourceAttrib(application1, type=application, student=applicant1)
-        resourceAttrib(csStu1application, type=application, student=csStu1)
-        resourceAttrib(cs101gradebook, departments={cs}, crs=cs101, type=gradebook)
-        resourceAttrib(cs101roster, departments={cs}, crs=cs101, type=roster)
-        resourceAttrib(csStu1trans, student=csStu1, departments={cs}, type=transcript)
-        
-        # Rules (simplified syntax)
-        rule(; type [ {gradebook}; {readMyScores}; crsTaken ] crs)
-        rule(; type [ {gradebook}; {addScore readScore}; crsTaught ] crs)
-        rule(position [ {faculty}; type [ {gradebook}; {changeScore assignGrade}; crsTaught ] crs)
-        rule(department [ {registrar}; type [ {roster}; {read write}; )
-        rule(; type [ {transcript}; {read}; uid=student)
-    "#;
-    
-    // ABACデータをパース
-    match parser.parse(sample_abac) {
-        Ok(abac_data) => {
-            println!("=== Parsed ABAC Data ===");
-            println!("Users: {}", abac_data.users.len());
-            println!("Resources: {}", abac_data.resources.len());
-            println!("Rules: {}", abac_data.rules.len());
-            
-            println!("\n--- Users ---");
-            for user in &abac_data.users {
-                println!("User: {}", user.user_id);
-                if let Some(position) = &user.position {
-                    println!("  Position: {:?}", position);
-                }
-                if let Some(department) = &user.department {
-                    println!("  Department: {:?}", department);
-                }
-                if !user.crs_taken.is_empty() {
-                    println!("  Courses Taken: {:?}", user.crs_taken);
-                }
-                if !user.crs_taught.is_empty() {
-                    println!("  Courses Taught: {:?}", user.crs_taught);
-                }
-                if let Some(is_chair) = user.is_chair {
-                    println!("  Is Chair: {}", is_chair);
-                }
-                println!();
-            }
-            
-            println!("--- Resources ---");
-            for resource in &abac_data.resources {
-                println!("Resource: {} (Type: {:?})", resource.resource_id, resource.resource_type);
-                if let Some(student) = &resource.student {
-                    println!("  Student: {}", student);
-                }
-                if let Some(course) = &resource.crs {
-                    println!("  Course: {:?}", course);
-                }
-                if !resource.departments.is_empty() {
-                    println!("  Departments: {:?}", resource.departments);
-                }
-                println!();
-            }
-            
-            println!("--- Rules ---");
-            for rule in &abac_data.rules {
-                println!("Rule {}: {}", rule.id + 1, rule.description);
-                println!("  User Conditions: {} conditions", rule.user_conditions.len());
-                println!("  Resource Conditions: {} conditions", rule.resource_conditions.len());
-                println!("  Actions: {:?}", rule.actions);
-                println!("  Comparison Conditions: {} conditions", rule.comparison_conditions.len());
-                println!();
-            }
-        }
-        Err(e) => {
-            println!("Parse error: {}", e);
-        }
-    }
-    
-    Ok(())
 }
