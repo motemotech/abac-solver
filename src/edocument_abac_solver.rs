@@ -2628,7 +2628,7 @@ impl<'ctx> EdocumentAbacSolver<'ctx> {
         
         // 環境変数から最大解数を取得（デフォルトは1000）
         let max_solutions = std::env::var("EDOCUMENT_MAX_SOLUTIONS")
-            .unwrap_or_else(|_| "10".to_string())
+            .unwrap_or_else(|_| "1000000000".to_string())
             .parse::<u64>()
             .unwrap_or(1000);
         

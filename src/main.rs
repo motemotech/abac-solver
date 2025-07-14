@@ -605,7 +605,7 @@ fn edocument_abac_test(mp: &MultiProgress) -> Result<(), Box<dyn std::error::Err
     let file_pb = mp.add(create_spinner("Reading edocument.abac file"));
     
     // ファイルを読み込む
-    let file_content = match fs::read_to_string("data/edocument_5000.abac") {
+    let file_content = match fs::read_to_string("data/edocument_5000_5000.abac") {
         Ok(content) => content,
         Err(e) => {
             file_pb.finish_with_message("❌ Error reading edocument.abac file");
