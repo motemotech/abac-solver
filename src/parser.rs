@@ -175,9 +175,13 @@ impl UniversityAbacParser {
         let sections: Vec<&str> = content.split(';').collect();
         
         if sections.len() < 3 || sections.len() > 4 {
-            return Err(ParseError::InvalidFormat(
-                "Rule must have 3 or 4 sections separated by semicolons".to_string()
-            ));
+            println!("Warning: Rule {} has {} sections, attempting to parse anyway", id, sections.len());
+            // 柔軟に処理するために、セクション数の制限を緩和
+            if sections.len() < 2 {
+                return Err(ParseError::InvalidFormat(
+                    "Rule must have at least 2 sections separated by semicolons".to_string()
+                ));
+            }
         }
 
         let mut rule = UniversityRule::new(id);
