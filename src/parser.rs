@@ -1,7 +1,8 @@
 use std::collections::HashSet;
 use std::str::FromStr;
+use std::fs;
 
-use crate::universityTypes::*;
+use crate::university_types::*;
 
 #[derive(Debug, Clone)]
 pub enum ParseError {
@@ -16,6 +17,8 @@ pub enum ParseError {
     MissingAttribute(String),
     InvalidFormat(String),
     InvalidCondition(String),
+    FileError(String),
+    ParseErrorAtLine(usize, String, String), // line_number, line_content, error_message
 }
 
 impl std::fmt::Display for ParseError {
@@ -32,6 +35,10 @@ impl std::fmt::Display for ParseError {
             ParseError::MissingAttribute(attr) => write!(f, "Missing attribute: {}", attr),
             ParseError::InvalidFormat(msg) => write!(f, "Invalid format: {}", msg),
             ParseError::InvalidCondition(cond) => write!(f, "Invalid condition: {}", cond),
+            ParseError::FileError(msg) => write!(f, "File error: {}", msg),
+            ParseError::ParseErrorAtLine(line_num, line_content, error_msg) => {
+                write!(f, "Parse error at line {}: {}\nLine content: '{}'", line_num, error_msg, line_content)
+            },
         }
     }
 }
@@ -45,12 +52,20 @@ impl UniversityAbacParser {
         Self
     }
 
+    /// ファイルパスからファイルを読み取ってパースします
+    pub fn parse_file(&self, file_path: &str) -> Result<UniversityAbacData, ParseError> {
+        let content = fs::read_to_string(file_path)
+            .map_err(|e| ParseError::FileError(format!("Failed to read file '{}': {}", file_path, e)))?;
+        self.parse(&content)
+    }
+
+    /// 文字列コンテンツをパースします
     pub fn parse(&self, content: &str) -> Result<UniversityAbacData, ParseError> {
         let mut users = Vec::new();
         let mut resources = Vec::new();
         let mut rules = Vec::new();
 
-        for line in content.lines() {
+        for (line_num, line) in content.lines().enumerate() {
             let line = line.trim();
             
             // コメントや空行をスキップ
@@ -59,11 +74,11 @@ impl UniversityAbacParser {
             }
 
             if line.starts_with("userAttrib(") {
-                users.push(self.parse_user_attribute(line)?);
+                users.push(self.parse_user_attribute(line_num, line)?);
             } else if line.starts_with("resourceAttrib(") {
-                resources.push(self.parse_resource_attribute(line)?);
+                resources.push(self.parse_resource_attribute(line_num, line)?);
             } else if line.starts_with("rule(") {
-                rules.push(self.parse_rule(line, rules.len())?);
+                rules.push(self.parse_rule(line_num, line, rules.len())?);
             }
         }
 
@@ -74,13 +89,22 @@ impl UniversityAbacParser {
         })
     }
 
-    fn parse_user_attribute(&self, line: &str) -> Result<UniversityUserAttribute, ParseError> {
+    fn parse_user_attribute(&self, line_num: usize, line: &str) -> Result<UniversityUserAttribute, ParseError> {
         // userAttrib(csStu1, position=student, department=cs, crsTaken={cs101})
-        let content = self.extract_parentheses_content(line)?;
+        let content = self.extract_parentheses_content(line)
+            .map_err(|e| ParseError::ParseErrorAtLine(
+                line_num + 1,
+                line.to_string(),
+                format!("Error in user attribute: {}", e)
+            ))?;
         let parts: Vec<&str> = content.split(',').map(|s| s.trim()).collect();
         
         if parts.is_empty() {
-            return Err(ParseError::InvalidFormat("Empty user attribute".to_string()));
+            return Err(ParseError::ParseErrorAtLine(
+                line_num + 1,
+                line.to_string(),
+                "Empty user attribute".to_string()
+            ));
         }
 
         let user_id = parts[0].to_string();
@@ -93,19 +117,44 @@ impl UniversityAbacParser {
 
                 match key {
                     "position" => {
-                        user_attr.position = Some(self.parse_position(value)?);
+                        user_attr.position = Some(self.parse_position(value)
+                            .map_err(|e| ParseError::ParseErrorAtLine(
+                                line_num + 1,
+                                line.to_string(),
+                                format!("Error parsing position in user attribute: {}", e)
+                            ))?);
                     }
                     "department" => {
-                        user_attr.department = Some(self.parse_department(value)?);
+                        user_attr.department = Some(self.parse_department(value)
+                            .map_err(|e| ParseError::ParseErrorAtLine(
+                                line_num + 1,
+                                line.to_string(),
+                                format!("Error parsing department in user attribute: {}", e)
+                            ))?);
                     }
                     "crsTaken" => {
-                        user_attr.crs_taken = self.parse_course_set(value)?;
+                        user_attr.crs_taken = self.parse_course_set(value)
+                            .map_err(|e| ParseError::ParseErrorAtLine(
+                                line_num + 1,
+                                line.to_string(),
+                                format!("Error parsing crsTaken in user attribute: {}", e)
+                            ))?;
                     }
                     "crsTaught" => {
-                        user_attr.crs_taught = self.parse_course_set(value)?;
+                        user_attr.crs_taught = self.parse_course_set(value)
+                            .map_err(|e| ParseError::ParseErrorAtLine(
+                                line_num + 1,
+                                line.to_string(),
+                                format!("Error parsing crsTaught in user attribute: {}", e)
+                            ))?;
                     }
                     "isChair" => {
-                        user_attr.is_chair = Some(self.parse_boolean(value)?);
+                        user_attr.is_chair = Some(self.parse_boolean(value)
+                            .map_err(|e| ParseError::ParseErrorAtLine(
+                                line_num + 1,
+                                line.to_string(),
+                                format!("Error parsing isChair in user attribute: {}", e)
+                            ))?);
                     }
                     _ => {
                         // 未知の属性は無視
@@ -117,13 +166,22 @@ impl UniversityAbacParser {
         Ok(user_attr)
     }
 
-    fn parse_resource_attribute(&self, line: &str) -> Result<UniversityResourceAttribute, ParseError> {
+    fn parse_resource_attribute(&self, line_num: usize, line: &str) -> Result<UniversityResourceAttribute, ParseError> {
         // resourceAttrib(application1, type=application, student=applicant1)
-        let content = self.extract_parentheses_content(line)?;
+        let content = self.extract_parentheses_content(line)
+            .map_err(|e| ParseError::ParseErrorAtLine(
+                line_num + 1,
+                line.to_string(),
+                format!("Error in resource attribute: {}", e)
+            ))?;
         let parts: Vec<&str> = content.split(',').map(|s| s.trim()).collect();
         
         if parts.len() < 2 {
-            return Err(ParseError::InvalidFormat("Resource attribute needs at least type".to_string()));
+            return Err(ParseError::ParseErrorAtLine(
+                line_num + 1,
+                line.to_string(),
+                "Resource attribute needs at least type".to_string()
+            ));
         }
 
         let resource_id = parts[0].to_string();
@@ -139,16 +197,31 @@ impl UniversityAbacParser {
 
                 match key {
                     "type" => {
-                        resource_type = Some(self.parse_resource_type(value)?);
+                        resource_type = Some(self.parse_resource_type(value)
+                            .map_err(|e| ParseError::ParseErrorAtLine(
+                                line_num + 1,
+                                line.to_string(),
+                                format!("Error parsing type in resource attribute: {}", e)
+                            ))?);
                     }
                     "student" => {
                         student = Some(value.to_string());
                     }
                     "departments" => {
-                        departments = self.parse_department_set(value)?;
+                        departments = self.parse_department_set(value)
+                            .map_err(|e| ParseError::ParseErrorAtLine(
+                                line_num + 1,
+                                line.to_string(),
+                                format!("Error parsing departments in resource attribute: {}", e)
+                            ))?;
                     }
                     "crs" => {
-                        crs = Some(self.parse_course(value)?);
+                        crs = Some(self.parse_course(value)
+                            .map_err(|e| ParseError::ParseErrorAtLine(
+                                line_num + 1,
+                                line.to_string(),
+                                format!("Error parsing crs in resource attribute: {}", e)
+                            ))?);
                     }
                     _ => {
                         // 未知の属性は無視
@@ -158,7 +231,11 @@ impl UniversityAbacParser {
         }
 
         let resource_type = resource_type.ok_or_else(|| 
-            ParseError::MissingAttribute("type".to_string()))?;
+            ParseError::ParseErrorAtLine(
+                line_num + 1,
+                line.to_string(),
+                "Missing required attribute: type".to_string()
+            ))?;
 
         Ok(UniversityResourceAttribute {
             resource_id,
@@ -169,13 +246,15 @@ impl UniversityAbacParser {
         })
     }
 
-    fn parse_rule(&self, line: &str, id: usize) -> Result<UniversityRule, ParseError> {
+    fn parse_rule(&self, line_num: usize, line: &str, id: usize) -> Result<UniversityRule, ParseError> {
         // rule(position [ {faculty}; type [ {gradebook}; {changeScore assignGrade}; crsTaught ] crs)
         let content = self.extract_parentheses_content(line)?;
         let sections: Vec<&str> = content.split(';').collect();
         
         if sections.len() < 3 || sections.len() > 4 {
-            return Err(ParseError::InvalidFormat(
+            return Err(ParseError::ParseErrorAtLine(
+                line_num + 1, // 1-based line numbering for user display
+                line.to_string(),
                 "Rule must have 3 or 4 sections separated by semicolons".to_string()
             ));
         }
@@ -185,24 +264,44 @@ impl UniversityAbacParser {
         // セクション1: ユーザー条件
         let user_section = sections[0].trim();
         if !user_section.is_empty() {
-            rule.user_conditions = self.parse_conditions_section(user_section)?;
+            rule.user_conditions = self.parse_conditions_section(user_section)
+                .map_err(|e| ParseError::ParseErrorAtLine(
+                    line_num + 1,
+                    line.to_string(),
+                    format!("Error parsing user conditions: {}", e)
+                ))?;
         }
 
         // セクション2: リソース条件
         let resource_section = sections[1].trim();
         if !resource_section.is_empty() {
-            rule.resource_conditions = self.parse_conditions_section(resource_section)?;
+            rule.resource_conditions = self.parse_conditions_section(resource_section)
+                .map_err(|e| ParseError::ParseErrorAtLine(
+                    line_num + 1,
+                    line.to_string(),
+                    format!("Error parsing resource conditions: {}", e)
+                ))?;
         }
 
         // セクション3: アクション
         let action_section = sections[2].trim();
-        rule.actions = self.parse_actions_section(action_section)?;
+        rule.actions = self.parse_actions_section(action_section)
+            .map_err(|e| ParseError::ParseErrorAtLine(
+                line_num + 1,
+                line.to_string(),
+                format!("Error parsing actions: {}", e)
+            ))?;
 
         // セクション4: 比較条件（存在する場合）
         if sections.len() == 4 {
             let comparison_section = sections[3].trim();
             if !comparison_section.is_empty() {
-                rule.comparison_conditions = self.parse_comparison_section(comparison_section)?;
+                rule.comparison_conditions = self.parse_comparison_section(comparison_section)
+                    .map_err(|e| ParseError::ParseErrorAtLine(
+                        line_num + 1,
+                        line.to_string(),
+                        format!("Error parsing comparison conditions: {}", e)
+                    ))?;
             }
         }
 
@@ -452,7 +551,7 @@ mod tests {
     fn test_parse_user_attribute() {
         let parser = UniversityAbacParser::new();
         let line = "userAttrib(csStu1, position=student, department=cs, crsTaken={cs101})";
-        let result = parser.parse_user_attribute(line).unwrap();
+        let result = parser.parse_user_attribute(0, line).unwrap();
         
         assert_eq!(result.user_id, "csStu1");
         assert_eq!(result.position, Some(Position::Student));
@@ -464,7 +563,7 @@ mod tests {
     fn test_parse_resource_attribute() {
         let parser = UniversityAbacParser::new();
         let line = "resourceAttrib(application1, type=application, student=applicant1)";
-        let result = parser.parse_resource_attribute(line).unwrap();
+        let result = parser.parse_resource_attribute(0, line).unwrap();
         
         assert_eq!(result.resource_id, "application1");
         assert_eq!(result.resource_type, ResourceType::Application);
@@ -475,7 +574,7 @@ mod tests {
     fn test_parse_rule() {
         let parser = UniversityAbacParser::new();
         let line = "rule(position [ {faculty}; type [ {gradebook}; {changeScore assignGrade}; crsTaught ] crs)";
-        let result = parser.parse_rule(line, 0).unwrap();
+        let result = parser.parse_rule(0, line, 0).unwrap();
         
         assert_eq!(result.id, 0);
         assert_eq!(result.user_conditions.len(), 1);
@@ -490,7 +589,7 @@ mod tests {
         
         // 実際の問題のあったルールをテスト
         let line = "rule(; type [ {transcript}; {read}; uid=student)";
-        let result = parser.parse_rule(line, 0).unwrap();
+        let result = parser.parse_rule(0, line, 0).unwrap();
         
         assert_eq!(result.id, 0);
         assert_eq!(result.user_conditions.len(), 0); // 最初のセクションは空
@@ -548,20 +647,20 @@ mod tests {
         
         // Trueの場合をテスト
         let line_true = "userAttrib(csChair, isChair=True, department=cs)";
-        let result_true = parser.parse_user_attribute(line_true).unwrap();
+        let result_true = parser.parse_user_attribute(0, line_true).unwrap();
         assert_eq!(result_true.user_id, "csChair");
         assert_eq!(result_true.is_chair, Some(true));
         assert_eq!(result_true.department, Some(Department::Cs));
         
         // Falseの場合をテスト
         let line_false = "userAttrib(csFac1, isChair=False, department=cs)";
-        let result_false = parser.parse_user_attribute(line_false).unwrap();
+        let result_false = parser.parse_user_attribute(0, line_false).unwrap();
         assert_eq!(result_false.user_id, "csFac1");
         assert_eq!(result_false.is_chair, Some(false));
         
         // 小文字の場合もテスト
         let line_lowercase = "userAttrib(testUser, isChair=true)";
-        let result_lowercase = parser.parse_user_attribute(line_lowercase).unwrap();
+        let result_lowercase = parser.parse_user_attribute(0, line_lowercase).unwrap();
         assert_eq!(result_lowercase.is_chair, Some(true));
     }
 

@@ -1,7 +1,8 @@
 use std::collections::HashSet;
+use serde::{Serialize, Deserialize};
 
 // ユーザーの役職を表現
-#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum Position {
     Applicant,
     Student,
@@ -10,7 +11,7 @@ pub enum Position {
 }
 
 // 部署を表現
-#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum Department {
     Cs,
     Ee,
@@ -19,7 +20,7 @@ pub enum Department {
 }
 
 // コース名を表現
-#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum Course {
     Cs101,
     Cs601,
@@ -30,7 +31,7 @@ pub enum Course {
 }
 
 // リソースタイプを表現
-#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum ResourceType {
     Application,
     Gradebook,
@@ -39,7 +40,7 @@ pub enum ResourceType {
 }
 
 // アクション（権限）を表現
-#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum Action {
     ReadMyScores,
     AddScore,
@@ -53,7 +54,7 @@ pub enum Action {
 }
 
 // 比較演算子を表現
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum ComparisonOperator {
     Contains,     // ] : 左の属性セットが右の属性値を含む
     ContainedIn,  // [ : 左の属性値が右の属性セットに含まれる
@@ -61,7 +62,7 @@ pub enum ComparisonOperator {
 }
 
 // 属性値を表現
-#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum AttributeValue {
     Position(Position),
     Department(Department),
@@ -73,7 +74,7 @@ pub enum AttributeValue {
 }
 
 // 属性名を表現
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum AttributeName {
     Position,
     Department,
@@ -88,7 +89,7 @@ pub enum AttributeName {
 }
 
 // 条件式を表現
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Condition {
     pub left: AttributeExpression,
     pub operator: ComparisonOperator,
@@ -96,7 +97,7 @@ pub struct Condition {
 }
 
 // 属性表現を表現
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum AttributeExpression {
     AttributeName(AttributeName),
     AttributeValue(AttributeValue),
@@ -104,7 +105,7 @@ pub enum AttributeExpression {
 }
 
 // 大学のユーザー属性を表現
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct UniversityUserAttribute {
     pub user_id: String,
     pub position: Option<Position>,
@@ -115,7 +116,7 @@ pub struct UniversityUserAttribute {
 }
 
 // 大学のリソース属性を表現
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct UniversityResourceAttribute {
     pub resource_id: String,
     pub resource_type: ResourceType,
@@ -125,7 +126,7 @@ pub struct UniversityResourceAttribute {
 }
 
 // 大学のルールを表現（改良版）
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct UniversityRule {
     pub id: usize,
     pub description: String,
@@ -136,7 +137,7 @@ pub struct UniversityRule {
 }
 
 // パース結果全体を表現
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct UniversityAbacData {
     pub users: Vec<UniversityUserAttribute>,
     pub resources: Vec<UniversityResourceAttribute>,

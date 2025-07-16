@@ -1,7 +1,4 @@
-use z3::{Config, Context, Solver, Sort, FuncDecl, Symbol, DatatypeBuilder, ast::{Ast, Dynamic}};
-use std::collections::HashMap;
-
-fn main() {
+pub fn z3_simple_example() {
     let cfg = Config::new();
     let ctx = Context::new(&cfg);
     let solver = Solver::new(&ctx);
