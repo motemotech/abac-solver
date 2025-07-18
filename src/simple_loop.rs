@@ -1,4 +1,8 @@
+use std::collections::{HashMap, HashSet};
 use crate::types::{self, AttributeValueExtractor, Condition, ComparisonOperator};
+use rayon::prelude::*;
+use std::sync::atomic::{AtomicUsize, Ordering};
+
 // Import specific types to avoid ambiguity
 use crate::university_types::{
     UniversityAbac, UniversityRule, UniversityUserAttribute, UniversityResourceAttribute,
@@ -21,7 +25,7 @@ pub trait Rule {
 }
 
 // Generic condition value enum
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub enum GenericConditionValue<T> {
     Single(T),
     Set(Vec<T>),
@@ -37,9 +41,9 @@ fn evaluate_condition<L, R, Expr, AttrVal>(
     left_source: L,
     right_source: R,
     condition: &Condition<Expr>,
-    get_left_value: impl Fn(L, &Expr) -> Result<GenericConditionValue<AttrVal>, Box<dyn std::error::Error>>,
-    get_right_value: impl Fn(R, &Expr) -> Result<GenericConditionValue<AttrVal>, Box<dyn std::error::Error>>,
-) -> Result<bool, Box<dyn std::error::Error>>
+    get_left_value: impl Fn(L, &Expr) -> Result<GenericConditionValue<AttrVal>, Box<dyn std::error::Error + Send + Sync>>,
+    get_right_value: impl Fn(R, &Expr) -> Result<GenericConditionValue<AttrVal>, Box<dyn std::error::Error + Send + Sync>>,
+) -> Result<bool, Box<dyn std::error::Error + Send + Sync>>
 where
     AttrVal: PartialEq + std::fmt::Debug,
 {
@@ -53,39 +57,30 @@ where
     }
 }
 
-// Implementation for UniversityRule
-impl Rule for UniversityRule {
-    type AttributeExpression = UniversityAttributeExpression;
-    
-    fn get_user_conditions(&self) -> &Vec<Condition<Self::AttributeExpression>> {
-        &self.user_conditions
-    }
-    
-    fn get_resource_conditions(&self) -> &Vec<Condition<Self::AttributeExpression>> {
-        &self.resource_conditions
-    }
-    
-    fn get_comparison_conditions(&self) -> &Vec<Condition<Self::AttributeExpression>> {
-        &self.comparison_conditions
-    }
+// Ruleトレイトを実装するためのマクロ
+macro_rules! impl_rule {
+    ($rule_type:ty, $attr_expr_type:ty) => {
+        impl Rule for $rule_type {
+            type AttributeExpression = $attr_expr_type;
+
+            fn get_user_conditions(&self) -> &Vec<Condition<Self::AttributeExpression>> {
+                &self.user_conditions
+            }
+
+            fn get_resource_conditions(&self) -> &Vec<Condition<Self::AttributeExpression>> {
+                &self.resource_conditions
+            }
+
+            fn get_comparison_conditions(&self) -> &Vec<Condition<Self::AttributeExpression>> {
+                &self.comparison_conditions
+            }
+        }
+    };
 }
 
-// Implementation for EdocumentRule
-impl Rule for EdocumentRule {
-    type AttributeExpression = EdocAttributeExpression;
-    
-    fn get_user_conditions(&self) -> &Vec<Condition<Self::AttributeExpression>> {
-        &self.user_conditions
-    }
-    
-    fn get_resource_conditions(&self) -> &Vec<Condition<Self::AttributeExpression>> {
-        &self.resource_conditions
-    }
-    
-    fn get_comparison_conditions(&self) -> &Vec<Condition<Self::AttributeExpression>> {
-        &self.comparison_conditions
-    }
-}
+// マクロを使用してRuleトレイトを実装
+impl_rule!(UniversityRule, UniversityAttributeExpression);
+impl_rule!(EdocumentRule, EdocAttributeExpression);
 
 // Generic trait for ABAC analysis
 pub trait AbacAnalyzer {
@@ -98,9 +93,9 @@ pub trait AbacAnalyzer {
     fn get_resources(&self) -> &Vec<Self::ResourceAttribute>;
     fn get_rules(&self) -> &Vec<Self::Rule>;
     
-    fn evaluate_user_condition(&self, user: &Self::UserAttribute, condition: &Condition<Self::AttributeExpression>) -> Result<bool, Box<dyn std::error::Error>>;
-    fn evaluate_resource_condition(&self, resource: &Self::ResourceAttribute, condition: &Condition<Self::AttributeExpression>) -> Result<bool, Box<dyn std::error::Error>>;
-    fn evaluate_comparison_condition(&self, user: &Self::UserAttribute, resource: &Self::ResourceAttribute, condition: &Condition<Self::AttributeExpression>) -> Result<bool, Box<dyn std::error::Error>>;
+    fn evaluate_user_condition(&self, user: &Self::UserAttribute, condition: &Condition<Self::AttributeExpression>) -> Result<bool, Box<dyn std::error::Error + Send + Sync>>;
+    fn evaluate_resource_condition(&self, resource: &Self::ResourceAttribute, condition: &Condition<Self::AttributeExpression>) -> Result<bool, Box<dyn std::error::Error + Send + Sync>>;
+    fn evaluate_comparison_condition(&self, user: &Self::UserAttribute, resource: &Self::ResourceAttribute, condition: &Condition<Self::AttributeExpression>) -> Result<bool, Box<dyn std::error::Error + Send + Sync>>;
 }
 
 // Implementation for University domain
@@ -122,7 +117,7 @@ impl AbacAnalyzer for UniversityAbac {
         &self.rules
     }
     
-    fn evaluate_user_condition(&self, user: &Self::UserAttribute, condition: &Condition<Self::AttributeExpression>) -> Result<bool, Box<dyn std::error::Error>> {
+    fn evaluate_user_condition(&self, user: &Self::UserAttribute, condition: &Condition<Self::AttributeExpression>) -> Result<bool, Box<dyn std::error::Error + Send + Sync>> {
         evaluate_condition(
             user,
             &(), // Pass a dummy value for the right source
@@ -132,7 +127,7 @@ impl AbacAnalyzer for UniversityAbac {
         )
     }
     
-    fn evaluate_resource_condition(&self, resource: &Self::ResourceAttribute, condition: &Condition<Self::AttributeExpression>) -> Result<bool, Box<dyn std::error::Error>> {
+    fn evaluate_resource_condition(&self, resource: &Self::ResourceAttribute, condition: &Condition<Self::AttributeExpression>) -> Result<bool, Box<dyn std::error::Error + Send + Sync>> {
         evaluate_condition(
             resource,
             &(), // Pass a dummy value for the right source
@@ -142,7 +137,7 @@ impl AbacAnalyzer for UniversityAbac {
         )
     }
     
-    fn evaluate_comparison_condition(&self, user: &Self::UserAttribute, resource: &Self::ResourceAttribute, condition: &Condition<Self::AttributeExpression>) -> Result<bool, Box<dyn std::error::Error>> {
+    fn evaluate_comparison_condition(&self, user: &Self::UserAttribute, resource: &Self::ResourceAttribute, condition: &Condition<Self::AttributeExpression>) -> Result<bool, Box<dyn std::error::Error + Send + Sync>> {
         evaluate_condition(
             (user, resource),
             (user, resource),
@@ -172,7 +167,7 @@ impl AbacAnalyzer for EdocumentAbac {
         &self.rules
     }
     
-    fn evaluate_user_condition(&self, user: &Self::UserAttribute, condition: &Condition<Self::AttributeExpression>) -> Result<bool, Box<dyn std::error::Error>> {
+    fn evaluate_user_condition(&self, user: &Self::UserAttribute, condition: &Condition<Self::AttributeExpression>) -> Result<bool, Box<dyn std::error::Error + Send + Sync>> {
         evaluate_condition(
             user,
             &(), // Pass a dummy value
@@ -182,7 +177,7 @@ impl AbacAnalyzer for EdocumentAbac {
         )
     }
     
-    fn evaluate_resource_condition(&self, resource: &Self::ResourceAttribute, condition: &Condition<Self::AttributeExpression>) -> Result<bool, Box<dyn std::error::Error>> {
+    fn evaluate_resource_condition(&self, resource: &Self::ResourceAttribute, condition: &Condition<Self::AttributeExpression>) -> Result<bool, Box<dyn std::error::Error + Send + Sync>> {
         evaluate_condition(
             resource,
             &(), // Pass a dummy value
@@ -192,7 +187,7 @@ impl AbacAnalyzer for EdocumentAbac {
         )
     }
     
-    fn evaluate_comparison_condition(&self, user: &Self::UserAttribute, resource: &Self::ResourceAttribute, condition: &Condition<Self::AttributeExpression>) -> Result<bool, Box<dyn std::error::Error>> {
+    fn evaluate_comparison_condition(&self, user: &Self::UserAttribute, resource: &Self::ResourceAttribute, condition: &Condition<Self::AttributeExpression>) -> Result<bool, Box<dyn std::error::Error + Send + Sync>> {
         evaluate_condition(
             (user, resource),
             (user, resource),
@@ -203,8 +198,14 @@ impl AbacAnalyzer for EdocumentAbac {
     }
 }
 
-// Generic analysis function that works for any domain implementing AbacAnalyzer
-pub fn detailed_abac_analysis<T: AbacAnalyzer>(abac_data: T) -> Result<(), Box<dyn std::error::Error>> {
+pub fn simple_loop<T: AbacAnalyzer>(
+    abac_data: T,
+) -> Result<(), Box<dyn std::error::Error + Send + Sync>>
+where
+    T::UserAttribute: std::fmt::Debug,
+    T::ResourceAttribute: std::fmt::Debug,
+    T::Rule: std::fmt::Debug,
+{
     let users = abac_data.get_users();
     let resources = abac_data.get_resources();
     let rules = abac_data.get_rules();
@@ -238,7 +239,6 @@ pub fn detailed_abac_analysis<T: AbacAnalyzer>(abac_data: T) -> Result<(), Box<d
                 }
             }
         }
-        println!("Validated users count: {}", validated_users.len());
 
         let mut validated_resources = Vec::new();
         
@@ -263,14 +263,13 @@ pub fn detailed_abac_analysis<T: AbacAnalyzer>(abac_data: T) -> Result<(), Box<d
                 }
             }
         }
-        println!("Validated resources count: {}", validated_resources.len());
 
         // 比較条件の処理：ユーザとリソースの組み合わせを評価
         let mut valid_combinations = Vec::new();
         
         for user in &validated_users {
             for resource in &validated_resources {
-                let mut all_comparison_conditions_met = true;
+                let mut all_conditions_met = true;
                 
                 // 比較条件がない場合は、全ての組み合わせが有効
                 if comparison_conditions.is_empty() {
@@ -281,12 +280,12 @@ pub fn detailed_abac_analysis<T: AbacAnalyzer>(abac_data: T) -> Result<(), Box<d
                 // 全ての比較条件をチェック
                 for comparison_condition in comparison_conditions.iter() {
                     if !abac_data.evaluate_comparison_condition(user, resource, comparison_condition)? {
-                        all_comparison_conditions_met = false;
+                        all_conditions_met = false;
                         break;
                     }
                 }
                 
-                if all_comparison_conditions_met {
+                if all_conditions_met {
                     valid_combinations.push((user.clone(), resource.clone()));
                 }
             }
@@ -300,22 +299,327 @@ pub fn detailed_abac_analysis<T: AbacAnalyzer>(abac_data: T) -> Result<(), Box<d
     Ok(())
 }
 
-// Original detailed evaluation functions for University domain (preserved for backward compatibility)
-pub fn detailed_university_analysis(abac_data: UniversityAbac) -> Result<(), Box<dyn std::error::Error>>
+pub fn improved_simple_loop<T, N, V>(
+    abac_data: T,
+) -> Result<(), Box<dyn std::error::Error + Send + Sync>>
+where
+    T: AbacAnalyzer<AttributeExpression = crate::types::AttributeExpression<N, V>>,
+    T::UserAttribute: std::fmt::Debug + AttributeValueExtractor<AttributeName = N, AttributeValue = V>,
+    T::ResourceAttribute: std::fmt::Debug + AttributeValueExtractor<AttributeName = N, AttributeValue = V>,
+    T::Rule: std::fmt::Debug,
+    N: Eq + std::hash::Hash + Clone,
+    V: Eq + std::hash::Hash + Clone,
 {
-    detailed_abac_analysis(abac_data)
+    let users = abac_data.get_users();
+    let resources = abac_data.get_resources();
+    let rules = abac_data.get_rules();
+
+    let rule_start_time = std::time::Instant::now();
+    for rule in rules {
+        let user_conditions = rule.get_user_conditions();
+        let resource_conditions = rule.get_resource_conditions();
+        let comparison_conditions = rule.get_comparison_conditions();
+
+        let mut validated_users = Vec::new();
+        if user_conditions.is_empty() {
+            validated_users = (*users).clone();
+        } else {
+            for user in users {
+                let mut all_conditions_met = true;
+                for user_condition in user_conditions.iter() {
+                    if !abac_data.evaluate_user_condition(user, user_condition)? {
+                        all_conditions_met = false;
+                        break;
+                    }
+                }
+                if all_conditions_met {
+                    validated_users.push(user.clone());
+                }
+            }
+        }
+
+        println!("Validated users count: {}", validated_users.len());
+
+        let mut validated_resources = Vec::new();
+        if resource_conditions.is_empty() {
+            validated_resources = (*resources).clone();
+        } else {
+            for resource in resources {
+                let mut all_conditions_met = true;
+                for resource_condition in resource_conditions.iter() {
+                    if !abac_data.evaluate_resource_condition(resource, resource_condition)? {
+                        all_conditions_met = false;
+                        break;
+                    }
+                }
+                if all_conditions_met {
+                    validated_resources.push(resource.clone());
+                }
+            }
+        }
+
+        println!("Validated resources count: {}", validated_resources.len());
+
+        let mut valid_combinations_count = 0;
+
+        if comparison_conditions.is_empty() {
+            valid_combinations_count = validated_users.len() * validated_resources.len();
+        } else {
+            // HashMap-based indexing for comparison
+            if let Some(condition) = comparison_conditions.first() {
+                if let (Some(key_attr_name), Some(value_attr_name)) = (get_attribute_name(&condition.left), get_attribute_name(&condition.right)) {
+                    let mut resource_map = HashMap::new();
+                    for resource in &validated_resources {
+                        if let Some(key) = resource.get_attribute_value(&key_attr_name) {
+                            resource_map.entry(key).or_insert_with(Vec::new).push(resource.clone());
+                        }
+                    }
+
+                    for user in &validated_users {
+                        if let Some(value) = user.get_attribute_value(&value_attr_name) {
+                            if let Some(matched_resources) = resource_map.get(&value) {
+                                valid_combinations_count += matched_resources.len();
+                            }
+                        }
+                    }
+                } else {
+                    // Fallback to simple loop if attribute names can't be extracted
+                    for user in &validated_users {
+                        for resource in &validated_resources {
+                            let mut all_conditions_met = true;
+                            for comp_condition in comparison_conditions {
+                                if !abac_data.evaluate_comparison_condition(user, resource, comp_condition)? {
+                                    all_conditions_met = false;
+                                    break;
+                                }
+                            }
+                            if all_conditions_met {
+                                valid_combinations_count += 1;
+                            }
+                        }
+                    }
+                }
+            } else {
+                 valid_combinations_count = validated_users.len() * validated_resources.len();
+            }
+        }
+
+        println!("Valid (user, resource) combinations count: {}", valid_combinations_count);
+    }
+    let rule_duration = rule_start_time.elapsed();
+    println!("Rule processing time: {:.2?}", rule_duration);
+
+    Ok(())
 }
 
-/// Edocument domain detailed analysis function
-pub fn detailed_edocument_analysis(abac_data: EdocumentAbac) -> Result<(), Box<dyn std::error::Error>>
+pub fn parallel_indexed_loop<T, N, V>(
+    abac_data: T,
+) -> Result<(), Box<dyn std::error::Error>>
+where
+    T: AbacAnalyzer<AttributeExpression = crate::types::AttributeExpression<N, V>> + Send + Sync,
+    T::UserAttribute: std::fmt::Debug + AttributeValueExtractor<AttributeName = N, AttributeValue = V> + Send + Sync,
+    T::ResourceAttribute: std::fmt::Debug + AttributeValueExtractor<AttributeName = N, AttributeValue = V> + Send + Sync,
+    T::Rule: std::fmt::Debug + Send + Sync,
+    N: Eq + std::hash::Hash + Clone + Send + Sync,
+    V: Eq + std::hash::Hash + Clone + Send + Sync,
+    <T as AbacAnalyzer>::UserAttribute: Send + Sync,
+    <T as AbacAnalyzer>::ResourceAttribute: Send + Sync,
 {
-    detailed_abac_analysis(abac_data)
+    let users = abac_data.get_users();
+    let resources = abac_data.get_resources();
+    let rules = abac_data.get_rules();
+
+    let rule_start_time = std::time::Instant::now();
+
+    // Collect results from parallel processing
+    let results: Vec<Result<usize, Box<dyn std::error::Error + Send + Sync>>> = rules.par_iter().map(|rule| {
+        let user_conditions = rule.get_user_conditions();
+        let resource_conditions = rule.get_resource_conditions();
+        let comparison_conditions = rule.get_comparison_conditions();
+
+        let validated_users: Vec<T::UserAttribute> = if user_conditions.is_empty() {
+            users.clone()
+        } else {
+            users.par_iter().filter_map(|user| {
+                let mut all_conditions_met = true;
+                for user_condition in user_conditions.iter() {
+                    match abac_data.evaluate_user_condition(user, user_condition) {
+                        Ok(true) => {},
+                        Ok(false) => {
+                            all_conditions_met = false;
+                            break;
+                        },
+                        Err(_) => {
+                            all_conditions_met = false; // Treat error as failed condition
+                            break;
+                        }
+                    }
+                }
+                if all_conditions_met { Some(user.clone()) } else { None }
+            }).collect()
+        };
+
+        let validated_resources: Vec<T::ResourceAttribute> = if resource_conditions.is_empty() {
+            resources.clone()
+        } else {
+            resources.par_iter().filter_map(|resource| {
+                let mut all_conditions_met = true;
+                for resource_condition in resource_conditions.iter() {
+                    match abac_data.evaluate_resource_condition(resource, resource_condition) {
+                        Ok(true) => {},
+                        Ok(false) => {
+                            all_conditions_met = false;
+                            break;
+                        },
+                        Err(_) => {
+                            all_conditions_met = false; // Treat error as failed condition
+                            break;
+                        }
+                    }
+                }
+                if all_conditions_met { Some(resource.clone()) } else { None }
+            }).collect()
+        };
+
+        let mut valid_combinations_count = 0;
+
+        if comparison_conditions.is_empty() {
+            valid_combinations_count = validated_users.len() * validated_resources.len();
+        } else {
+            // Separate comparison conditions into Equals and others
+            let (equals_conditions, other_conditions): (Vec<&Condition<T::AttributeExpression>>, Vec<&Condition<T::AttributeExpression>>) =
+                comparison_conditions.iter().partition(|cond| cond.operator == ComparisonOperator::Equals);
+
+            if !equals_conditions.is_empty() {
+                // Phase 1: Indexed matching for Equals conditions
+                let mut resource_map: HashMap<V, Vec<&T::ResourceAttribute>> = HashMap::new();
+                // Extractors need to be Send + Sync
+                let mut resource_key_extractors: Vec<Box<dyn Fn(&T::ResourceAttribute) -> Option<V> + Send + Sync>> = Vec::new();
+                let mut user_key_extractors: Vec<Box<dyn Fn(&T::UserAttribute) -> Option<V> + Send + Sync>> = Vec::new();
+
+                for cond in &equals_conditions {
+                    if let (Some(key_attr_name), Some(value_attr_name)) = (get_attribute_name(&cond.left), get_attribute_name(&cond.right)) {
+                        // Assuming left is resource attribute and right is user attribute for indexing
+                        resource_key_extractors.push(Box::new(move |res: &T::ResourceAttribute| res.get_attribute_value(&key_attr_name)));
+                        user_key_extractors.push(Box::new(move |usr: &T::UserAttribute| usr.get_attribute_value(&value_attr_name)));
+                    }
+                }
+
+                // Build composite key for resources
+                for resource in &validated_resources {
+                    let mut composite_key_parts = Vec::new();
+                    for extractor in &resource_key_extractors {
+                        if let Some(val) = extractor(resource) {
+                            composite_key_parts.push(val);
+                        } else {
+                            composite_key_parts.clear();
+                            break;
+                        }
+                    }
+                    if !composite_key_parts.is_empty() {
+                        if composite_key_parts.len() == 1 {
+                            resource_map.entry(composite_key_parts[0].clone()).or_insert_with(Vec::new).push(resource);
+                        } else {
+                            // Fallback for complex composite keys not yet implemented
+                            // For now, we'll just count all combinations if composite key is complex
+                            return Ok(validated_users.len() * validated_resources.len());
+                        }
+                    }
+                }
+
+                for user in &validated_users {
+                    let mut composite_user_key_parts = Vec::new();
+                    for extractor in &user_key_extractors {
+                        if let Some(val) = extractor(user) {
+                            composite_user_key_parts.push(val);
+                        } else {
+                            composite_user_key_parts.clear();
+                            break;
+                        }
+                    }
+
+                    if composite_user_key_parts.len() == 1 {
+                        if let Some(matched_resources) = resource_map.get(&composite_user_key_parts[0]) {
+                            // Phase 2: Evaluate remaining conditions for matched pairs
+                            if other_conditions.is_empty() {
+                                valid_combinations_count += matched_resources.len();
+                            } else {
+                                for res in matched_resources {
+                                    match abac_data.evaluate_comparison_condition(user, res, &other_conditions[0]) {
+                                        Ok(true) => {
+                                            valid_combinations_count += 1;
+                                        },
+                                        Ok(false) => {},
+                                        Err(_) => {},
+                                    }
+                                }
+                            }
+                        }
+                    } else if composite_user_key_parts.is_empty() {
+                        // No composite key for user, skip
+                    } else {
+                        // Fallback for complex composite keys not yet implemented
+                        return Ok(validated_users.len() * validated_resources.len());
+                    }
+                }
+            } else {
+                // No Equals conditions, fallback to simple loop for all comparison conditions
+                for user in &validated_users {
+                    for resource in &validated_resources {
+                        let mut all_conditions_met = true;
+                        for comp_condition in comparison_conditions {
+                            match abac_data.evaluate_comparison_condition(user, resource, comp_condition) {
+                                Ok(true) => {},
+                                Ok(false) => {
+                                    all_conditions_met = false;
+                                    break;
+                                },
+                                Err(_) => {
+                                    all_conditions_met = false; // Treat error as failed condition
+                                    break;
+                                }
+                            }
+                        }
+                        if all_conditions_met {
+                            valid_combinations_count += 1;
+                        }
+                    }
+                }
+            }
+        }
+
+        Ok(valid_combinations_count)
+    }).collect(); // Collect results from parallel processing
+
+    // Print results and handle errors
+    for result in results {
+        match result {
+            Ok(count) => println!("Valid (user, resource) combinations count: {}", count),
+            Err(e) => eprintln!("Error during rule processing: {}", e),
+        }
+    }
+
+    let rule_duration = rule_start_time.elapsed();
+    println!("Rule processing time: {:.2?}", rule_duration);
+
+    Ok(())
+}
+
+fn get_attribute_name<N, V>(attr_expr: &crate::types::AttributeExpression<N, V>) -> Option<N>
+where
+    N: Clone,
+{
+    if let crate::types::AttributeExpression::AttributeName(name) = attr_expr {
+        Some(name.clone())
+    } else {
+        None
+    }
 }
 
 fn get_resource_attribute_value<R>(
     resource: &R,
     attr_expr: &crate::types::AttributeExpression<R::AttributeName, R::AttributeValue>,
-) -> Result<GenericConditionValue<R::AttributeValue>, Box<dyn std::error::Error>>
+) -> Result<GenericConditionValue<R::AttributeValue>, Box<dyn std::error::Error + Send + Sync>>
 where
     R: AttributeValueExtractor,
     R::AttributeValue: Clone,
@@ -342,7 +646,7 @@ where
 fn get_user_attribute_value<U>(
     user: &U,
     attr_expr: &crate::types::AttributeExpression<U::AttributeName, U::AttributeValue>,
-) -> Result<GenericConditionValue<U::AttributeValue>, Box<dyn std::error::Error>>
+) -> Result<GenericConditionValue<U::AttributeValue>, Box<dyn std::error::Error + Send + Sync>>
 where
     U: AttributeValueExtractor,
     U::AttributeValue: Clone,
@@ -368,7 +672,7 @@ where
 
 fn get_condition_value<N, V>(
     attr_expr: &crate::types::AttributeExpression<N, V>,
-) -> Result<GenericConditionValue<V>, Box<dyn std::error::Error>>
+) -> Result<GenericConditionValue<V>, Box<dyn std::error::Error + Send + Sync>>
 where
     V: Clone,
 {
@@ -390,7 +694,7 @@ fn get_comparison_attribute_value<U, R>(
     user: &U,
     resource: &R,
     attr_expr: &crate::types::AttributeExpression<U::AttributeName, U::AttributeValue>,
-) -> Result<GenericConditionValue<U::AttributeValue>, Box<dyn std::error::Error>>
+) -> Result<GenericConditionValue<U::AttributeValue>, Box<dyn std::error::Error + Send + Sync>>
 where
     U: AttributeValueExtractor,
     U::AttributeValue: Clone,
@@ -420,7 +724,7 @@ where
 }
 
 /// 集合の所属関係を評価する共通関数: 値が集合に含まれるかチェック
-fn evaluate_set_membership<T: PartialEq + std::fmt::Debug>(value: &GenericConditionValue<T>, set: &GenericConditionValue<T>) -> Result<bool, Box<dyn std::error::Error>> {
+fn evaluate_set_membership<T: PartialEq + std::fmt::Debug>(value: &GenericConditionValue<T>, set: &GenericConditionValue<T>) -> Result<bool, Box<dyn std::error::Error + Send + Sync>> {
     match (value, set) {
         (GenericConditionValue::Single(val), GenericConditionValue::Set(set_vals)) => {
             Ok(set_vals.contains(val))
@@ -435,19 +739,19 @@ fn evaluate_set_membership<T: PartialEq + std::fmt::Debug>(value: &GenericCondit
 }
 
 /// ContainedIn演算子の評価: 左の値が右の集合に含まれる
-fn evaluate_contained_in<T: PartialEq + std::fmt::Debug>(left: &GenericConditionValue<T>, right: &GenericConditionValue<T>) -> Result<bool, Box<dyn std::error::Error>> {
+fn evaluate_contained_in<T: PartialEq + std::fmt::Debug>(left: &GenericConditionValue<T>, right: &GenericConditionValue<T>) -> Result<bool, Box<dyn std::error::Error + Send + Sync>> {
     evaluate_set_membership(left, right)
         .map_err(|e| format!("Invalid ContainedIn operation: {:?} [ {:?} ({})", left, right, e).into())
 }
 
 /// Contains演算子の評価: 左の集合が右の値を含む
-fn evaluate_contains<T: PartialEq + std::fmt::Debug>(left: &GenericConditionValue<T>, right: &GenericConditionValue<T>) -> Result<bool, Box<dyn std::error::Error>> {
+fn evaluate_contains<T: PartialEq + std::fmt::Debug>(left: &GenericConditionValue<T>, right: &GenericConditionValue<T>) -> Result<bool, Box<dyn std::error::Error + Send + Sync>> {
     evaluate_set_membership(right, left)
         .map_err(|e| format!("Invalid Contains operation: {:?} ] {:?} ({})", left, right, e).into())
 }
 
 /// Equals演算子の評価: 左の値と右の値が等しい
-fn evaluate_equals<T: PartialEq + std::fmt::Debug>(left: &GenericConditionValue<T>, right: &GenericConditionValue<T>) -> Result<bool, Box<dyn std::error::Error>> {
+fn evaluate_equals<T: PartialEq + std::fmt::Debug>(left: &GenericConditionValue<T>, right: &GenericConditionValue<T>) -> Result<bool, Box<dyn std::error::Error + Send + Sync>> {
     match (left, right) {
         (GenericConditionValue::Single(left_val), GenericConditionValue::Single(right_val)) => {
             Ok(left_val == right_val)
@@ -457,4 +761,3 @@ fn evaluate_equals<T: PartialEq + std::fmt::Debug>(left: &GenericConditionValue<
         _ => Err(format!("Invalid Equals operation: {:?} = {:?}", left, right).into()),
     }
 }
-

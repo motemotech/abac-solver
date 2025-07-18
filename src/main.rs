@@ -12,7 +12,7 @@ mod simple_loop;
 use crate::university_types::{UniversityAbacData, UniversityAbac, UniversityDomainParser};
 use crate::edocument_types::{EdocumentAbacData, EdocumentAbac, EdocumentDomainParser};
 use crate::types::GenericAbacParser;
-use simple_loop::{detailed_university_analysis, detailed_edocument_analysis};
+use simple_loop::{simple_loop, improved_simple_loop, parallel_indexed_loop};
 
 #[derive(Debug, Clone)]
 enum Domain {
@@ -103,7 +103,7 @@ fn run_analysis(domain: Domain) -> Result<(), Box<dyn std::error::Error>> {
             output_to_json(parsed_abac_copy, domain)?;
 
             println!("=== 詳細分析を実行します ===");
-            detailed_university_analysis(parsed_abac)?;
+            improved_simple_loop(parsed_abac);
         },
         Domain::Edocument => {
             let parser = GenericAbacParser::new(EdocumentDomainParser);
@@ -114,7 +114,7 @@ fn run_analysis(domain: Domain) -> Result<(), Box<dyn std::error::Error>> {
             output_to_json(parsed_abac_copy, domain)?;
 
             println!("=== 詳細分析を実行します ===");
-            detailed_edocument_analysis(parsed_abac)?;
+            improved_simple_loop(parsed_abac);
         },
     }
 

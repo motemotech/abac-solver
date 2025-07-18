@@ -82,6 +82,9 @@ impl std::fmt::Display for ParseError {
 
 impl std::error::Error for ParseError {}
 
+unsafe impl Send for ParseError {}
+unsafe impl Sync for ParseError {}
+
 // ドメイン固有のパース処理を抽象化するトレイト
 pub trait DomainParser {
     type UserAttribute: UserAttribute;

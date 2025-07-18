@@ -164,7 +164,7 @@ pub enum AttributeName {
 }
 
 // 属性値の型
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, Hash)]
 pub enum AttributeValue {
     Role(Role),
     Position(Position),
@@ -415,10 +415,12 @@ impl DomainParser for EdocumentDomainParser {
     }
 
     fn parse_attribute_value(&self, s: &str) -> Result<Self::AttributeValue, ParseError> {
-        // Boolean
-        if let Ok(b) = s.parse::<bool>() {
-            return Ok(AttributeValue::Boolean(b));
+        match s {
+            "True" => return Ok(AttributeValue::Boolean(true)),
+            "False" => return Ok(AttributeValue::Boolean(false)),
+            _ => {}
         }
+
         // Role
         if let Ok(role) = self.parse_role_value(s) {
             return Ok(AttributeValue::Role(role));
