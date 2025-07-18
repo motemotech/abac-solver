@@ -103,7 +103,8 @@ fn run_analysis(domain: Domain) -> Result<(), Box<dyn std::error::Error>> {
             output_to_json(parsed_abac_copy, domain)?;
 
             println!("=== 詳細分析を実行します ===");
-            improved_simple_loop(parsed_abac);
+            parallel_indexed_loop(parsed_abac);
+            // improved_simple_loop(parsed_abac);
         },
         Domain::Edocument => {
             let parser = GenericAbacParser::new(EdocumentDomainParser);
@@ -114,7 +115,8 @@ fn run_analysis(domain: Domain) -> Result<(), Box<dyn std::error::Error>> {
             output_to_json(parsed_abac_copy, domain)?;
 
             println!("=== 詳細分析を実行します ===");
-            improved_simple_loop(parsed_abac);
+            parallel_indexed_loop(parsed_abac);
+            // improved_simple_loop(parsed_abac);
         },
     }
 

@@ -22,6 +22,7 @@ pub trait Rule {
     fn get_user_conditions(&self) -> &Vec<Condition<Self::AttributeExpression>>;
     fn get_resource_conditions(&self) -> &Vec<Condition<Self::AttributeExpression>>;
     fn get_comparison_conditions(&self) -> &Vec<Condition<Self::AttributeExpression>>;
+    fn id(&self) -> usize;
 }
 
 // Generic condition value enum
@@ -73,6 +74,10 @@ macro_rules! impl_rule {
 
             fn get_comparison_conditions(&self) -> &Vec<Condition<Self::AttributeExpression>> {
                 &self.comparison_conditions
+            }
+
+            fn id(&self) -> usize {
+                self.id
             }
         }
     };
@@ -291,7 +296,7 @@ where
             }
         }
 
-        println!("Valid (user, resource) combinations count: {}", valid_combinations.len());
+        println!("Rule {}: Valid (user, resource) combinations count: {}", rule.id(), valid_combinations.len());
     }
     let rule_duration = rule_start_time.elapsed();
     println!("Rule processing time: {:.2?}", rule_duration);
@@ -365,46 +370,92 @@ where
         if comparison_conditions.is_empty() {
             valid_combinations_count = validated_users.len() * validated_resources.len();
         } else {
-            // HashMap-based indexing for comparison
-            if let Some(condition) = comparison_conditions.first() {
-                if let (Some(key_attr_name), Some(value_attr_name)) = (get_attribute_name(&condition.left), get_attribute_name(&condition.right)) {
-                    let mut resource_map = HashMap::new();
-                    for resource in &validated_resources {
-                        if let Some(key) = resource.get_attribute_value(&key_attr_name) {
-                            resource_map.entry(key).or_insert_with(Vec::new).push(resource.clone());
+            // Separate comparison conditions into Equals and others
+            let (equals_conditions, other_conditions): (Vec<&Condition<T::AttributeExpression>>, Vec<&Condition<T::AttributeExpression>>) =
+                comparison_conditions.iter().partition(|cond| cond.operator == ComparisonOperator::Equals);
+
+            if !equals_conditions.is_empty() {
+                // Phase 1: Indexed matching for Equals conditions
+                let mut resource_map: HashMap<Vec<V>, Vec<&T::ResourceAttribute>> = HashMap::new();
+                let mut resource_key_extractors: Vec<Box<dyn Fn(&T::ResourceAttribute) -> Option<V>>> = Vec::new();
+                let mut user_key_extractors: Vec<Box<dyn Fn(&T::UserAttribute) -> Option<V>>> = Vec::new();
+
+                for cond in &equals_conditions {
+                    if let (Some(key_attr_name), Some(value_attr_name)) = (get_attribute_name(&cond.left), get_attribute_name(&cond.right)) {
+                        resource_key_extractors.push(Box::new(move |res: &T::ResourceAttribute| res.get_attribute_value(&key_attr_name)));
+                        user_key_extractors.push(Box::new(move |usr: &T::UserAttribute| usr.get_attribute_value(&value_attr_name)));
+                    }
+                }
+
+                // Build composite key for resources
+                for resource in &validated_resources {
+                    let mut composite_key_parts = Vec::new();
+                    for extractor in &resource_key_extractors {
+                        if let Some(val) = extractor(resource) {
+                            composite_key_parts.push(val);
+                        } else {
+                            composite_key_parts.clear();
+                            break;
+                        }
+                    }
+                    if !composite_key_parts.is_empty() {
+                        resource_map.entry(composite_key_parts).or_insert_with(Vec::new).push(resource);
+                    }
+                }
+
+                for user in &validated_users {
+                    let mut composite_user_key_parts = Vec::new();
+                    for extractor in &user_key_extractors {
+                        if let Some(val) = extractor(user) {
+                            composite_user_key_parts.push(val);
+                        } else {
+                            composite_user_key_parts.clear();
+                            break;
                         }
                     }
 
-                    for user in &validated_users {
-                        if let Some(value) = user.get_attribute_value(&value_attr_name) {
-                            if let Some(matched_resources) = resource_map.get(&value) {
+                    if !composite_user_key_parts.is_empty() {
+                        if let Some(matched_resources) = resource_map.get(&composite_user_key_parts) {
+                            // Phase 2: Evaluate remaining conditions for matched pairs
+                            if other_conditions.is_empty() {
                                 valid_combinations_count += matched_resources.len();
-                            }
-                        }
-                    }
-                } else {
-                    // Fallback to simple loop if attribute names can't be extracted
-                    for user in &validated_users {
-                        for resource in &validated_resources {
-                            let mut all_conditions_met = true;
-                            for comp_condition in comparison_conditions {
-                                if !abac_data.evaluate_comparison_condition(user, resource, comp_condition)? {
-                                    all_conditions_met = false;
-                                    break;
+                            } else {
+                                for res in matched_resources {
+                                    let mut all_other_conditions_met = true;
+                                    for other_cond in &other_conditions {
+                                        if !abac_data.evaluate_comparison_condition(user, res, other_cond)? {
+                                            all_other_conditions_met = false;
+                                            break;
+                                        }
+                                    }
+                                    if all_other_conditions_met {
+                                        valid_combinations_count += 1;
+                                    }
                                 }
-                            }
-                            if all_conditions_met {
-                                valid_combinations_count += 1;
                             }
                         }
                     }
                 }
             } else {
-                 valid_combinations_count = validated_users.len() * validated_resources.len();
+                // No Equals conditions, fallback to simple loop for all comparison conditions
+                for user in &validated_users {
+                    for resource in &validated_resources {
+                        let mut all_conditions_met = true;
+                        for comp_condition in comparison_conditions {
+                            if !abac_data.evaluate_comparison_condition(user, resource, comp_condition)? {
+                                all_conditions_met = false;
+                                break;
+                            }
+                        }
+                        if all_conditions_met {
+                            valid_combinations_count += 1;
+                        }
+                    }
+                }
             }
         }
 
-        println!("Valid (user, resource) combinations count: {}", valid_combinations_count);
+        println!("Rule {}: Valid (user, resource) combinations count: {}", rule.id(), valid_combinations_count);
     }
     let rule_duration = rule_start_time.elapsed();
     println!("Rule processing time: {:.2?}", rule_duration);
@@ -432,7 +483,7 @@ where
     let rule_start_time = std::time::Instant::now();
 
     // Collect results from parallel processing
-    let results: Vec<Result<usize, Box<dyn std::error::Error + Send + Sync>>> = rules.par_iter().map(|rule| {
+    let results: Vec<Result<(usize, usize), Box<dyn std::error::Error + Send + Sync>>> = rules.par_iter().map(|rule| {
         let user_conditions = rule.get_user_conditions();
         let resource_conditions = rule.get_resource_conditions();
         let comparison_conditions = rule.get_comparison_conditions();
@@ -458,6 +509,7 @@ where
                 if all_conditions_met { Some(user.clone()) } else { None }
             }).collect()
         };
+        println!("Validated users count: {}", validated_users.len());
 
         let validated_resources: Vec<T::ResourceAttribute> = if resource_conditions.is_empty() {
             resources.clone()
@@ -480,6 +532,7 @@ where
                 if all_conditions_met { Some(resource.clone()) } else { None }
             }).collect()
         };
+        println!("Validated resources count: {}", validated_resources.len());
 
         let mut valid_combinations_count = 0;
 
@@ -492,7 +545,7 @@ where
 
             if !equals_conditions.is_empty() {
                 // Phase 1: Indexed matching for Equals conditions
-                let mut resource_map: HashMap<V, Vec<&T::ResourceAttribute>> = HashMap::new();
+                let mut resource_map: HashMap<Vec<V>, Vec<&T::ResourceAttribute>> = HashMap::new();
                 // Extractors need to be Send + Sync
                 let mut resource_key_extractors: Vec<Box<dyn Fn(&T::ResourceAttribute) -> Option<V> + Send + Sync>> = Vec::new();
                 let mut user_key_extractors: Vec<Box<dyn Fn(&T::UserAttribute) -> Option<V> + Send + Sync>> = Vec::new();
@@ -517,13 +570,7 @@ where
                         }
                     }
                     if !composite_key_parts.is_empty() {
-                        if composite_key_parts.len() == 1 {
-                            resource_map.entry(composite_key_parts[0].clone()).or_insert_with(Vec::new).push(resource);
-                        } else {
-                            // Fallback for complex composite keys not yet implemented
-                            // For now, we'll just count all combinations if composite key is complex
-                            return Ok(validated_users.len() * validated_resources.len());
-                        }
+                        resource_map.entry(composite_key_parts).or_insert_with(Vec::new).push(resource);
                     }
                 }
 
@@ -538,28 +585,33 @@ where
                         }
                     }
 
-                    if composite_user_key_parts.len() == 1 {
-                        if let Some(matched_resources) = resource_map.get(&composite_user_key_parts[0]) {
+                    if !composite_user_key_parts.is_empty() {
+                        if let Some(matched_resources) = resource_map.get(&composite_user_key_parts) {
                             // Phase 2: Evaluate remaining conditions for matched pairs
                             if other_conditions.is_empty() {
                                 valid_combinations_count += matched_resources.len();
                             } else {
                                 for res in matched_resources {
-                                    match abac_data.evaluate_comparison_condition(user, res, &other_conditions[0]) {
-                                        Ok(true) => {
-                                            valid_combinations_count += 1;
-                                        },
-                                        Ok(false) => {},
-                                        Err(_) => {},
+                                    let mut all_other_conditions_met = true;
+                                    for other_cond in &other_conditions {
+                                        match abac_data.evaluate_comparison_condition(user, res, other_cond) {
+                                            Ok(true) => {},
+                                            Ok(false) => {
+                                                all_other_conditions_met = false;
+                                                break;
+                                            },
+                                            Err(_) => {
+                                                all_other_conditions_met = false; // Treat error as failed condition
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    if all_other_conditions_met {
+                                        valid_combinations_count += 1;
                                     }
                                 }
                             }
                         }
-                    } else if composite_user_key_parts.is_empty() {
-                        // No composite key for user, skip
-                    } else {
-                        // Fallback for complex composite keys not yet implemented
-                        return Ok(validated_users.len() * validated_resources.len());
                     }
                 }
             } else {
@@ -587,14 +639,15 @@ where
                 }
             }
         }
+        println!("Rule {}: Valid (user, resource) combinations count: {}", rule.id(), valid_combinations_count);
 
-        Ok(valid_combinations_count)
+        Ok((rule.id(), valid_combinations_count))
     }).collect(); // Collect results from parallel processing
 
     // Print results and handle errors
     for result in results {
         match result {
-            Ok(count) => println!("Valid (user, resource) combinations count: {}", count),
+            Ok((rule_id, count)) => println!("Rule {}: Valid (user, resource) combinations count: {}", rule_id, count),
             Err(e) => eprintln!("Error during rule processing: {}", e),
         }
     }
