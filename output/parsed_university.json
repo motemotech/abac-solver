@@ -66,8 +66,8 @@
       "position": "Student",
       "department": "Cs",
       "crs_taken": [
-        "Cs601",
-        "Cs602"
+        "Cs602",
+        "Cs601"
       ],
       "crs_taught": [],
       "is_chair": null
@@ -122,8 +122,8 @@
       "position": "Student",
       "department": "Ee",
       "crs_taken": [
-        "Ee602",
-        "Ee601"
+        "Ee601",
+        "Ee602"
       ],
       "crs_taught": [],
       "is_chair": null
@@ -556,8 +556,8 @@
         }
       ],
       "actions": [
-        "AddScore",
-        "ReadScore"
+        "ReadScore",
+        "AddScore"
       ],
       "comparison_conditions": [
         {
@@ -605,8 +605,8 @@
         }
       ],
       "actions": [
-        "AssignGrade",
-        "ChangeScore"
+        "ChangeScore",
+        "AssignGrade"
       ],
       "comparison_conditions": [
         {

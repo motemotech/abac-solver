@@ -18,8 +18,12 @@ pub fn detailed_university_analysis(abac_data: UniversityAbac) -> Result<(), Box
     let resources = abac_data.resources;
     let rules = abac_data.rules;
 
-    for rule in rules {
-        println!("=== Processing Rule {} ===", rule.id);
+    let rule_start_time = std::time::Instant::now();
+    let total_rules = rules.len();
+    
+    for (rule_index, rule) in rules.iter().enumerate() {
+        println!("Processing Rule {}/{}: {} (Memory check)", rule_index + 1, total_rules, rule.id);
+        
         let user_conditions = &rule.user_conditions;
         let resource_conditions = &rule.resource_conditions;
         let comparison_conditions = &rule.comparison_conditions;
@@ -48,7 +52,7 @@ pub fn detailed_university_analysis(abac_data: UniversityAbac) -> Result<(), Box
             }
         }
 
-        println!("Validated users count: {}", validated_users.len());
+        println!("  Validated users count: {}", validated_users.len());
 
         let mut validated_resources = Vec::new();
         
@@ -74,18 +78,32 @@ pub fn detailed_university_analysis(abac_data: UniversityAbac) -> Result<(), Box
             }
         }
 
-        println!("Validated resources count: {}", validated_resources.len());
+        println!("  Validated resources count: {}", validated_resources.len());
 
         // 比較条件の処理：ユーザとリソースの組み合わせを評価
-        let mut valid_combinations = Vec::new();
+        let potential_combinations = validated_users.len() * validated_resources.len();
+        println!("  Potential combinations: {} users × {} resources = {}", 
+                validated_users.len(), validated_resources.len(), potential_combinations);
         
-        for user in &validated_users {
+        // メモリ不足を防ぐため、組み合わせ数が多すぎる場合は警告
+        if potential_combinations > 1_000_000 {
+            println!("  WARNING: Too many combinations ({}), skipping detailed evaluation for memory safety", potential_combinations);
+            continue;
+        }
+        
+        let mut valid_combination_count = 0;
+        
+        for (user_idx, user) in validated_users.iter().enumerate() {
+            if user_idx % 100 == 0 && user_idx > 0 {
+                println!("    Progress: {}/{} users processed", user_idx, validated_users.len());
+            }
+            
             for resource in &validated_resources {
                 let mut all_comparison_conditions_met = true;
                 
                 // 比較条件がない場合は、全ての組み合わせが有効
                 if comparison_conditions.is_empty() {
-                    valid_combinations.push((user.clone(), resource.clone()));
+                    valid_combination_count += 1;
                     continue;
                 }
                 
@@ -98,24 +116,16 @@ pub fn detailed_university_analysis(abac_data: UniversityAbac) -> Result<(), Box
                 }
                 
                 if all_comparison_conditions_met {
-                    valid_combinations.push((user.clone(), resource.clone()));
+                    valid_combination_count += 1;
                 }
             }
         }
-
-        println!("Valid (user, resource) combinations count: {}", valid_combinations.len());
-        for (user, resource) in &valid_combinations {
-            let actions_str = if rule.actions.is_empty() {
-                "access".to_string()
-            } else {
-                rule.actions.iter()
-                    .map(|action| format!("{:?}", action))
-                    .collect::<Vec<String>>()
-                    .join(", ")
-            };
-            println!("  - User: {} can {} Resource: {}", user.get_user_id(), actions_str, resource.get_resource_id());
-        }
+        
+        println!("  Valid combinations: {}", valid_combination_count);
+        
     }
+    let rule_duration = rule_start_time.elapsed();
+    println!("Rule processing time: {:.2?}", rule_duration);
     
     Ok(())
 }
@@ -127,8 +137,12 @@ pub fn detailed_edocument_analysis(abac_data: EdocumentAbac) -> Result<(), Box<d
     let resources = abac_data.resources;
     let rules = abac_data.rules;
 
-    for rule in rules {
-        println!("=== Processing Edocument Rule {} ===", rule.id);
+    let mut total_duration = std::time::Instant::now();
+    let total_rules = rules.len();
+    
+    for (rule_index, rule) in rules.iter().enumerate() {
+        println!("Processing Edocument Rule {}/{}: {} (Memory check)", rule_index + 1, total_rules, rule.id);
+        
         let user_conditions = &rule.user_conditions;
         let resource_conditions = &rule.resource_conditions;
         let comparison_conditions = &rule.comparison_conditions;
@@ -157,7 +171,7 @@ pub fn detailed_edocument_analysis(abac_data: EdocumentAbac) -> Result<(), Box<d
             }
         }
 
-        println!("Validated users count: {}", validated_users.len());
+        println!("  Validated users count: {}", validated_users.len());
 
         let mut validated_resources = Vec::new();
         
@@ -183,18 +197,32 @@ pub fn detailed_edocument_analysis(abac_data: EdocumentAbac) -> Result<(), Box<d
             }
         }
 
-        println!("Validated resources count: {}", validated_resources.len());
+        println!("  Validated resources count: {}", validated_resources.len());
 
         // 比較条件の処理：ユーザとリソースの組み合わせを評価
-        let mut valid_combinations = Vec::new();
+        let potential_combinations = validated_users.len() * validated_resources.len();
+        println!("  Potential combinations: {} users × {} resources = {}", 
+                validated_users.len(), validated_resources.len(), potential_combinations);
         
-        for user in &validated_users {
+        // メモリ不足を防ぐため、組み合わせ数が多すぎる場合は警告
+        if potential_combinations > 1_000_000 {
+            println!("  WARNING: Too many combinations ({}), skipping detailed evaluation for memory safety", potential_combinations);
+            continue;
+        }
+        
+        let mut valid_combination_count = 0;
+        
+        for (user_idx, user) in validated_users.iter().enumerate() {
+            if user_idx % 100 == 0 && user_idx > 0 {
+                println!("    Progress: {}/{} users processed", user_idx, validated_users.len());
+            }
+            
             for resource in &validated_resources {
                 let mut all_comparison_conditions_met = true;
                 
                 // 比較条件がない場合は、全ての組み合わせが有効
                 if comparison_conditions.is_empty() {
-                    valid_combinations.push((user.clone(), resource.clone()));
+                    valid_combination_count += 1;
                     continue;
                 }
                 
@@ -207,26 +235,15 @@ pub fn detailed_edocument_analysis(abac_data: EdocumentAbac) -> Result<(), Box<d
                 }
                 
                 if all_comparison_conditions_met {
-                    valid_combinations.push((user.clone(), resource.clone()));
+                    valid_combination_count += 1;
                 }
             }
         }
 
-        println!("Valid (user, resource) combinations count: {}", valid_combinations.len());
-        for (user, resource) in &valid_combinations {
-            let actions_str = if rule.actions.is_empty() {
-                "access".to_string()
-            } else {
-                rule.actions.iter()
-                    .map(|action| format!("{:?}", action))
-                    .collect::<Vec<String>>()
-                    .join(", ")
-            };
-            println!("  - User: {} can {} Resource: {}", user.get_user_id(), actions_str, resource.get_resource_id());
-        }
+        println!("  Valid combinations: {}", valid_combination_count);
     }
-    
-    println!("=== Edocument Domain Detailed Analysis Completed ===");
+    let total_duration = total_duration.elapsed();
+    println!("Total analysis time: {:.2?}", total_duration);
     Ok(())
 }
 
