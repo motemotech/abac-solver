@@ -34,8 +34,8 @@
         "Cs601"
       ],
       "crs_taught": [
-        "Cs602",
-        "Cs101"
+        "Cs101",
+        "Cs602"
       ],
       "is_chair": null
     },
@@ -556,8 +556,8 @@
         }
       ],
       "actions": [
-        "AddScore",
-        "ReadScore"
+        "ReadScore",
+        "AddScore"
       ],
       "comparison_conditions": [
         {
