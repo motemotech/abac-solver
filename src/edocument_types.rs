@@ -8,8 +8,9 @@ pub use crate::types::{ComparisonOperator, AttributeValueExtractor, UserAttribut
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum Role {
     Employee,
-    Helpdesk,
+    Manager,
     Admin,
+    Helpdesk,
     Customer,
 }
 
@@ -17,36 +18,116 @@ pub enum Role {
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum Position {
     Secretary,
-    InsuranceAgent,
-    OfficeManager,
-    SeniorOfficeManager,
     Director,
+    SeniorOfficeManager,
+    OfficeManager,
+    InsuranceAgent,
+    None,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
+pub enum DocumentType {
+    Invoice,
+    Contract,
+    Paycheck,
+    BankingNote,
+    SalesOffer,
+    TrafficFine,
     None,
 }
 
 // テナントを表現
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum Tenant {
-    LondonOffice,
     LargeBank,
-    NewsAgency,
-    Reseller,
-    EuropeRegion,
     LargeBankLeasing,
+    NewsAgency,
+    EuropeRegion,
+    LondonOffice,
+    Reseller,
     CarLeaser,
     IctProvider,
     PrivateReceiver,
 }
 
-// リソースタイプを表現
+// 部門を表現（すべてのテナントの部門を含む）
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum ResourceType {
-    BankingNote,
-    TrafficFine,
-    SalesOffer,
-    Contract,
-    Invoice,
-    Paycheck,
+pub enum Department {
+    // LargeBank departments
+    LargeBankSales,
+    LargeBankICT,
+    LargeBankHR,
+    LargeBankIT,
+    LargeBankAudit,
+    
+    // LargeBankLeasing departments
+    LargeBankLeasingCustomerCare,
+    LargeBankLeasingSales,
+    
+    // NewsAgency departments
+    NewsAgencyAudit,
+    NewsAgencyIT,
+    
+    // EuropeRegion departments
+    EuropeRegionIT,
+    EuropeRegionHR,
+    
+    // LondonOffice departments
+    LondonOfficeAudit,
+    LondonOfficeHR,
+    LondonOfficeSales,
+    
+    // Reseller departments
+    ResellerSales,
+    ResellerCustomer,
+    ResellerAccounting,
+    
+    // CarLeaser departments
+    CarLeaserAudit,
+    CarLeaserSecretary,
+    CarLeaserAccounting,
+    
+    // IctProvider departments
+    IctProviderAudit,
+    IctProviderSecretary,
+    IctProviderAccounting,
+    IctProviderICT,
+    
+    // PrivateReceiver departments
+    PrivateReceiverAudit,
+    PrivateReceiverSecretary,
+    PrivateReceiverAccounting,
+    
+    None,
+}
+
+// オフィスを表現（テナントごとに異なる数のオフィス）
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
+pub enum Office {
+    // LargeBank offices (1-10)
+    LargeBankOffice1,
+    LargeBankOffice2,
+    LargeBankOffice3,
+    LargeBankOffice4,
+    LargeBankOffice5,
+    LargeBankOffice6,
+    LargeBankOffice7,
+    LargeBankOffice8,
+    LargeBankOffice9,
+    LargeBankOffice10,
+    
+    // LargeBankLeasing offices (1-2)
+    LargeBankLeasingOffice1,
+    LargeBankLeasingOffice2,
+    
+    // IctProvider offices (1-5)
+    IctProviderOffice1,
+    IctProviderOffice2,
+    IctProviderOffice3,
+    IctProviderOffice4,
+    IctProviderOffice5,
+    
+    None,
 }
 
 // アクション（権限）を表現
@@ -88,71 +169,22 @@ pub enum AttributeValue {
     Role(Role),
     Position(Position),
     Tenant(Tenant),
-    ResourceType(ResourceType),
+    ResourceType(DocumentType),
     String(String),
     Boolean(bool),
     StringSet(Vec<String>),
 }
 
-// 属性表現のenum（Hashを含まないバージョン）
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
-pub enum AttributeExpression {
-    // User attributes
-    Role(String),
-    Position(String),
-    Tenant(String),
-    Department(String),
-    Office(String),
-    Registered(bool),
-    Projects(Vec<String>),
-    Supervisor(Option<String>),
-    Supervisee(Vec<String>),
-    PayrollingPermissions(bool),
-    
-    // Resource attributes
-    Type(String),
-    Owner(String),
-    Recipients(Vec<String>),
-    IsConfidential(bool),
-    ContainsPersonalInfo(bool),
-    
-    // Special attributes
-    Uid(String),
-    Rid(String),
-}
+// 属性表現を表現
+// #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+// pub enum AttributeExpression {
+//     AttributeName(AttributeName),
+//     AttributeValue(AttributeValue),
+//     ValueSet(Vec<AttributeValue>),
+// }
 
-impl AttributeValueExtractor for AttributeExpression {
-    type AttributeName = String;
-    type AttributeValue = String;
-
-    fn get_attribute_value(&self, attr_name: &Self::AttributeName) -> Option<Self::AttributeValue> {
-        match (attr_name.as_str(), self) {
-            ("role", AttributeExpression::Role(s)) => Some(s.clone()),
-            ("position", AttributeExpression::Position(s)) => Some(s.clone()),
-            ("tenant", AttributeExpression::Tenant(s)) => Some(s.clone()),
-            ("department", AttributeExpression::Department(s)) => Some(s.clone()),
-            ("office", AttributeExpression::Office(s)) => Some(s.clone()),
-            ("registered", AttributeExpression::Registered(b)) => Some(b.to_string()),
-            ("type", AttributeExpression::Type(s)) => Some(s.clone()),
-            ("owner", AttributeExpression::Owner(s)) => Some(s.clone()),
-            ("isConfidential", AttributeExpression::IsConfidential(b)) => Some(b.to_string()),
-            ("containsPersonalInfo", AttributeExpression::ContainsPersonalInfo(b)) => Some(b.to_string()),
-            ("payrollingPermissions", AttributeExpression::PayrollingPermissions(b)) => Some(b.to_string()),
-            ("uid", AttributeExpression::Uid(s)) => Some(s.clone()),
-            ("rid", AttributeExpression::Rid(s)) => Some(s.clone()),
-            _ => None,
-        }
-    }
-
-    fn get_attribute_set(&self, attr_name: &Self::AttributeName) -> Option<Vec<Self::AttributeValue>> {
-        match (attr_name.as_str(), self) {
-            ("projects", AttributeExpression::Projects(vec)) => Some(vec.clone()),
-            ("supervisee", AttributeExpression::Supervisee(vec)) => Some(vec.clone()),
-            ("recipients", AttributeExpression::Recipients(vec)) => Some(vec.clone()),
-            _ => None,
-        }
-    }
-}
+// 属性表現の型エイリアス
+pub type AttributeExpression = crate::types::AttributeExpression<AttributeName, AttributeValue>;
 
 // ユーザー属性の具体的な型
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -161,8 +193,8 @@ pub struct EdocumentUserAttribute {
     pub role: Option<Role>,
     pub position: Option<Position>,
     pub tenant: Option<Tenant>,
-    pub department: Option<String>,
-    pub office: Option<String>,
+    pub department: Option<String>,  // 動的に生成される可能性があるためStringに変更
+    pub office: Option<String>,      // 動的に生成されるためStringに変更
     pub registered: Option<bool>,
     pub projects: HashSet<String>,
     pub supervisor: Option<String>,
@@ -245,11 +277,11 @@ impl UserAttribute for EdocumentUserAttribute {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct EdocumentResourceAttribute {
     pub resource_id: String,
-    pub resource_type: Option<ResourceType>,
+    pub resource_type: Option<DocumentType>,
     pub owner: Option<String>,
     pub tenant: Option<Tenant>,
-    pub department: Option<String>,
-    pub office: Option<String>,
+    pub department: Option<String>,  // 動的に生成される可能性があるためStringに変更
+    pub office: Option<String>,      // 動的に生成されるためStringに変更
     pub recipients: HashSet<String>,
     pub is_confidential: Option<bool>,
     pub contains_personal_info: Option<bool>,
@@ -257,18 +289,7 @@ pub struct EdocumentResourceAttribute {
 
 impl EdocumentResourceAttribute {
     pub fn new(resource_id: String, resource_type: &str) -> Result<Self, ParseError> {
-        let parsed_type = match resource_type {
-            "bankingNote" => ResourceType::BankingNote,
-            "trafficFine" => ResourceType::TrafficFine,
-            "salesOffer" => ResourceType::SalesOffer,
-            "contract" => ResourceType::Contract,
-            "invoice" => ResourceType::Invoice,
-            "paycheck" => ResourceType::Paycheck,
-            _ => return Err(ParseError::UnknownValue(
-                "resource_type".to_string(), 
-                resource_type.to_string()
-            )),
-        };
+        let parsed_type = Self::parse_document_type(resource_type)?;
 
         Ok(Self {
             resource_id,
@@ -281,6 +302,21 @@ impl EdocumentResourceAttribute {
             is_confidential: None,
             contains_personal_info: None,
         })
+    }
+
+    fn parse_document_type(doc_type: &str) -> Result<DocumentType, ParseError> {
+        match doc_type {
+            "bankingNote" => Ok(DocumentType::BankingNote),
+            "trafficFine" => Ok(DocumentType::TrafficFine),
+            "salesOffer" => Ok(DocumentType::SalesOffer),
+            "contract" => Ok(DocumentType::Contract),
+            "invoice" => Ok(DocumentType::Invoice),
+            "paycheck" => Ok(DocumentType::Paycheck),
+            _ => Err(ParseError::UnknownValue(
+                "resource_type".to_string(), 
+                doc_type.to_string()
+            )),
+        }
     }
 }
 
@@ -370,16 +406,37 @@ impl DomainParser for EdocumentDomainParser {
     type ResourceAttribute = EdocumentResourceAttribute;
     type Rule = EdocumentRule;
     type AttributeExpression = AttributeExpression;
-    type AttributeName = String;
-    type AttributeValue = String;
+    type AttributeName = AttributeName;
+    type AttributeValue = AttributeValue;
     type Action = Action;
 
     fn parse_attribute_name(&self, s: &str) -> Result<Self::AttributeName, ParseError> {
-        Ok(s.to_string())
+        AttributeName::from_str(s)
     }
 
     fn parse_attribute_value(&self, s: &str) -> Result<Self::AttributeValue, ParseError> {
-        Ok(s.to_string())
+        // Boolean
+        if let Ok(b) = s.parse::<bool>() {
+            return Ok(AttributeValue::Boolean(b));
+        }
+        // Role
+        if let Ok(role) = self.parse_role_value(s) {
+            return Ok(AttributeValue::Role(role));
+        }
+        // Position
+        if let Ok(pos) = self.parse_position_value(s) {
+            return Ok(AttributeValue::Position(pos));
+        }
+        // Tenant
+        if let Ok(tenant) = self.parse_tenant_value(s) {
+            return Ok(AttributeValue::Tenant(tenant));
+        }
+        // DocumentType
+        if let Ok(doc_type) = self.parse_document_type(s) {
+            return Ok(AttributeValue::ResourceType(doc_type));
+        }
+        // Default to String
+        Ok(AttributeValue::String(s.to_string()))
     }
 
     fn parse_action(&self, s: &str) -> Result<Self::Action, ParseError> {
@@ -400,94 +457,24 @@ impl DomainParser for EdocumentDomainParser {
     fn parse_attribute_expression(&self, expr_str: &str) -> Result<Self::AttributeExpression, ParseError> {
         let expr_str = expr_str.trim();
 
-        // 属性名のチェック（ABACルールの左辺で使用）
-        match expr_str {
-            // 属性名 - 属性名の場合は特別なマーカーとして扱う
-            "role" => return Ok(AttributeExpression::Role("__ATTRIBUTE_NAME__".to_string())),
-            "position" => return Ok(AttributeExpression::Position("__ATTRIBUTE_NAME__".to_string())),
-            "tenant" => return Ok(AttributeExpression::Tenant("__ATTRIBUTE_NAME__".to_string())),
-            "department" => return Ok(AttributeExpression::Department("__ATTRIBUTE_NAME__".to_string())),
-            "office" => return Ok(AttributeExpression::Office("__ATTRIBUTE_NAME__".to_string())),
-            "registered" => return Ok(AttributeExpression::Registered(false)), // placeholder for attribute name
-            "projects" => return Ok(AttributeExpression::Projects(vec!["__ATTRIBUTE_NAME__".to_string()])), // placeholder
-            "supervisor" => return Ok(AttributeExpression::Supervisor(Some("__ATTRIBUTE_NAME__".to_string()))),
-            "supervisee" => return Ok(AttributeExpression::Supervisee(vec!["__ATTRIBUTE_NAME__".to_string()])), // placeholder
-            "payrollingPermissions" => return Ok(AttributeExpression::PayrollingPermissions(false)), // placeholder for attribute name
-            "type" => return Ok(AttributeExpression::Type("__ATTRIBUTE_NAME__".to_string())),
-            "owner" => return Ok(AttributeExpression::Owner("__ATTRIBUTE_NAME__".to_string())),
-            "recipients" => return Ok(AttributeExpression::Recipients(vec!["__ATTRIBUTE_NAME__".to_string()])), // placeholder
-            "isConfidential" => return Ok(AttributeExpression::IsConfidential(false)), // placeholder for attribute name
-            "containsPersonalInfo" => return Ok(AttributeExpression::ContainsPersonalInfo(false)), // placeholder for attribute name
-            "uid" => return Ok(AttributeExpression::Uid("__ATTRIBUTE_NAME__".to_string())),
-            "rid" => return Ok(AttributeExpression::Rid("__ATTRIBUTE_NAME__".to_string())),
-            _ => {}
+        // 属性名かどうかを最初に試す
+        if let Ok(name) = self.parse_attribute_name(expr_str) {
+            return Ok(AttributeExpression::AttributeName(name));
         }
 
         // 波括弧で囲まれたセットかチェック
         if expr_str.starts_with('{') && expr_str.ends_with('}') {
-            let content = &expr_str[1..expr_str.len()-1];
-            let mut values = Vec::new();
-            
-            for value_str in content.split_whitespace() {
-                values.push(value_str.to_string());
-            }
-            
-            // どの属性タイプかによって適切な表現を返す
-            // 簡単のため、最初の値で判定
-            if let Some(first_value) = values.first() {
-                match first_value.as_str() {
-                    "employee" | "helpdesk" | "admin" | "customer" => {
-                        return Ok(AttributeExpression::Role(values[0].clone()));
-                    },
-                    "secretary" | "insuranceAgent" | "officeManager" | "seniorOfficeManager" | "director" | "none" => {
-                        return Ok(AttributeExpression::Position(values[0].clone()));
-                    },
-                    "bankingNote" | "trafficFine" | "salesOffer" | "contract" | "invoice" | "paycheck" => {
-                        return Ok(AttributeExpression::Type(values[0].clone()));
-                    },
-                    "view" | "send" | "search" | "readMetaInfo" | "edit" | "approve" => {
-                        // Actions are handled separately, but if we encounter them here, return as string
-                        return Ok(AttributeExpression::Role(values[0].clone()));
-                    },
-                    "True" | "False" => {
-                        let bool_val = values[0] == "True";
-                        return Ok(AttributeExpression::Registered(bool_val));
-                    },
-                    _ => {
-                        // Check if it's a project or user list
-                        return Ok(AttributeExpression::Projects(values));
-                    }
-                }
-            }
+            let content = &expr_str[1..expr_str.len() - 1];
+            let values = content
+                .split_whitespace()
+                .map(|s| self.parse_attribute_value(s))
+                .collect::<Result<Vec<_>, _>>()?;
+            return Ok(AttributeExpression::ValueSet(values));
         }
 
-        // Single value - determine type based on content
-        match expr_str {
-            // Role values
-            "employee" | "helpdesk" | "admin" | "customer" => {
-                Ok(AttributeExpression::Role(expr_str.to_string()))
-            },
-            // Position values
-            "secretary" | "insuranceAgent" | "officeManager" | "seniorOfficeManager" | "director" | "none" => {
-                Ok(AttributeExpression::Position(expr_str.to_string()))
-            },
-            // Resource types
-            "bankingNote" | "trafficFine" | "salesOffer" | "contract" | "invoice" | "paycheck" => {
-                Ok(AttributeExpression::Type(expr_str.to_string()))
-            },
-            // Boolean values
-            "True" => Ok(AttributeExpression::Registered(true)),
-            "False" => Ok(AttributeExpression::Registered(false)),
-            // Tenant values
-            "londonOffice" | "largeBank" | "newsAgency" | "reseller" | "europeRegion" | 
-            "largeBankLeasing" | "carLeaser" | "ictProvider" | "privateReceiver" => {
-                Ok(AttributeExpression::Tenant(expr_str.to_string()))
-            },
-            // Default: treat as string for departments, offices, etc.
-            _ => {
-                Ok(AttributeExpression::Department(expr_str.to_string()))
-            }
-        }
+        // 最後に属性値として解析
+        let value = self.parse_attribute_value(expr_str)?;
+        Ok(AttributeExpression::AttributeValue(value))
     }
 
     fn parse_user_attribute_field(
@@ -498,30 +485,10 @@ impl DomainParser for EdocumentDomainParser {
     ) -> Result<(), ParseError> {
         match key {
             "role" => {
-                user.role = Some(match value {
-                    "employee" => Role::Employee,
-                    "helpdesk" => Role::Helpdesk,
-                    "admin" => Role::Admin,
-                    "customer" => Role::Customer,
-                    _ => return Err(ParseError::UnknownValue(
-                        key.to_string(),
-                        value.to_string()
-                    )),
-                });
+                user.role = Some(self.parse_role_value(value)?);
             },
             "position" => {
-                user.position = Some(match value {
-                    "secretary" => Position::Secretary,
-                    "insuranceAgent" => Position::InsuranceAgent,
-                    "officeManager" => Position::OfficeManager,
-                    "seniorOfficeManager" => Position::SeniorOfficeManager,
-                    "director" => Position::Director,
-                    "none" => Position::None,
-                    _ => return Err(ParseError::UnknownValue(
-                        key.to_string(),
-                        value.to_string()
-                    )),
-                });
+                user.position = Some(self.parse_position_value(value)?);
             },
             "tenant" => {
                 user.tenant = Some(self.parse_tenant_value(value)?);
@@ -574,18 +541,7 @@ impl DomainParser for EdocumentDomainParser {
     ) -> Result<(), ParseError> {
         match key {
             "type" => {
-                resource.resource_type = Some(match value {
-                    "bankingNote" => ResourceType::BankingNote,
-                    "trafficFine" => ResourceType::TrafficFine,
-                    "salesOffer" => ResourceType::SalesOffer,
-                    "contract" => ResourceType::Contract,
-                    "invoice" => ResourceType::Invoice,
-                    "paycheck" => ResourceType::Paycheck,
-                    _ => return Err(ParseError::UnknownValue(
-                        key.to_string(),
-                        value.to_string()
-                    )),
-                });
+                resource.resource_type = Some(EdocumentResourceAttribute::parse_document_type(value)?);
             },
             "owner" => {
                 resource.owner = Some(value.to_string());
@@ -680,14 +636,58 @@ impl EdocumentDomainParser {
         Ok(elements)
     }
 
+    fn parse_role_value(&self, value: &str) -> Result<Role, ParseError> {
+        match value {
+            "employee" => Ok(Role::Employee),
+            "manager" => Ok(Role::Manager),
+            "admin" => Ok(Role::Admin),
+            "helpdesk" => Ok(Role::Helpdesk),
+            "customer" => Ok(Role::Customer),
+            _ => Err(ParseError::UnknownValue(
+                "role".to_string(),
+                value.to_string()
+            )),
+        }
+    }
+
+    fn parse_position_value(&self, value: &str) -> Result<Position, ParseError> {
+        match value {
+            "secretary" => Ok(Position::Secretary),
+            "director" => Ok(Position::Director),
+            "seniorOfficeManager" => Ok(Position::SeniorOfficeManager),
+            "officeManager" => Ok(Position::OfficeManager),
+            "insuranceAgent" => Ok(Position::InsuranceAgent),
+            "none" => Ok(Position::None),
+            _ => Err(ParseError::UnknownValue(
+                "position".to_string(),
+                value.to_string()
+            )),
+        }
+    }
+
+    fn parse_document_type(&self, value: &str) -> Result<DocumentType, ParseError> {
+        match value {
+            "bankingNote" => Ok(DocumentType::BankingNote),
+            "trafficFine" => Ok(DocumentType::TrafficFine),
+            "salesOffer" => Ok(DocumentType::SalesOffer),
+            "contract" => Ok(DocumentType::Contract),
+            "invoice" => Ok(DocumentType::Invoice),
+            "paycheck" => Ok(DocumentType::Paycheck),
+            _ => Err(ParseError::UnknownValue(
+                "document_type".to_string(),
+                value.to_string()
+            )),
+        }
+    }
+
     fn parse_tenant_value(&self, value: &str) -> Result<Tenant, ParseError> {
         match value {
-            "londonOffice" => Ok(Tenant::LondonOffice),
             "largeBank" => Ok(Tenant::LargeBank),
-            "newsAgency" => Ok(Tenant::NewsAgency),
-            "reseller" => Ok(Tenant::Reseller),
-            "europeRegion" => Ok(Tenant::EuropeRegion),
             "largeBankLeasing" => Ok(Tenant::LargeBankLeasing),
+            "newsAgency" => Ok(Tenant::NewsAgency),
+            "europeRegion" => Ok(Tenant::EuropeRegion),
+            "londonOffice" => Ok(Tenant::LondonOffice),
+            "reseller" => Ok(Tenant::Reseller),
             "carLeaser" => Ok(Tenant::CarLeaser),
             "ictProvider" => Ok(Tenant::IctProvider),
             "privateReceiver" => Ok(Tenant::PrivateReceiver),
@@ -697,7 +697,36 @@ impl EdocumentDomainParser {
             )),
         }
     }
+
+
 }
 
-// Re-export commonly used types
 pub use EdocumentAbac as EdocumentAbacData;
+
+// 属性名の文字列からの変換
+impl FromStr for AttributeName {
+    type Err = ParseError;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "role" => Ok(AttributeName::Role),
+            "position" => Ok(AttributeName::Position),
+            "tenant" => Ok(AttributeName::Tenant),
+            "department" => Ok(AttributeName::Department),
+            "office" => Ok(AttributeName::Office),
+            "registered" => Ok(AttributeName::Registered),
+            "projects" => Ok(AttributeName::Projects),
+            "supervisor" => Ok(AttributeName::Supervisor),
+            "supervisee" => Ok(AttributeName::Supervisee),
+            "payrollingPermissions" => Ok(AttributeName::PayrollingPermissions),
+            "type" => Ok(AttributeName::Type),
+            "owner" => Ok(AttributeName::Owner),
+            "recipients" => Ok(AttributeName::Recipients),
+            "isConfidential" => Ok(AttributeName::IsConfidential),
+            "containsPersonalInfo" => Ok(AttributeName::ContainsPersonalInfo),
+            "uid" => Ok(AttributeName::Uid),
+            "rid" => Ok(AttributeName::Rid),
+            _ => Err(ParseError::UnknownValue("attribute_name".to_string(), s.to_string())),
+        }
+    }
+}

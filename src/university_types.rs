@@ -83,13 +83,9 @@ pub enum AttributeName {
     Uid,
 }
 
-// 属性表現を表現
-#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum AttributeExpression {
-    AttributeName(AttributeName),
-    AttributeValue(AttributeValue),
-    ValueSet(Vec<AttributeValue>),
-}
+
+
+pub type AttributeExpression = crate::types::AttributeExpression<AttributeName, AttributeValue>;
 
 // 大学のユーザー属性を表現
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -319,28 +315,25 @@ impl DomainParser for UniversityDomainParser {
         }
     }
 
-    fn parse_attribute_expression(&self, expr_str: &str) -> Result<AttributeExpression, ParseError> {
+    fn parse_attribute_expression(&self, expr_str: &str) -> Result<Self::AttributeExpression, ParseError> {
         let expr_str = expr_str.trim();
+
+        // 属性名かどうかを最初に試す
+        if let Ok(name) = self.parse_attribute_name(expr_str) {
+            return Ok(AttributeExpression::AttributeName(name));
+        }
 
         // 波括弧で囲まれたセットかチェック
         if expr_str.starts_with('{') && expr_str.ends_with('}') {
-            let content = &expr_str[1..expr_str.len()-1];
-            let mut values = Vec::new();
-            
-            for value_str in content.split_whitespace() {
-                let value = self.parse_attribute_value(value_str)?;
-                values.push(value);
-            }
-            
+            let content = &expr_str[1..expr_str.len() - 1];
+            let values = content
+                .split_whitespace()
+                .map(|s| self.parse_attribute_value(s))
+                .collect::<Result<Vec<_>, _>>()?;
             return Ok(AttributeExpression::ValueSet(values));
         }
 
-        // 属性名かどうかチェック
-        if let Ok(attr_name) = self.parse_attribute_name(expr_str) {
-            return Ok(AttributeExpression::AttributeName(attr_name));
-        }
-
-        // 属性値として解析
+        // 最後に属性値として解析
         let value = self.parse_attribute_value(expr_str)?;
         Ok(AttributeExpression::AttributeValue(value))
     }

@@ -9,6 +9,14 @@ pub enum ComparisonOperator {
     Equals,       // = : 等価関係
 }
 
+// 汎用的な属性表現
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
+pub enum AttributeExpression<N, V> {
+    AttributeName(N),
+    AttributeValue(V),
+    ValueSet(Vec<V>),
+}
+
 // 属性値を動的に取得するためのtrait（一般的）
 pub trait AttributeValueExtractor {
     type AttributeName;
@@ -79,9 +87,9 @@ pub trait DomainParser {
     type UserAttribute: UserAttribute;
     type ResourceAttribute: ResourceAttribute;
     type Rule;
-    type AttributeExpression: Clone + PartialEq + Eq;
-    type AttributeName: Clone + PartialEq + Eq;
-    type AttributeValue: Clone + PartialEq + Eq;
+    type AttributeExpression: Clone + PartialEq + Eq + std::fmt::Debug;
+    type AttributeName: Clone + PartialEq + Eq + std::hash::Hash;
+    type AttributeValue: Clone + PartialEq + Eq + std::fmt::Debug;
     type Action: Clone + PartialEq + Eq + std::hash::Hash;
 
     // ドメイン固有の値をパースする

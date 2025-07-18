@@ -8,8 +8,8 @@ def probability(p):
 # params for scale
 # nUsers = 400
 # nDocuments = max(300, nUsers // 2)
-nUsers = 10000
-nDocuments = 10000
+nUsers = 1000
+nDocuments = 1000
 nHelpdeskOperators = min(30, nUsers // 10)
 nApplicationAdmins = min(30, nUsers // 10)
 nCustomers = min(40, nUsers // 2)
@@ -213,7 +213,7 @@ for doc in documents:
     doc.owner.projects.add(doc.docId)
 
 # output
-filename = "edocument_large.abac"
+filename = "edocument_1000.abac"
 with open(filename, "w", encoding="utf-8") as f:
     f.write("# ABAC policy for document management system.\n\n")
     f.write("#------------------------------------------------------------\n")

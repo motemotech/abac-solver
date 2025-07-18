@@ -24,7 +24,7 @@ impl Domain {
     fn file_path(&self) -> &'static str {
         match self {
             Domain::University => "data/university.abac",
-            Domain::Edocument => "data/edocument_large.abac",
+            Domain::Edocument => "data/edocument_10000.abac",
         }
     }
 
@@ -32,6 +32,13 @@ impl Domain {
         match self {
             Domain::University => "University",
             Domain::Edocument => "E-Document Management",
+        }
+    }
+
+    fn output_filename(&self) -> &'static str {
+        match self {
+            Domain::University => "parsed_university.json",
+            Domain::Edocument => "parsed_edocument.json",
         }
     }
 }
@@ -56,10 +63,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     println!("=== {} ドメインを使用して実行します ===", domain.name());
     
-    match domain {
-        Domain::University => run_university_analysis()?,
-        Domain::Edocument => run_edocument_analysis()?,
-    }
+    run_analysis(domain)?;
 
     Ok(())
 }
@@ -85,55 +89,44 @@ fn select_domain_interactive() -> Result<Domain, Box<dyn std::error::Error>> {
     }
 }
 
-fn run_university_analysis() -> Result<(), Box<dyn std::error::Error>> {
-    println!("=== University.abacファイルをパースします ===");
-    let parser = GenericAbacParser::new(UniversityDomainParser);
-    let parsed_abac = parser.parse_file("data/university.abac")?;
+/// Generic function to run analysis for any domain
+fn run_analysis(domain: Domain) -> Result<(), Box<dyn std::error::Error>> {
+    println!("=== {}.abacファイルをパースします ===", domain.name());
     
-    println!("=== パース結果をJSONに出力中... ===");
-    let parsed_abac_copy = parsed_abac.clone();
-    output_university_to_json(parsed_abac_copy)?;
+    match domain {
+        Domain::University => {
+            let parser = GenericAbacParser::new(UniversityDomainParser);
+            let parsed_abac = parser.parse_file(domain.file_path())?;
+            
+            println!("=== パース結果をJSONに出力中... ===");
+            let parsed_abac_copy = parsed_abac.clone();
+            output_to_json(parsed_abac_copy, domain)?;
 
-    println!("=== 詳細分析を実行します ===");
-    detailed_university_analysis(parsed_abac)?;
+            println!("=== 詳細分析を実行します ===");
+            detailed_university_analysis(parsed_abac)?;
+        },
+        Domain::Edocument => {
+            let parser = GenericAbacParser::new(EdocumentDomainParser);
+            let parsed_abac = parser.parse_file(domain.file_path())?;
+            
+            println!("=== パース結果をJSONに出力中... ===");
+            let parsed_abac_copy = parsed_abac.clone();
+            output_to_json(parsed_abac_copy, domain)?;
 
-    println!("=== パース結果をもとにZ3におけるconstraintsを生成 ===");
-    println!("=== Z3による検証を実行 ===");
-    // TODO: 実行時間を測定する
-
-    Ok(())
-}
-
-fn run_edocument_analysis() -> Result<(), Box<dyn std::error::Error>> {
-    println!("=== Edocument.abacファイルをパースします ===");
-    let parser = GenericAbacParser::new(EdocumentDomainParser);
-    let parsed_abac = parser.parse_file("data/edocument_large.abac")?;
-    
-    println!("=== パース結果をJSONに出力中... ===");
-    let parsed_abac_copy = parsed_abac.clone();
-    output_edocument_to_json(parsed_abac_copy)?;
-
-    println!("=== 詳細分析を実行します ===");
-    detailed_edocument_analysis(parsed_abac)?;
-    // TODO: 実行時間を測定する
+            println!("=== 詳細分析を実行します ===");
+            detailed_edocument_analysis(parsed_abac)?;
+        },
+    }
 
     Ok(())
 }
 
-fn output_university_to_json(parsed_abac: UniversityAbac) -> Result<(), Box<dyn std::error::Error>> {
+/// Generic function to output any ABAC data to JSON
+fn output_to_json<T: serde::Serialize>(parsed_abac: T, domain: Domain) -> Result<(), Box<dyn std::error::Error>> {
     let json_string = serde_json::to_string_pretty(&parsed_abac)?;
-    let output_file = "output/parsed_university.json";
+    let output_file = format!("output/{}", domain.output_filename());
     std::fs::create_dir_all("output")?;
-    std::fs::write(output_file, json_string)?;
-    println!("=== 出力完了: {} ===", output_file);
-    Ok(())
-}
-
-fn output_edocument_to_json(parsed_abac: EdocumentAbac) -> Result<(), Box<dyn std::error::Error>> {
-    let json_string = serde_json::to_string_pretty(&parsed_abac)?;
-    let output_file = "output/parsed_edocument.json";
-    std::fs::create_dir_all("output")?;
-    std::fs::write(output_file, json_string)?;
+    std::fs::write(&output_file, json_string)?;
     println!("=== 出力完了: {} ===", output_file);
     Ok(())
 }
