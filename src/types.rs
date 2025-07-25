@@ -7,6 +7,10 @@ pub enum ComparisonOperator {
     Contains,     // ] : 左の属性セットが右の属性値を含む
     ContainedIn,  // [ : 左の属性値が右の属性セットに含まれる
     Equals,       // = : 等価関係
+    GreaterThan,          // >
+    LessThan,             // <
+    GreaterThanOrEqual,   // >=
+    LessThanOrEqual,      // <=
 }
 
 // 汎用的な属性表現
@@ -354,7 +358,7 @@ impl<D: DomainParser> GenericAbacParser<D> {
     }
 
     fn parse_single_condition(&self, condition_str: &str) -> Result<Condition<D::AttributeExpression>, ParseError> {
-        let operators = vec![" [ ", " ] ", " = ", "[", "]", "="];
+        let operators = vec![">=", "<=", ">", "<", " [ ", " ] ", " = ", "[", "]", "="];
         let mut found_operator = None;
         let mut split_pos = None;
         let mut operator_len = 0;
@@ -428,6 +432,10 @@ impl std::str::FromStr for ComparisonOperator {
             "]" => Ok(ComparisonOperator::Contains),
             "[" => Ok(ComparisonOperator::ContainedIn),
             "=" => Ok(ComparisonOperator::Equals),
+            ">" => Ok(ComparisonOperator::GreaterThan),
+            "<" => Ok(ComparisonOperator::LessThan),
+            ">=" => Ok(ComparisonOperator::GreaterThanOrEqual),
+            "<=" => Ok(ComparisonOperator::LessThanOrEqual),
             _ => Err(format!("Unknown comparison operator: {}", s)),
         }
     }

@@ -154,6 +154,8 @@ pub enum AttributeName {
     Supervisor,
     Supervisee,
     PayrollingPermissions,
+    ClearanceLevel, // Added
+    SecurityLevel, // Added
     Type,
     Owner,
     Recipients,
@@ -172,7 +174,23 @@ pub enum AttributeValue {
     ResourceType(DocumentType),
     String(String),
     Boolean(bool),
+    Integer(i32),
     StringSet(Vec<String>),
+}
+
+impl PartialOrd for AttributeValue {
+    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+        match (self, other) {
+            (AttributeValue::Integer(a), AttributeValue::Integer(b)) => a.partial_cmp(b),
+            _ => None, // Comparison is not defined for other types
+        }
+    }
+}
+
+impl Ord for AttributeValue {
+    fn cmp(&self, other: &Self) -> std::cmp::Ordering {
+        self.partial_cmp(other).unwrap_or(std::cmp::Ordering::Equal)
+    }
 }
 
 // 属性表現を表現
@@ -190,16 +208,26 @@ pub type AttributeExpression = crate::types::AttributeExpression<AttributeName, 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct EdocumentUserAttribute {
     pub user_id: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub role: Option<Role>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub position: Option<Position>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub tenant: Option<Tenant>,
-    pub department: Option<String>,  // 動的に生成される可能性があるためStringに変更
-    pub office: Option<String>,      // 動的に生成されるためStringに変更
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub department: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub office: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub registered: Option<bool>,
     pub projects: HashSet<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub supervisor: Option<String>,
     pub supervisee: HashSet<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub payrolling_permissions: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub clearance_level: Option<i32>,
 }
 
 impl EdocumentUserAttribute {
@@ -216,6 +244,7 @@ impl EdocumentUserAttribute {
             supervisor: None,
             supervisee: HashSet::new(),
             payrolling_permissions: None,
+            clearance_level: None,
         }
     }
 }
@@ -247,6 +276,9 @@ impl AttributeValueExtractor for EdocumentUserAttribute {
             AttributeName::PayrollingPermissions => {
                 self.payrolling_permissions.map(|p| AttributeValue::Boolean(p))
             },
+            AttributeName::ClearanceLevel => {
+                self.clearance_level.map(|cl| AttributeValue::Integer(cl))
+            },
             AttributeName::Uid => {
                 Some(AttributeValue::String(self.user_id.clone()))
             },
@@ -277,14 +309,23 @@ impl UserAttribute for EdocumentUserAttribute {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct EdocumentResourceAttribute {
     pub resource_id: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub resource_type: Option<DocumentType>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub owner: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub tenant: Option<Tenant>,
-    pub department: Option<String>,  // 動的に生成される可能性があるためStringに変更
-    pub office: Option<String>,      // 動的に生成されるためStringに変更
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub department: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub office: Option<String>,
     pub recipients: HashSet<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub is_confidential: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub contains_personal_info: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub security_level: Option<i32>,
 }
 
 impl EdocumentResourceAttribute {
@@ -301,6 +342,7 @@ impl EdocumentResourceAttribute {
             recipients: HashSet::new(),
             is_confidential: None,
             contains_personal_info: None,
+            security_level: None,
         })
     }
 
@@ -346,6 +388,9 @@ impl AttributeValueExtractor for EdocumentResourceAttribute {
             },
             AttributeName::ContainsPersonalInfo => {
                 self.contains_personal_info.map(|cpi| AttributeValue::Boolean(cpi))
+            },
+            AttributeName::SecurityLevel => {
+                self.security_level.map(|sl| AttributeValue::Integer(sl))
             },
             AttributeName::Rid => {
                 Some(AttributeValue::String(self.resource_id.clone()))

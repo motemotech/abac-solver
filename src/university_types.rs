@@ -68,6 +68,18 @@ pub enum AttributeValue {
     Set(Vec<String>),
 }
 
+impl PartialOrd for AttributeValue {
+    fn partial_cmp(&self, _other: &Self) -> Option<std::cmp::Ordering> {
+        None // No natural ordering for university attributes
+    }
+}
+
+impl Ord for AttributeValue {
+    fn cmp(&self, other: &Self) -> std::cmp::Ordering {
+        self.partial_cmp(other).unwrap_or(std::cmp::Ordering::Equal)
+    }
+}
+
 // 属性名を表現
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum AttributeName {

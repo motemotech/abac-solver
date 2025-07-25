@@ -46,7 +46,7 @@ fn evaluate_condition<L, R, Expr, AttrVal>(
     get_right_value: impl Fn(R, &Expr) -> Result<GenericConditionValue<AttrVal>, Box<dyn std::error::Error + Send + Sync>>,
 ) -> Result<bool, Box<dyn std::error::Error + Send + Sync>>
 where
-    AttrVal: PartialEq + std::fmt::Debug,
+    AttrVal: PartialEq + std::fmt::Debug + PartialOrd,
 {
     let left_value = get_left_value(left_source, &condition.left)?;
     let right_value = get_right_value(right_source, &condition.right)?;
@@ -55,6 +55,10 @@ where
         ComparisonOperator::ContainedIn => evaluate_contained_in(&left_value, &right_value),
         ComparisonOperator::Contains => evaluate_contains(&left_value, &right_value),
         ComparisonOperator::Equals => evaluate_equals(&left_value, &right_value),
+        ComparisonOperator::GreaterThan => evaluate_greater_than(&left_value, &right_value),
+        ComparisonOperator::LessThan => evaluate_less_than(&left_value, &right_value),
+        ComparisonOperator::GreaterThanOrEqual => evaluate_greater_than_or_equal(&left_value, &right_value),
+        ComparisonOperator::LessThanOrEqual => evaluate_less_than_or_equal(&left_value, &right_value),
     }
 }
 
@@ -814,3 +818,25 @@ fn evaluate_equals<T: PartialEq + std::fmt::Debug>(left: &GenericConditionValue<
         _ => Err(format!("Invalid Equals operation: {:?} = {:?}", left, right).into()),
     }
 }
+
+// Helper macro for comparison operations
+macro_rules! define_comparison_evaluator {
+    ($func_name:ident, $op:tt) => {
+        fn $func_name<T: PartialOrd + std::fmt::Debug>(
+            left: &GenericConditionValue<T>,
+            right: &GenericConditionValue<T>,
+        ) -> Result<bool, Box<dyn std::error::Error + Send + Sync>> {
+            match (left, right) {
+                (GenericConditionValue::Single(left_val), GenericConditionValue::Single(right_val)) => {
+                    Ok(left_val $op right_val)
+                },
+                _ => Err(format!("Invalid comparison operation: {:?} {} {:?}", left, stringify!($op), right).into()),
+            }
+        }
+    };
+}
+
+define_comparison_evaluator!(evaluate_greater_than, >);
+define_comparison_evaluator!(evaluate_less_than, <);
+define_comparison_evaluator!(evaluate_greater_than_or_equal, >=);
+define_comparison_evaluator!(evaluate_less_than_or_equal, <=);

@@ -8,6 +8,7 @@ mod types;
 mod university_types;
 mod edocument_types;
 mod simple_loop;
+mod example_data;
 
 use crate::university_types::{UniversityAbacData, UniversityAbac, UniversityDomainParser};
 use crate::edocument_types::{EdocumentAbacData, EdocumentAbac, EdocumentDomainParser};
@@ -45,6 +46,12 @@ impl Domain {
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args: Vec<String> = env::args().collect();
+
+    if args.contains(&"--generate-json".to_string()) {
+        println!("Generating JSON data...");
+        example_data::edocument_with_access_level::generate_and_save_json();
+        return Ok(());
+    }
     
     let domain = if args.len() > 1 {
         // コマンドライン引数で指定
@@ -107,16 +114,15 @@ fn run_analysis(domain: Domain) -> Result<(), Box<dyn std::error::Error>> {
             // improved_simple_loop(parsed_abac);
         },
         Domain::Edocument => {
-            let parser = GenericAbacParser::new(EdocumentDomainParser);
-            let parsed_abac = parser.parse_file(domain.file_path())?;
+            let json_file_path = "output/edocument_with_clearance.json";
+            println!("=== {} を読み込み中... ===", json_file_path);
+            let json_content = std::fs::read_to_string(json_file_path)
+                .map_err(|e| format!("Failed to read JSON file {}: {}", json_file_path, e))?;
+            let parsed_abac: EdocumentAbacData = serde_json::from_str(&json_content)
+                .map_err(|e| format!("Failed to parse JSON from {}: {}", json_file_path, e))?;
             
-            println!("=== パース結果をJSONに出力中... ===");
-            let parsed_abac_copy = parsed_abac.clone();
-            output_to_json(parsed_abac_copy, domain)?;
-
             println!("=== 詳細分析を実行します ===");
             parallel_indexed_loop(parsed_abac);
-            // improved_simple_loop(parsed_abac);
         },
     }
 

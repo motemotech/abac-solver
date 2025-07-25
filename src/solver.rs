@@ -321,9 +321,60 @@ fn add_pure_symbolic_rule_constraints<'ctx>(
                     let user_value = user_func.apply(&[user_id]);
                     let resource_value = resource_func.apply(&[resource_id]);
                     
-                    // Convert both to Int for comparison
                     if let (Some(user_int), Some(resource_int)) = (user_value.as_int(), resource_value.as_int()) {
                         rule_constraints.push(user_int._eq(&resource_int));
+                    }
+                }
+            },
+            ComparisonOperator::GreaterThan => {
+                if let (Some(user_func), Some(resource_func)) = (
+                    user_attr_functions.get(&comparison.user_attribute),
+                    resource_attr_functions.get(&comparison.resource_attribute)
+                ) {
+                    let user_value = user_func.apply(&[user_id]);
+                    let resource_value = resource_func.apply(&[resource_id]);
+                    
+                    if let (Some(user_int), Some(resource_int)) = (user_value.as_int(), resource_value.as_int()) {
+                        rule_constraints.push(user_int.gt(&resource_int));
+                    }
+                }
+            },
+            ComparisonOperator::LessThan => {
+                if let (Some(user_func), Some(resource_func)) = (
+                    user_attr_functions.get(&comparison.user_attribute),
+                    resource_attr_functions.get(&comparison.resource_attribute)
+                ) {
+                    let user_value = user_func.apply(&[user_id]);
+                    let resource_value = resource_func.apply(&[resource_id]);
+                    
+                    if let (Some(user_int), Some(resource_int)) = (user_value.as_int(), resource_value.as_int()) {
+                        rule_constraints.push(user_int.lt(&resource_int));
+                    }
+                }
+            },
+            ComparisonOperator::GreaterThanOrEqual => {
+                if let (Some(user_func), Some(resource_func)) = (
+                    user_attr_functions.get(&comparison.user_attribute),
+                    resource_attr_functions.get(&comparison.resource_attribute)
+                ) {
+                    let user_value = user_func.apply(&[user_id]);
+                    let resource_value = resource_func.apply(&[resource_id]);
+                    
+                    if let (Some(user_int), Some(resource_int)) = (user_value.as_int(), resource_value.as_int()) {
+                        rule_constraints.push(user_int.ge(&resource_int));
+                    }
+                }
+            },
+            ComparisonOperator::LessThanOrEqual => {
+                if let (Some(user_func), Some(resource_func)) = (
+                    user_attr_functions.get(&comparison.user_attribute),
+                    resource_attr_functions.get(&comparison.resource_attribute)
+                ) {
+                    let user_value = user_func.apply(&[user_id]);
+                    let resource_value = resource_func.apply(&[resource_id]);
+                    
+                    if let (Some(user_int), Some(resource_int)) = (user_value.as_int(), resource_value.as_int()) {
+                        rule_constraints.push(user_int.le(&resource_int));
                     }
                 }
             },
