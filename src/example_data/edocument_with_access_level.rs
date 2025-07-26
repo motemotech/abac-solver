@@ -186,7 +186,7 @@ pub fn generate_edocument_data_with_clearance(
 
 pub fn generate_and_save_json() {
     println!("Generating realistic e-document data...");
-    let data = generate_edocument_data_with_clearance(1000, 1000, 30, 30, 40);
+    let data = generate_edocument_data_with_clearance(100, 100, 30, 30, 40);
     let json_data = serde_json::to_string_pretty(&data).unwrap();
     let output_path = "output/edocument_with_clearance.json";
     std::fs::create_dir_all("output").unwrap();

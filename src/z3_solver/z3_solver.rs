@@ -297,18 +297,23 @@ pub fn solve_real_world_scenario(json_path: &str) -> Result<(), Box<dyn std::err
         println!("--- Evaluating Rule {} ---", rule.id);
         solver.push();
 
+        println!("translating rule to z3 constraints");
         let rule_constraint = translate_rule_to_z3(&ctx, rule, &attr_funcs, &u_var, &r_var, &get_int);
         solver.assert(&rule_constraint);
+        println!("translated");
 
         let mut solutions = Vec::new();
+        println!("start checking");
         while solver.check() == SatResult::Sat {
             let model = solver.get_model().unwrap();
             let found_u = model.eval(&u_var, true).unwrap();
             let found_r = model.eval(&r_var, true).unwrap();
             solutions.push((format!("{}", found_u), format!("{}", found_r)));
+            println!("found a solution");
             let exclusion_constraint = Bool::and(&ctx, &[&u_var._eq(&found_u), &r_var._eq(&found_r)]).not();
             solver.assert(&exclusion_constraint);
         }
+        println!("checked");
 
         if solutions.is_empty() {
             println!("Result: No matching pairs found.");
