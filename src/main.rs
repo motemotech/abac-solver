@@ -2,15 +2,13 @@ use std::env;
 use std::io::{self, Write};
 
 mod types;
-mod university_types;
-mod edocument_types;
 mod simple_loop;
 mod example_data;
 mod z3_solver;
 
-use crate::university_types::{UniversityAbacData, UniversityAbac, UniversityDomainParser};
-use crate::edocument_types::{EdocumentAbacData, EdocumentAbac, EdocumentDomainParser};
-use crate::types::GenericAbacParser;
+use crate::types::university_types::{UniversityAbacData, UniversityAbac, UniversityDomainParser};
+use crate::types::edocument_types::{EdocumentAbacData, EdocumentAbac, EdocumentDomainParser};
+use crate::types::types::GenericAbacParser;
 use simple_loop::{simple_loop, improved_simple_loop, parallel_indexed_loop};
 
 #[derive(Debug, Clone)]

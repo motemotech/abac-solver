@@ -1,4 +1,4 @@
-use crate::edocument_types::*;
+use crate::types::edocument_types::*;
 use rand::seq::SliceRandom;
 use rand::Rng;
 use std::collections::{HashMap, HashSet};

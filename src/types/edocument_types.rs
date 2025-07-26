@@ -2,7 +2,7 @@ use std::collections::HashSet;
 use std::str::FromStr;
 use serde::{Serialize, Deserialize};
 // 再エクスポートして他のモジュールから使えるようにする
-pub use crate::types::{ComparisonOperator, AttributeValueExtractor, UserAttribute, ResourceAttribute, Condition, AbacData, ParseError, DomainParser, GenericAbacParser};
+pub use crate::types::types::{ComparisonOperator, AttributeValueExtractor, UserAttribute, ResourceAttribute, Condition, AbacData, ParseError, DomainParser, GenericAbacParser};
 
 // ユーザーの役職を表現
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
@@ -202,7 +202,7 @@ impl Ord for AttributeValue {
 // }
 
 // 属性表現の型エイリアス
-pub type AttributeExpression = crate::types::AttributeExpression<AttributeName, AttributeValue>;
+pub type AttributeExpression = crate::types::types::AttributeExpression<AttributeName, AttributeValue>;
 
 // ユーザー属性の具体的な型
 #[derive(Debug, Clone, Serialize, Deserialize)]

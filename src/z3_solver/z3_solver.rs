@@ -3,8 +3,8 @@ use z3::{Config, Context, DatatypeAccessor, DatatypeBuilder, FuncDecl, SatResult
 use std::collections::{HashMap, HashSet};
 use std::fs;
 
-use crate::edocument_types::{EdocumentAbac, EdocumentRule, EdocumentUserAttribute, EdocumentResourceAttribute, AttributeName, AttributeValue, AttributeExpression};
-use crate::types::{Condition, AttributeValueExtractor};
+use crate::types::edocument_types::{EdocumentAbac, EdocumentRule, EdocumentUserAttribute, EdocumentResourceAttribute, AttributeName, AttributeValue, AttributeExpression};
+use crate::types::types::{Condition, AttributeValueExtractor};
 
 // This is the original example function.
 pub fn how_to_use_z3_example() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
@@ -373,7 +373,7 @@ fn create_value_mappings(data: &EdocumentAbac) -> (HashMap<AttributeValue, i64>,
 }
 
 fn get_all_attribute_names_enum_variants() -> HashSet<AttributeName> {
-    use crate::edocument_types::AttributeName::*;
+    use crate::types::edocument_types::AttributeName::*;
     [
         Role, Position, Tenant, Department, Office, Registered, Projects,
         Supervisor, Supervisee, PayrollingPermissions, ClearanceLevel,
@@ -412,7 +412,7 @@ fn translate_condition<'a>(
     get_int: &impl Fn(&AttributeValue) -> i64,
     context: &AttributeContext,
 ) -> Bool<'a> {
-    use crate::types::ComparisonOperator::*;
+    use crate::types::types::ComparisonOperator::*;
 
     match condition.operator {
         Contains | ContainedIn => {

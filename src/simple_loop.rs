@@ -1,15 +1,16 @@
 use std::collections::{HashMap, HashSet};
-use crate::types::{self, AttributeValueExtractor, Condition, ComparisonOperator};
+use std::any::Any;
+use crate::types::types::{self, AttributeValueExtractor, Condition, ComparisonOperator};
 use rayon::prelude::*;
 use std::sync::atomic::{AtomicUsize, Ordering};
 
 // Import specific types to avoid ambiguity
-use crate::university_types::{
+use crate::types::university_types::{
     UniversityAbac, UniversityRule, UniversityUserAttribute, UniversityResourceAttribute,
     AttributeName as UniversityAttributeName, AttributeValue as UniversityAttributeValue,
     AttributeExpression as UniversityAttributeExpression
 };
-use crate::edocument_types::{
+use crate::types::edocument_types::{
     EdocumentAbac, EdocumentRule, EdocumentUserAttribute, EdocumentResourceAttribute,
     AttributeName as EdocAttributeName, AttributeValue as EdocAttributeValue, 
     AttributeExpression as EdocAttributeExpression
@@ -312,11 +313,11 @@ pub fn improved_simple_loop<T, N, V>(
     abac_data: T,
 ) -> Result<(), Box<dyn std::error::Error + Send + Sync>>
 where
-    T: AbacAnalyzer<AttributeExpression = crate::types::AttributeExpression<N, V>>,
+    T: AbacAnalyzer<AttributeExpression = crate::types::types::AttributeExpression<N, V>>,
     T::UserAttribute: std::fmt::Debug + AttributeValueExtractor<AttributeName = N, AttributeValue = V>,
     T::ResourceAttribute: std::fmt::Debug + AttributeValueExtractor<AttributeName = N, AttributeValue = V>,
     T::Rule: std::fmt::Debug,
-    N: Eq + std::hash::Hash + Clone,
+    N: Eq + std::hash::Hash + Clone + 'static,
     V: Eq + std::hash::Hash + Clone,
 {
     let users = abac_data.get_users();
@@ -385,9 +386,36 @@ where
                 let mut user_key_extractors: Vec<Box<dyn Fn(&T::UserAttribute) -> Option<V>>> = Vec::new();
 
                 for cond in &equals_conditions {
-                    if let (Some(key_attr_name), Some(value_attr_name)) = (get_attribute_name(&cond.left), get_attribute_name(&cond.right)) {
-                        resource_key_extractors.push(Box::new(move |res: &T::ResourceAttribute| res.get_attribute_value(&key_attr_name)));
-                        user_key_extractors.push(Box::new(move |usr: &T::UserAttribute| usr.get_attribute_value(&value_attr_name)));
+                    let left_attr_name_opt = get_attribute_name(&cond.left);
+                    let right_attr_name_opt = get_attribute_name(&cond.right);
+
+                    if let (Some(left_name), Some(right_name)) = (left_attr_name_opt, right_attr_name_opt) {
+                        // Check if N is EdocAttributeName and apply specific logic
+                        if let Some(edoc_left_name) = (&left_name as &dyn Any).downcast_ref::<EdocAttributeName>() {
+                            if let Some(edoc_right_name) = (&right_name as &dyn Any).downcast_ref::<EdocAttributeName>() {
+                                let left_source = get_edoc_attribute_source_internal(edoc_left_name);
+                                let right_source = get_edoc_attribute_source_internal(edoc_right_name);
+
+                                // Case: User attribute == Resource attribute (e.g., Uid == Owner)
+                                if matches!(left_source, AttributeSource::User) && matches!(right_source, AttributeSource::Resource) {
+                                    user_key_extractors.push(Box::new(move |usr: &T::UserAttribute| usr.get_attribute_value(&left_name)));
+                                    resource_key_extractors.push(Box::new(move |res: &T::ResourceAttribute| res.get_attribute_value(&right_name)));
+                                }
+                                // Case: Resource attribute == User attribute (e.g., Owner == Uid)
+                                else if matches!(left_source, AttributeSource::Resource) && matches!(right_source, AttributeSource::User) {
+                                    resource_key_extractors.push(Box::new(move |res: &T::ResourceAttribute| res.get_attribute_value(&left_name)));
+                                    user_key_extractors.push(Box::new(move |usr: &T::UserAttribute| usr.get_attribute_value(&right_name)));
+                                }
+                                // All other cases (both user, both resource, both 'Both', or one 'None')
+                                // will not be used for indexed matching and will be handled by `other_conditions`.
+                            }
+                        } else {
+                            // Fallback for non-EdocAttributeName types or if downcast fails
+                            // This means the original logic for generic N will be used, which might not be optimal for cross-entity comparisons
+                            // but prevents compilation errors.
+                            resource_key_extractors.push(Box::new(move |res: &T::ResourceAttribute| res.get_attribute_value(&left_name)));
+                            user_key_extractors.push(Box::new(move |usr: &T::UserAttribute| usr.get_attribute_value(&right_name)));
+                        }
                     }
                 }
 
@@ -471,11 +499,11 @@ pub fn parallel_indexed_loop<T, N, V>(
     abac_data: T,
 ) -> Result<(), Box<dyn std::error::Error>>
 where
-    T: AbacAnalyzer<AttributeExpression = crate::types::AttributeExpression<N, V>> + Send + Sync,
+    T: AbacAnalyzer<AttributeExpression = crate::types::types::AttributeExpression<N, V>> + Send + Sync,
     T::UserAttribute: std::fmt::Debug + AttributeValueExtractor<AttributeName = N, AttributeValue = V> + Send + Sync,
     T::ResourceAttribute: std::fmt::Debug + AttributeValueExtractor<AttributeName = N, AttributeValue = V> + Send + Sync,
     T::Rule: std::fmt::Debug + Send + Sync,
-    N: Eq + std::hash::Hash + Clone + Send + Sync,
+    N: Eq + std::hash::Hash + Clone + Send + Sync + 'static,
     V: Eq + std::hash::Hash + Clone + Send + Sync,
     <T as AbacAnalyzer>::UserAttribute: Send + Sync,
     <T as AbacAnalyzer>::ResourceAttribute: Send + Sync,
@@ -555,10 +583,36 @@ where
                 let mut user_key_extractors: Vec<Box<dyn Fn(&T::UserAttribute) -> Option<V> + Send + Sync>> = Vec::new();
 
                 for cond in &equals_conditions {
-                    if let (Some(key_attr_name), Some(value_attr_name)) = (get_attribute_name(&cond.left), get_attribute_name(&cond.right)) {
-                        // Assuming left is resource attribute and right is user attribute for indexing
-                        resource_key_extractors.push(Box::new(move |res: &T::ResourceAttribute| res.get_attribute_value(&key_attr_name)));
-                        user_key_extractors.push(Box::new(move |usr: &T::UserAttribute| usr.get_attribute_value(&value_attr_name)));
+                    let left_attr_name_opt = get_attribute_name(&cond.left);
+                    let right_attr_name_opt = get_attribute_name(&cond.right);
+
+                    if let (Some(left_name), Some(right_name)) = (left_attr_name_opt, right_attr_name_opt) {
+                        // Check if N is EdocAttributeName and apply specific logic
+                        if let Some(edoc_left_name) = (&left_name as &dyn Any).downcast_ref::<EdocAttributeName>() {
+                            if let Some(edoc_right_name) = (&right_name as &dyn Any).downcast_ref::<EdocAttributeName>() {
+                                let left_source = get_edoc_attribute_source_internal(edoc_left_name);
+                                let right_source = get_edoc_attribute_source_internal(edoc_right_name);
+
+                                // Case: User attribute == Resource attribute (e.g., Uid == Owner)
+                                if matches!(left_source, AttributeSource::User) && matches!(right_source, AttributeSource::Resource) {
+                                    user_key_extractors.push(Box::new(move |usr: &T::UserAttribute| usr.get_attribute_value(&left_name)));
+                                    resource_key_extractors.push(Box::new(move |res: &T::ResourceAttribute| res.get_attribute_value(&right_name)));
+                                }
+                                // Case: Resource attribute == User attribute (e.g., Owner == Uid)
+                                else if matches!(left_source, AttributeSource::Resource) && matches!(right_source, AttributeSource::User) {
+                                    resource_key_extractors.push(Box::new(move |res: &T::ResourceAttribute| res.get_attribute_value(&left_name)));
+                                    user_key_extractors.push(Box::new(move |usr: &T::UserAttribute| usr.get_attribute_value(&right_name)));
+                                }
+                                // All other cases (both user, both resource, both 'Both', or one 'None')
+                                // will not be used for indexed matching and will be handled by `other_conditions`.
+                            }
+                        } else {
+                            // Fallback for non-EdocAttributeName types or if downcast fails
+                            // This means the original logic for generic N will be used, which might not be optimal for cross-entity comparisons
+                            // but prevents compilation errors.
+                            resource_key_extractors.push(Box::new(move |res: &T::ResourceAttribute| res.get_attribute_value(&left_name)));
+                            user_key_extractors.push(Box::new(move |usr: &T::UserAttribute| usr.get_attribute_value(&right_name)));
+                        }
                     }
                 }
 
@@ -662,27 +716,43 @@ where
     Ok(())
 }
 
-fn get_attribute_name<N, V>(attr_expr: &crate::types::AttributeExpression<N, V>) -> Option<N>
+fn get_attribute_name<N, V>(attr_expr: &crate::types::types::AttributeExpression<N, V>) -> Option<N>
 where
     N: Clone,
 {
-    if let crate::types::AttributeExpression::AttributeName(name) = attr_expr {
+    if let crate::types::types::AttributeExpression::AttributeName(name) = attr_expr {
         Some(name.clone())
     } else {
         None
     }
 }
 
+enum AttributeSource {
+    User,
+    Resource,
+    Both,
+    None,
+}
+
+fn get_edoc_attribute_source_internal(attr_name: &EdocAttributeName) -> AttributeSource {
+    use EdocAttributeName::*;
+    match attr_name {
+        Role | Position | Tenant | Department | Office | Registered | Projects | Supervisor | Supervisee | PayrollingPermissions | ClearanceLevel | Uid => AttributeSource::User,
+        SecurityLevel | Type | Owner | Recipients | IsConfidential | ContainsPersonalInfo | Rid => AttributeSource::Resource,
+        _ => AttributeSource::None, // Should not happen if all attributes are covered
+    }
+}
+
 fn get_resource_attribute_value<R>(
     resource: &R,
-    attr_expr: &crate::types::AttributeExpression<R::AttributeName, R::AttributeValue>,
+    attr_expr: &crate::types::types::AttributeExpression<R::AttributeName, R::AttributeValue>,
 ) -> Result<GenericConditionValue<R::AttributeValue>, Box<dyn std::error::Error + Send + Sync>>
 where
     R: AttributeValueExtractor,
     R::AttributeValue: Clone,
 {
     match attr_expr {
-        crate::types::AttributeExpression::AttributeName(attr_name) => {
+        crate::types::types::AttributeExpression::AttributeName(attr_name) => {
             if let Some(value) = resource.get_attribute_value(attr_name) {
                 Ok(GenericConditionValue::Single(value))
             } else if let Some(values) = resource.get_attribute_set(attr_name) {
@@ -691,10 +761,10 @@ where
                 Ok(GenericConditionValue::None)
             }
         },
-        crate::types::AttributeExpression::AttributeValue(value) => {
+        crate::types::types::AttributeExpression::AttributeValue(value) => {
             Ok(GenericConditionValue::Single(value.clone()))
         },
-        crate::types::AttributeExpression::ValueSet(values) => {
+        crate::types::types::AttributeExpression::ValueSet(values) => {
             Ok(GenericConditionValue::Set(values.clone()))
         },
     }
@@ -702,14 +772,14 @@ where
 
 fn get_user_attribute_value<U>(
     user: &U,
-    attr_expr: &crate::types::AttributeExpression<U::AttributeName, U::AttributeValue>,
+    attr_expr: &crate::types::types::AttributeExpression<U::AttributeName, U::AttributeValue>,
 ) -> Result<GenericConditionValue<U::AttributeValue>, Box<dyn std::error::Error + Send + Sync>>
 where
     U: AttributeValueExtractor,
     U::AttributeValue: Clone,
 {
     match attr_expr {
-        crate::types::AttributeExpression::AttributeName(attr_name) => {
+        crate::types::types::AttributeExpression::AttributeName(attr_name) => {
             if let Some(value) = user.get_attribute_value(attr_name) {
                 Ok(GenericConditionValue::Single(value))
             } else if let Some(values) = user.get_attribute_set(attr_name) {
@@ -718,29 +788,29 @@ where
                 Ok(GenericConditionValue::None)
             }
         },
-        crate::types::AttributeExpression::AttributeValue(value) => {
+        crate::types::types::AttributeExpression::AttributeValue(value) => {
             Ok(GenericConditionValue::Single(value.clone()))
         },
-        crate::types::AttributeExpression::ValueSet(values) => {
+        crate::types::types::AttributeExpression::ValueSet(values) => {
             Ok(GenericConditionValue::Set(values.clone()))
         },
     }
 }
 
 fn get_condition_value<N, V>(
-    attr_expr: &crate::types::AttributeExpression<N, V>,
+    attr_expr: &crate::types::types::AttributeExpression<N, V>,
 ) -> Result<GenericConditionValue<V>, Box<dyn std::error::Error + Send + Sync>>
 where
     V: Clone,
 {
     match attr_expr {
-        crate::types::AttributeExpression::AttributeName(_) => {
+        crate::types::types::AttributeExpression::AttributeName(_) => {
             Err("Attribute name in condition value not supported in user conditions".into())
         },
-        crate::types::AttributeExpression::AttributeValue(value) => {
+        crate::types::types::AttributeExpression::AttributeValue(value) => {
             Ok(GenericConditionValue::Single(value.clone()))
         },
-        crate::types::AttributeExpression::ValueSet(values) => {
+        crate::types::types::AttributeExpression::ValueSet(values) => {
             Ok(GenericConditionValue::Set(values.clone()))
         },
     }
@@ -750,7 +820,7 @@ where
 fn get_comparison_attribute_value<U, R>(
     user: &U,
     resource: &R,
-    attr_expr: &crate::types::AttributeExpression<U::AttributeName, U::AttributeValue>,
+    attr_expr: &crate::types::types::AttributeExpression<U::AttributeName, U::AttributeValue>,
 ) -> Result<GenericConditionValue<U::AttributeValue>, Box<dyn std::error::Error + Send + Sync>>
 where
     U: AttributeValueExtractor,
@@ -758,7 +828,7 @@ where
     R: AttributeValueExtractor<AttributeName = U::AttributeName, AttributeValue = U::AttributeValue>,
 {
     match attr_expr {
-        crate::types::AttributeExpression::AttributeName(attr_name) => {
+        crate::types::types::AttributeExpression::AttributeName(attr_name) => {
             if let Some(value) = user.get_attribute_value(attr_name) {
                 Ok(GenericConditionValue::Single(value))
             } else if let Some(values) = user.get_attribute_set(attr_name) {
@@ -771,10 +841,10 @@ where
                 Ok(GenericConditionValue::None)
             }
         },
-        crate::types::AttributeExpression::AttributeValue(value) => {
+        crate::types::types::AttributeExpression::AttributeValue(value) => {
             Ok(GenericConditionValue::Single(value.clone()))
         },
-        crate::types::AttributeExpression::ValueSet(values) => {
+        crate::types::types::AttributeExpression::ValueSet(values) => {
             Ok(GenericConditionValue::Set(values.clone()))
         },
     }
