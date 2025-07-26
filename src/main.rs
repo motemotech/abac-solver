@@ -1,6 +1,3 @@
-use z3::{Config, Context, Solver, Sort, FuncDecl, Symbol, DatatypeBuilder, ast::{Ast, Dynamic}};
-use std::collections::HashMap;
-use std::fs;
 use std::env;
 use std::io::{self, Write};
 
@@ -9,6 +6,7 @@ mod university_types;
 mod edocument_types;
 mod simple_loop;
 mod example_data;
+mod z3_solver;
 
 use crate::university_types::{UniversityAbacData, UniversityAbac, UniversityDomainParser};
 use crate::edocument_types::{EdocumentAbacData, EdocumentAbac, EdocumentDomainParser};
@@ -50,6 +48,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     if args.contains(&"--generate-json".to_string()) {
         println!("Generating JSON data...");
         example_data::edocument_with_access_level::generate_and_save_json();
+        return Ok(());
+    }
+
+    if args.contains(&"--try-z3".to_string()) {
+        println!("Trying Z3 solver...");
+        z3_solver::solve_real_world_scenario("output/edocument_with_clearance.json").map_err(|e| e as Box<dyn std::error::Error>)?;
         return Ok(());
     }
     

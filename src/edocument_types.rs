@@ -766,6 +766,8 @@ impl FromStr for AttributeName {
             "supervisor" => Ok(AttributeName::Supervisor),
             "supervisee" => Ok(AttributeName::Supervisee),
             "payrollingPermissions" => Ok(AttributeName::PayrollingPermissions),
+            "clearanceLevel" => Ok(AttributeName::ClearanceLevel),
+            "securityLevel" => Ok(AttributeName::SecurityLevel),
             "type" => Ok(AttributeName::Type),
             "owner" => Ok(AttributeName::Owner),
             "recipients" => Ok(AttributeName::Recipients),
@@ -774,6 +776,32 @@ impl FromStr for AttributeName {
             "uid" => Ok(AttributeName::Uid),
             "rid" => Ok(AttributeName::Rid),
             _ => Err(ParseError::UnknownValue("attribute_name".to_string(), s.to_string())),
+        }
+    }
+}
+
+impl std::fmt::Display for AttributeName {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            AttributeName::Role => write!(f, "role"),
+            AttributeName::Position => write!(f, "position"),
+            AttributeName::Tenant => write!(f, "tenant"),
+            AttributeName::Department => write!(f, "department"),
+            AttributeName::Office => write!(f, "office"),
+            AttributeName::Registered => write!(f, "registered"),
+            AttributeName::Projects => write!(f, "projects"),
+            AttributeName::Supervisor => write!(f, "supervisor"),
+            AttributeName::Supervisee => write!(f, "supervisee"),
+            AttributeName::PayrollingPermissions => write!(f, "payrollingPermissions"),
+            AttributeName::ClearanceLevel => write!(f, "clearanceLevel"),
+            AttributeName::SecurityLevel => write!(f, "securityLevel"),
+            AttributeName::Type => write!(f, "type"),
+            AttributeName::Owner => write!(f, "owner"),
+            AttributeName::Recipients => write!(f, "recipients"),
+            AttributeName::IsConfidential => write!(f, "isConfidential"),
+            AttributeName::ContainsPersonalInfo => write!(f, "containsPersonalInfo"),
+            AttributeName::Uid => write!(f, "uid"),
+            AttributeName::Rid => write!(f, "rid"),
         }
     }
 }
