@@ -25,6 +25,7 @@ pub enum Position {
     None,
 }
 
+// ドキュメントの種類を表現
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum DocumentType {
     Invoice,
