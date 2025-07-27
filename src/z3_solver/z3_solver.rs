@@ -519,7 +519,7 @@ fn translate_expr_to_int<'a>(
         }
         AttributeExpression::AttributeValue(val) => {
             if let AttributeValue::Integer(i) = val {
-                Some(Int::from_i64(ctx, *i))
+                Some(Int::from_i64(ctx, *i as i64))
             } else {
                 Some(Int::from_i64(ctx, get_int(val)))
             }
