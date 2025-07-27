@@ -6,6 +6,7 @@ mod simple_loop;
 mod example_data;
 mod z3_solver;
 
+use crate::example_data::edocument_with_access_level::generate_and_save_json;
 use crate::types::university_types::{UniversityAbacData, UniversityAbac, UniversityDomainParser};
 use crate::types::edocument_types::{EdocumentAbacData, EdocumentAbac};
 use crate::types::types::GenericAbacParser;
@@ -67,6 +68,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         "z3" => {
             println!("Running z3 solver...");
             z3_solver::solve_real_world_scenario(&args.json_path)?;
+        }
+        "generate-json" => {
+            println!("Generating JSON file...");
+            generate_and_save_json();
+            println!("JSON file generated successfully");
         }
         _ => {
             eprintln!("Unknown solver: {}. Available solvers: simple, z3", args.solver);
