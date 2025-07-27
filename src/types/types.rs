@@ -4,13 +4,20 @@ use std::str::FromStr;
 // 比較演算子を表現（一般的）
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum ComparisonOperator {
-    Contains,     // ] : 左の属性セットが右の属性値を含む
-    ContainedIn,  // [ : 左の属性値が右の属性セットに含まれる
-    Equals,       // = : 等価関係
+    Contains,
+    ContainedIn,
+    Equals,
     GreaterThan,          // >
     LessThan,             // <
     GreaterThanOrEqual,   // >=
     LessThanOrEqual,      // <=
+}
+
+#[derive(Debug)]
+pub struct Constraints {
+    pub user_attribute_field: String,
+    pub comparison_operator: ComparisonOperator,
+    pub resource_attribute_field: String,
 }
 
 // 汎用的な属性表現

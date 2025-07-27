@@ -159,7 +159,8 @@ Found {} matching pairs:", solutions.len());
 /// It then iterates through each rule, using Z3's push/pop mechanism for efficient, scoped rule evaluation.
 pub fn solve_real_world_scenario(json_path: &str) -> Result<(), Box<dyn std::error::Error>> {
     println!("--- Running Real-World ABAC Solver from '{}' ---", json_path);
-    let cfg = Config::new();
+    let mut cfg = Config::new();
+    // cfg.set_bool_param_value("parallel.enable", true);
     let ctx = Context::new(&cfg);
     let solver = Solver::new(&ctx);
 

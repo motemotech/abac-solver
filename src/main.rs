@@ -7,7 +7,7 @@ mod example_data;
 mod z3_solver;
 
 use crate::types::university_types::{UniversityAbacData, UniversityAbac, UniversityDomainParser};
-use crate::types::edocument_types::{EdocumentAbacData, EdocumentAbac, EdocumentDomainParser};
+use crate::types::edocument_types::{EdocumentAbacData, EdocumentAbac};
 use crate::types::types::GenericAbacParser;
 use simple_loop::{simple_loop, improved_simple_loop, parallel_indexed_loop};
 
@@ -118,7 +118,7 @@ fn run_analysis(domain: Domain) -> Result<(), Box<dyn std::error::Error>> {
         Domain::Edocument => {
             let json_file_path = "output/edocument_with_clearance.json";
             println!("=== {} を読み込み中... ===", json_file_path);
-            let json_content = std::fs::read_to_string(json_file_path)
+            let json_content: String = std::fs::read_to_string(json_file_path)
                 .map_err(|e| format!("Failed to read JSON file {}: {}", json_file_path, e))?;
             let parsed_abac: EdocumentAbacData = serde_json::from_str(&json_content)
                 .map_err(|e| format!("Failed to parse JSON from {}: {}", json_file_path, e))?;

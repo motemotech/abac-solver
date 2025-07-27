@@ -198,12 +198,38 @@ impl AbacAnalyzer for EdocumentAbac {
     }
     
     fn evaluate_comparison_condition(&self, user: &Self::UserAttribute, resource: &Self::ResourceAttribute, condition: &Condition<Self::AttributeExpression>) -> Result<bool, Box<dyn std::error::Error + Send + Sync>> {
+        let get_left_value = |(_u, _r), expr: &EdocAttributeExpression| {
+            if let EdocAttributeExpression::AttributeName(name) = expr {
+                match get_edoc_attribute_source_internal(name) {
+                    AttributeSource::User => get_user_attribute_value(user, expr),
+                    AttributeSource::Resource => get_resource_attribute_value(resource, expr),
+                    AttributeSource::Both => get_user_attribute_value(user, expr), // 左辺はユーザー属性を優先
+                    AttributeSource::None => Ok(GenericConditionValue::None),
+                }
+            } else {
+                get_condition_value(expr)
+            }
+        };
+
+        let get_right_value = |(_u, _r), expr: &EdocAttributeExpression| {
+            if let EdocAttributeExpression::AttributeName(name) = expr {
+                match get_edoc_attribute_source_internal(name) {
+                    AttributeSource::User => get_user_attribute_value(user, expr),
+                    AttributeSource::Resource => get_resource_attribute_value(resource, expr),
+                    AttributeSource::Both => get_resource_attribute_value(resource, expr), // 右辺はリソース属性を優先
+                    AttributeSource::None => Ok(GenericConditionValue::None),
+                }
+            } else {
+                get_condition_value(expr)
+            }
+        };
+
         evaluate_condition(
             (user, resource),
             (user, resource),
             condition,
-            |(u, r), expr| get_comparison_attribute_value(u, r, expr),
-            |(u, r), expr| get_comparison_attribute_value(u, r, expr),
+            get_left_value,
+            get_right_value,
         )
     }
 }
@@ -317,8 +343,8 @@ where
     T::UserAttribute: std::fmt::Debug + AttributeValueExtractor<AttributeName = N, AttributeValue = V>,
     T::ResourceAttribute: std::fmt::Debug + AttributeValueExtractor<AttributeName = N, AttributeValue = V>,
     T::Rule: std::fmt::Debug,
-    N: Eq + std::hash::Hash + Clone + 'static,
-    V: Eq + std::hash::Hash + Clone,
+    N: Eq + std::hash::Hash + Clone + std::fmt::Debug + 'static,
+    V: Eq + std::hash::Hash + Clone + std::fmt::Debug,
 {
     let users = abac_data.get_users();
     let resources = abac_data.get_resources();
@@ -406,6 +432,11 @@ where
                                     resource_key_extractors.push(Box::new(move |res: &T::ResourceAttribute| res.get_attribute_value(&left_name)));
                                     user_key_extractors.push(Box::new(move |usr: &T::UserAttribute| usr.get_attribute_value(&right_name)));
                                 }
+                                // Case: Attribute can be in both user and resource (e.g., Department == Department)
+                                else if matches!(left_source, AttributeSource::Both) && matches!(right_source, AttributeSource::Both) {
+                                    user_key_extractors.push(Box::new(move |usr: &T::UserAttribute| usr.get_attribute_value(&left_name)));
+                                    resource_key_extractors.push(Box::new(move |res: &T::ResourceAttribute| res.get_attribute_value(&right_name)));
+                                }
                                 // All other cases (both user, both resource, both 'Both', or one 'None')
                                 // will not be used for indexed matching and will be handled by `other_conditions`.
                             }
@@ -455,9 +486,18 @@ where
                                 for res in matched_resources {
                                     let mut all_other_conditions_met = true;
                                     for other_cond in &other_conditions {
-                                        if !abac_data.evaluate_comparison_condition(user, res, other_cond)? {
-                                            all_other_conditions_met = false;
-                                            break;
+                                        match abac_data.evaluate_comparison_condition(user, res, other_cond) {
+                                            Ok(true) => {
+                                                // 条件が満たされた場合、all_other_conditions_metはtrueのまま
+                                            },
+                                            Ok(false) => {
+                                                all_other_conditions_met = false;
+                                                break;
+                                            },
+                                            Err(_) => {
+                                                all_other_conditions_met = false;
+                                                break;
+                                            }
                                         }
                                     }
                                     if all_other_conditions_met {
@@ -503,8 +543,8 @@ where
     T::UserAttribute: std::fmt::Debug + AttributeValueExtractor<AttributeName = N, AttributeValue = V> + Send + Sync,
     T::ResourceAttribute: std::fmt::Debug + AttributeValueExtractor<AttributeName = N, AttributeValue = V> + Send + Sync,
     T::Rule: std::fmt::Debug + Send + Sync,
-    N: Eq + std::hash::Hash + Clone + Send + Sync + 'static,
-    V: Eq + std::hash::Hash + Clone + Send + Sync,
+    N: Eq + std::hash::Hash + Clone + std::fmt::Debug + Send + Sync + 'static,
+    V: Eq + std::hash::Hash + Clone + std::fmt::Debug + Send + Sync,
     <T as AbacAnalyzer>::UserAttribute: Send + Sync,
     <T as AbacAnalyzer>::ResourceAttribute: Send + Sync,
 {
@@ -564,7 +604,6 @@ where
                 if all_conditions_met { Some(resource.clone()) } else { None }
             }).collect()
         };
-        println!("Validated resources count: {}", validated_resources.len());
 
         let mut valid_combinations_count = 0;
 
@@ -574,6 +613,7 @@ where
             // Separate comparison conditions into Equals and others
             let (equals_conditions, other_conditions): (Vec<&Condition<T::AttributeExpression>>, Vec<&Condition<T::AttributeExpression>>) =
                 comparison_conditions.iter().partition(|cond| cond.operator == ComparisonOperator::Equals);
+            
 
             if !equals_conditions.is_empty() {
                 // Phase 1: Indexed matching for Equals conditions
@@ -602,6 +642,11 @@ where
                                 else if matches!(left_source, AttributeSource::Resource) && matches!(right_source, AttributeSource::User) {
                                     resource_key_extractors.push(Box::new(move |res: &T::ResourceAttribute| res.get_attribute_value(&left_name)));
                                     user_key_extractors.push(Box::new(move |usr: &T::UserAttribute| usr.get_attribute_value(&right_name)));
+                                }
+                                // Case: Attribute can be in both user and resource (e.g., Department == Department)
+                                else if matches!(left_source, AttributeSource::Both) && matches!(right_source, AttributeSource::Both) {
+                                    user_key_extractors.push(Box::new(move |usr: &T::UserAttribute| usr.get_attribute_value(&left_name)));
+                                    resource_key_extractors.push(Box::new(move |res: &T::ResourceAttribute| res.get_attribute_value(&right_name)));
                                 }
                                 // All other cases (both user, both resource, both 'Both', or one 'None')
                                 // will not be used for indexed matching and will be handled by `other_conditions`.
@@ -642,7 +687,6 @@ where
                             break;
                         }
                     }
-
                     if !composite_user_key_parts.is_empty() {
                         if let Some(matched_resources) = resource_map.get(&composite_user_key_parts) {
                             // Phase 2: Evaluate remaining conditions for matched pairs
@@ -651,9 +695,10 @@ where
                             } else {
                                 for res in matched_resources {
                                     let mut all_other_conditions_met = true;
-                                    for other_cond in &other_conditions {
+                                    for (i, other_cond) in other_conditions.iter().enumerate() {
                                         match abac_data.evaluate_comparison_condition(user, res, other_cond) {
-                                            Ok(true) => {},
+                                            Ok(true) => {
+                                            },
                                             Ok(false) => {
                                                 all_other_conditions_met = false;
                                                 break;
@@ -671,6 +716,7 @@ where
                             }
                         }
                     }
+                    println!("valid_combinations_count: {}", valid_combinations_count);
                 }
             } else {
                 // No Equals conditions, fallback to simple loop for all comparison conditions
@@ -735,11 +781,12 @@ enum AttributeSource {
 }
 
 fn get_edoc_attribute_source_internal(attr_name: &EdocAttributeName) -> AttributeSource {
-    use EdocAttributeName::*;
-    match attr_name {
-        Role | Position | Tenant | Department | Office | Registered | Projects | Supervisor | Supervisee | PayrollingPermissions | ClearanceLevel | Uid => AttributeSource::User,
+     use EdocAttributeName::*;
+     match attr_name {
+        Role | Position | Registered | Projects | Supervisor | Supervisee | PayrollingPermissions | ClearanceLevel | Uid => AttributeSource::User,
         SecurityLevel | Type | Owner | Recipients | IsConfidential | ContainsPersonalInfo | Rid => AttributeSource::Resource,
-        _ => AttributeSource::None, // Should not happen if all attributes are covered
+        Tenant | Department | Office => AttributeSource::Both, //
+        _ => AttributeSource::None, // Should not happen if all
     }
 }
 

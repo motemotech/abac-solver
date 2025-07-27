@@ -2,199 +2,33 @@
   "users": [
     {
       "user_id": "user0",
-      "role": "Employee",
-      "position": "SeniorOfficeManager",
-      "tenant": "LondonOffice",
-      "registered": true,
-      "projects": [],
-      "supervisee": [],
-      "payrolling_permissions": false,
-      "clearance_level": 2
-    },
-    {
-      "user_id": "user1",
-      "role": "Employee",
-      "position": "InsuranceAgent",
-      "tenant": "NewsAgency",
-      "registered": true,
-      "projects": [],
-      "supervisee": [],
-      "payrolling_permissions": false,
-      "clearance_level": 3
-    },
-    {
-      "user_id": "user2",
-      "role": "Employee",
+      "role": "Helpdesk",
       "position": "Secretary",
-      "tenant": "LargeBankLeasing",
-      "department": "largeBankLeasingSales",
-      "office": "LargeBankLeasingOffice2",
-      "registered": true,
-      "projects": [],
-      "supervisee": [],
-      "payrolling_permissions": false,
-      "clearance_level": 3
-    },
-    {
-      "user_id": "user3",
-      "role": "Employee",
-      "position": "OfficeManager",
-      "tenant": "LargeBankLeasing",
-      "department": "largeBankLeasingCustomerCare",
-      "office": "LargeBankLeasingOffice2",
+      "tenant": "LargeBank",
+      "department": "largeBankICT",
+      "office": "LargeBankOffice8",
       "registered": true,
       "projects": [],
       "supervisee": [],
       "payrolling_permissions": true,
-      "clearance_level": 5
-    },
-    {
-      "user_id": "user4",
-      "role": "Employee",
-      "position": "InsuranceAgent",
-      "tenant": "LargeBank",
-      "department": "largeBankIT",
-      "office": "LargeBankOffice6",
-      "registered": true,
-      "projects": [],
-      "supervisee": [],
-      "payrolling_permissions": false,
       "clearance_level": 4
     },
     {
-      "user_id": "user5",
-      "role": "Employee",
-      "position": "SeniorOfficeManager",
-      "tenant": "LargeBank",
-      "department": "largeBankIT",
-      "office": "LargeBankOffice4",
-      "registered": true,
-      "projects": [],
-      "supervisee": [],
-      "payrolling_permissions": true,
-      "clearance_level": 3
-    },
-    {
-      "user_id": "user6",
-      "role": "Employee",
-      "position": "OfficeManager",
-      "tenant": "NewsAgency",
-      "registered": true,
-      "projects": [],
-      "supervisee": [],
-      "payrolling_permissions": true,
-      "clearance_level": 5
-    },
-    {
-      "user_id": "user7",
-      "role": "Employee",
-      "position": "Director",
-      "tenant": "LondonOffice",
-      "registered": true,
-      "projects": [],
-      "supervisee": [],
-      "payrolling_permissions": false,
-      "clearance_level": 2
-    },
-    {
-      "user_id": "user8",
-      "role": "Employee",
-      "position": "InsuranceAgent",
-      "tenant": "LargeBank",
-      "department": "largeBankSales",
-      "office": "LargeBankOffice10",
-      "registered": false,
-      "projects": [],
-      "supervisee": [],
-      "payrolling_permissions": false,
-      "clearance_level": 5
-    },
-    {
-      "user_id": "user9",
-      "role": "Employee",
+      "user_id": "user1",
+      "role": "Manager",
       "position": "Secretary",
-      "tenant": "LargeBank",
-      "department": "largeBankIT",
-      "office": "LargeBankOffice10",
-      "registered": true,
-      "projects": [],
-      "supervisee": [],
-      "payrolling_permissions": false,
-      "clearance_level": 3
-    },
-    {
-      "user_id": "user10",
-      "role": "Employee",
-      "position": "OfficeManager",
-      "tenant": "LondonOffice",
-      "registered": true,
-      "projects": [],
-      "supervisee": [],
-      "payrolling_permissions": false,
-      "clearance_level": 1
-    },
-    {
-      "user_id": "user11",
-      "role": "Employee",
-      "position": "OfficeManager",
-      "tenant": "NewsAgency",
-      "registered": true,
-      "projects": [],
-      "supervisee": [],
-      "payrolling_permissions": false,
-      "clearance_level": 1
-    },
-    {
-      "user_id": "user12",
-      "role": "Employee",
-      "position": "InsuranceAgent",
       "tenant": "Reseller",
       "registered": true,
       "projects": [],
       "supervisee": [],
-      "payrolling_permissions": true,
-      "clearance_level": 2
-    },
-    {
-      "user_id": "user13",
-      "role": "Employee",
-      "position": "Director",
-      "tenant": "EuropeRegion",
-      "registered": true,
-      "projects": [],
-      "supervisee": [],
-      "payrolling_permissions": false,
-      "clearance_level": 1
-    },
-    {
-      "user_id": "user14",
-      "role": "Employee",
-      "position": "OfficeManager",
-      "tenant": "EuropeRegion",
-      "registered": false,
-      "projects": [],
-      "supervisee": [],
-      "payrolling_permissions": false,
-      "clearance_level": 3
-    },
-    {
-      "user_id": "user15",
-      "role": "Employee",
-      "position": "SeniorOfficeManager",
-      "tenant": "LargeBank",
-      "department": "largeBankHR",
-      "office": "LargeBankOffice9",
-      "registered": false,
-      "projects": [],
-      "supervisee": [],
       "payrolling_permissions": false,
       "clearance_level": 4
     },
     {
-      "user_id": "user16",
-      "role": "Employee",
-      "position": "InsuranceAgent",
-      "tenant": "LondonOffice",
+      "user_id": "user2",
+      "role": "Customer",
+      "position": "Secretary",
+      "tenant": "NewsAgency",
       "registered": true,
       "projects": [],
       "supervisee": [],
@@ -202,149 +36,22 @@
       "clearance_level": 1
     },
     {
-      "user_id": "user17",
+      "user_id": "user3",
       "role": "Employee",
-      "position": "Secretary",
-      "tenant": "LondonOffice",
-      "registered": true,
-      "projects": [],
-      "supervisee": [],
-      "payrolling_permissions": false,
-      "clearance_level": 2
-    },
-    {
-      "user_id": "user18",
-      "role": "Employee",
-      "position": "InsuranceAgent",
-      "tenant": "NewsAgency",
-      "registered": false,
-      "projects": [],
-      "supervisee": [],
-      "payrolling_permissions": false,
-      "clearance_level": 3
-    },
-    {
-      "user_id": "user19",
-      "role": "Employee",
-      "position": "OfficeManager",
+      "position": "SeniorOfficeManager",
       "tenant": "LargeBankLeasing",
       "department": "largeBankLeasingCustomerCare",
       "office": "LargeBankLeasingOffice1",
       "registered": true,
       "projects": [],
       "supervisee": [],
-      "payrolling_permissions": true,
-      "clearance_level": 1
-    },
-    {
-      "user_id": "user20",
-      "role": "Employee",
-      "position": "Secretary",
-      "tenant": "Reseller",
-      "registered": false,
-      "projects": [],
-      "supervisee": [],
-      "payrolling_permissions": true,
-      "clearance_level": 1
-    },
-    {
-      "user_id": "user21",
-      "role": "Employee",
-      "position": "Secretary",
-      "tenant": "NewsAgency",
-      "registered": true,
-      "projects": [],
-      "supervisee": [],
-      "payrolling_permissions": false,
-      "clearance_level": 5
-    },
-    {
-      "user_id": "user22",
-      "role": "Employee",
-      "position": "SeniorOfficeManager",
-      "tenant": "LargeBankLeasing",
-      "department": "largeBankLeasingSales",
-      "office": "LargeBankLeasingOffice2",
-      "registered": true,
-      "projects": [],
-      "supervisee": [],
-      "payrolling_permissions": false,
-      "clearance_level": 2
-    },
-    {
-      "user_id": "user23",
-      "role": "Employee",
-      "position": "Secretary",
-      "tenant": "Reseller",
-      "registered": true,
-      "projects": [],
-      "supervisee": [],
-      "payrolling_permissions": false,
-      "clearance_level": 4
-    },
-    {
-      "user_id": "user24",
-      "role": "Employee",
-      "position": "SeniorOfficeManager",
-      "tenant": "LargeBank",
-      "department": "largeBankSales",
-      "office": "LargeBankOffice10",
-      "registered": true,
-      "projects": [],
-      "supervisee": [],
       "payrolling_permissions": false,
       "clearance_level": 3
     },
     {
-      "user_id": "user25",
-      "role": "Employee",
-      "position": "SeniorOfficeManager",
-      "tenant": "NewsAgency",
-      "registered": true,
-      "projects": [],
-      "supervisee": [],
-      "payrolling_permissions": false,
-      "clearance_level": 1
-    },
-    {
-      "user_id": "user26",
-      "role": "Employee",
+      "user_id": "user4",
+      "role": "Admin",
       "position": "Secretary",
-      "tenant": "Reseller",
-      "registered": false,
-      "projects": [],
-      "supervisee": [],
-      "payrolling_permissions": false,
-      "clearance_level": 2
-    },
-    {
-      "user_id": "user27",
-      "role": "Employee",
-      "position": "Director",
-      "tenant": "NewsAgency",
-      "registered": true,
-      "projects": [],
-      "supervisee": [],
-      "payrolling_permissions": false,
-      "clearance_level": 4
-    },
-    {
-      "user_id": "user28",
-      "role": "Employee",
-      "position": "Secretary",
-      "tenant": "LargeBankLeasing",
-      "department": "largeBankLeasingCustomerCare",
-      "office": "LargeBankLeasingOffice2",
-      "registered": true,
-      "projects": [],
-      "supervisee": [],
-      "payrolling_permissions": true,
-      "clearance_level": 4
-    },
-    {
-      "user_id": "user29",
-      "role": "Employee",
-      "position": "InsuranceAgent",
       "tenant": "LargeBank",
       "department": "largeBankICT",
       "office": "LargeBankOffice1",
@@ -355,34 +62,10 @@
       "clearance_level": 2
     },
     {
-      "user_id": "user30",
-      "role": "Employee",
+      "user_id": "user5",
+      "role": "Admin",
       "position": "Secretary",
-      "tenant": "EuropeRegion",
-      "registered": true,
-      "projects": [],
-      "supervisee": [],
-      "payrolling_permissions": false,
-      "clearance_level": 5
-    },
-    {
-      "user_id": "user31",
-      "role": "Employee",
-      "position": "SeniorOfficeManager",
-      "tenant": "Reseller",
-      "registered": true,
-      "projects": [],
-      "supervisee": [],
-      "payrolling_permissions": false,
-      "clearance_level": 1
-    },
-    {
-      "user_id": "user32",
-      "role": "Employee",
-      "position": "Director",
-      "tenant": "LargeBankLeasing",
-      "department": "largeBankLeasingCustomerCare",
-      "office": "LargeBankLeasingOffice1",
+      "tenant": "LondonOffice",
       "registered": true,
       "projects": [],
       "supervisee": [],
@@ -390,7 +73,29 @@
       "clearance_level": 4
     },
     {
-      "user_id": "user33",
+      "user_id": "user6",
+      "role": "Employee",
+      "position": "Director",
+      "tenant": "LondonOffice",
+      "registered": true,
+      "projects": [],
+      "supervisee": [],
+      "payrolling_permissions": false,
+      "clearance_level": 1
+    },
+    {
+      "user_id": "user7",
+      "role": "Admin",
+      "position": "OfficeManager",
+      "tenant": "NewsAgency",
+      "registered": true,
+      "projects": [],
+      "supervisee": [],
+      "payrolling_permissions": false,
+      "clearance_level": 4
+    },
+    {
+      "user_id": "user8",
       "role": "Employee",
       "position": "InsuranceAgent",
       "tenant": "Reseller",
@@ -401,11 +106,296 @@
       "clearance_level": 3
     },
     {
-      "user_id": "user34",
+      "user_id": "user9",
+      "role": "Admin",
+      "position": "OfficeManager",
+      "tenant": "EuropeRegion",
+      "registered": true,
+      "projects": [],
+      "supervisee": [],
+      "payrolling_permissions": false,
+      "clearance_level": 4
+    },
+    {
+      "user_id": "user10",
+      "role": "Admin",
+      "position": "Secretary",
+      "tenant": "EuropeRegion",
+      "registered": true,
+      "projects": [],
+      "supervisee": [],
+      "payrolling_permissions": false,
+      "clearance_level": 3
+    },
+    {
+      "user_id": "user11",
+      "role": "Helpdesk",
+      "position": "InsuranceAgent",
+      "tenant": "LondonOffice",
+      "registered": true,
+      "projects": [],
+      "supervisee": [],
+      "payrolling_permissions": false,
+      "clearance_level": 1
+    },
+    {
+      "user_id": "user12",
+      "role": "Customer",
+      "position": "Director",
+      "tenant": "LargeBankLeasing",
+      "department": "largeBankLeasingSales",
+      "office": "LargeBankLeasingOffice1",
+      "registered": false,
+      "projects": [],
+      "supervisee": [],
+      "payrolling_permissions": false,
+      "clearance_level": 1
+    },
+    {
+      "user_id": "user13",
+      "role": "Helpdesk",
+      "position": "Director",
+      "tenant": "NewsAgency",
+      "registered": true,
+      "projects": [],
+      "supervisee": [],
+      "payrolling_permissions": false,
+      "clearance_level": 4
+    },
+    {
+      "user_id": "user14",
+      "role": "Customer",
+      "position": "SeniorOfficeManager",
+      "tenant": "LargeBank",
+      "department": "largeBankAudit",
+      "office": "LargeBankOffice7",
+      "registered": true,
+      "projects": [],
+      "supervisee": [],
+      "payrolling_permissions": false,
+      "clearance_level": 4
+    },
+    {
+      "user_id": "user15",
       "role": "Employee",
+      "position": "Director",
+      "tenant": "NewsAgency",
+      "registered": true,
+      "projects": [],
+      "supervisee": [],
+      "payrolling_permissions": false,
+      "clearance_level": 5
+    },
+    {
+      "user_id": "user16",
+      "role": "Manager",
+      "position": "Director",
+      "tenant": "EuropeRegion",
+      "registered": true,
+      "projects": [],
+      "supervisee": [],
+      "payrolling_permissions": false,
+      "clearance_level": 1
+    },
+    {
+      "user_id": "user17",
+      "role": "Manager",
+      "position": "OfficeManager",
+      "tenant": "EuropeRegion",
+      "registered": true,
+      "projects": [],
+      "supervisee": [],
+      "payrolling_permissions": false,
+      "clearance_level": 5
+    },
+    {
+      "user_id": "user18",
+      "role": "Customer",
+      "position": "InsuranceAgent",
+      "tenant": "LondonOffice",
+      "registered": true,
+      "projects": [],
+      "supervisee": [],
+      "payrolling_permissions": true,
+      "clearance_level": 5
+    },
+    {
+      "user_id": "user19",
+      "role": "Admin",
+      "position": "OfficeManager",
+      "tenant": "Reseller",
+      "registered": true,
+      "projects": [],
+      "supervisee": [],
+      "payrolling_permissions": false,
+      "clearance_level": 1
+    },
+    {
+      "user_id": "user20",
+      "role": "Manager",
+      "position": "Secretary",
+      "tenant": "NewsAgency",
+      "registered": true,
+      "projects": [],
+      "supervisee": [],
+      "payrolling_permissions": true,
+      "clearance_level": 5
+    },
+    {
+      "user_id": "user21",
+      "role": "Manager",
+      "position": "SeniorOfficeManager",
+      "tenant": "Reseller",
+      "registered": false,
+      "projects": [],
+      "supervisee": [],
+      "payrolling_permissions": false,
+      "clearance_level": 3
+    },
+    {
+      "user_id": "user22",
+      "role": "Manager",
+      "position": "InsuranceAgent",
+      "tenant": "Reseller",
+      "registered": true,
+      "projects": [],
+      "supervisee": [],
+      "payrolling_permissions": false,
+      "clearance_level": 3
+    },
+    {
+      "user_id": "user23",
+      "role": "Helpdesk",
+      "position": "Secretary",
+      "tenant": "Reseller",
+      "registered": true,
+      "projects": [],
+      "supervisee": [],
+      "payrolling_permissions": true,
+      "clearance_level": 4
+    },
+    {
+      "user_id": "user24",
+      "role": "Helpdesk",
+      "position": "SeniorOfficeManager",
+      "tenant": "Reseller",
+      "registered": false,
+      "projects": [],
+      "supervisee": [],
+      "payrolling_permissions": false,
+      "clearance_level": 5
+    },
+    {
+      "user_id": "user25",
+      "role": "Employee",
+      "position": "Secretary",
+      "tenant": "EuropeRegion",
+      "registered": true,
+      "projects": [],
+      "supervisee": [],
+      "payrolling_permissions": false,
+      "clearance_level": 2
+    },
+    {
+      "user_id": "user26",
+      "role": "Manager",
+      "position": "Secretary",
+      "tenant": "LargeBank",
+      "department": "largeBankSales",
+      "office": "LargeBankOffice1",
+      "registered": false,
+      "projects": [],
+      "supervisee": [],
+      "payrolling_permissions": false,
+      "clearance_level": 3
+    },
+    {
+      "user_id": "user27",
+      "role": "Helpdesk",
+      "position": "Secretary",
+      "tenant": "LargeBank",
+      "department": "largeBankIT",
+      "office": "LargeBankOffice2",
+      "registered": true,
+      "projects": [],
+      "supervisee": [],
+      "payrolling_permissions": false,
+      "clearance_level": 1
+    },
+    {
+      "user_id": "user28",
+      "role": "Manager",
       "position": "OfficeManager",
       "tenant": "NewsAgency",
       "registered": true,
+      "projects": [],
+      "supervisee": [],
+      "payrolling_permissions": false,
+      "clearance_level": 1
+    },
+    {
+      "user_id": "user29",
+      "role": "Employee",
+      "position": "InsuranceAgent",
+      "tenant": "EuropeRegion",
+      "registered": true,
+      "projects": [],
+      "supervisee": [],
+      "payrolling_permissions": false,
+      "clearance_level": 2
+    },
+    {
+      "user_id": "user30",
+      "role": "Admin",
+      "position": "OfficeManager",
+      "tenant": "Reseller",
+      "registered": true,
+      "projects": [],
+      "supervisee": [],
+      "payrolling_permissions": false,
+      "clearance_level": 4
+    },
+    {
+      "user_id": "user31",
+      "role": "Admin",
+      "position": "SeniorOfficeManager",
+      "tenant": "EuropeRegion",
+      "registered": true,
+      "projects": [],
+      "supervisee": [],
+      "payrolling_permissions": false,
+      "clearance_level": 5
+    },
+    {
+      "user_id": "user32",
+      "role": "Admin",
+      "position": "Director",
+      "tenant": "Reseller",
+      "registered": true,
+      "projects": [],
+      "supervisee": [],
+      "payrolling_permissions": false,
+      "clearance_level": 5
+    },
+    {
+      "user_id": "user33",
+      "role": "Employee",
+      "position": "OfficeManager",
+      "tenant": "LargeBankLeasing",
+      "department": "largeBankLeasingSales",
+      "office": "LargeBankLeasingOffice1",
+      "registered": true,
+      "projects": [],
+      "supervisee": [],
+      "payrolling_permissions": true,
+      "clearance_level": 3
+    },
+    {
+      "user_id": "user34",
+      "role": "Manager",
+      "position": "Secretary",
+      "tenant": "Reseller",
+      "registered": false,
       "projects": [],
       "supervisee": [],
       "payrolling_permissions": false,
@@ -420,11 +410,11 @@
       "projects": [],
       "supervisee": [],
       "payrolling_permissions": true,
-      "clearance_level": 5
+      "clearance_level": 3
     },
     {
       "user_id": "user36",
-      "role": "Employee",
+      "role": "Admin",
       "position": "SeniorOfficeManager",
       "tenant": "LargeBankLeasing",
       "department": "largeBankLeasingSales",
@@ -433,50 +423,35 @@
       "projects": [],
       "supervisee": [],
       "payrolling_permissions": false,
-      "clearance_level": 5
+      "clearance_level": 2
     },
     {
       "user_id": "user37",
-      "role": "Employee",
-      "position": "Secretary",
+      "role": "Admin",
+      "position": "Director",
       "tenant": "EuropeRegion",
-      "registered": true,
+      "registered": false,
       "projects": [],
       "supervisee": [],
-      "payrolling_permissions": false,
+      "payrolling_permissions": true,
       "clearance_level": 5
     },
     {
       "user_id": "user38",
       "role": "Employee",
-      "position": "Secretary",
-      "tenant": "LargeBank",
-      "department": "largeBankHR",
-      "office": "LargeBankOffice8",
-      "registered": true,
-      "projects": [],
-      "supervisee": [],
-      "payrolling_permissions": true,
-      "clearance_level": 4
-    },
-    {
-      "user_id": "user39",
-      "role": "Employee",
-      "position": "OfficeManager",
-      "tenant": "Reseller",
+      "position": "Director",
+      "tenant": "EuropeRegion",
       "registered": true,
       "projects": [],
       "supervisee": [],
       "payrolling_permissions": false,
-      "clearance_level": 1
+      "clearance_level": 4
     },
     {
-      "user_id": "user40",
-      "role": "Employee",
+      "user_id": "user39",
+      "role": "Manager",
       "position": "SeniorOfficeManager",
-      "tenant": "LargeBankLeasing",
-      "department": "largeBankLeasingCustomerCare",
-      "office": "LargeBankLeasingOffice1",
+      "tenant": "LondonOffice",
       "registered": true,
       "projects": [],
       "supervisee": [],
@@ -484,9 +459,20 @@
       "clearance_level": 3
     },
     {
+      "user_id": "user40",
+      "role": "Manager",
+      "position": "OfficeManager",
+      "tenant": "EuropeRegion",
+      "registered": true,
+      "projects": [],
+      "supervisee": [],
+      "payrolling_permissions": false,
+      "clearance_level": 1
+    },
+    {
       "user_id": "user41",
-      "role": "Employee",
-      "position": "Director",
+      "role": "Helpdesk",
+      "position": "OfficeManager",
       "tenant": "LondonOffice",
       "registered": true,
       "projects": [],
@@ -496,19 +482,8 @@
     },
     {
       "user_id": "user42",
-      "role": "Employee",
-      "position": "Director",
-      "tenant": "LondonOffice",
-      "registered": true,
-      "projects": [],
-      "supervisee": [],
-      "payrolling_permissions": false,
-      "clearance_level": 1
-    },
-    {
-      "user_id": "user43",
-      "role": "Employee",
-      "position": "InsuranceAgent",
+      "role": "Manager",
+      "position": "SeniorOfficeManager",
       "tenant": "NewsAgency",
       "registered": true,
       "projects": [],
@@ -517,60 +492,32 @@
       "clearance_level": 3
     },
     {
-      "user_id": "user44",
-      "role": "Employee",
-      "position": "SeniorOfficeManager",
-      "tenant": "LargeBank",
-      "department": "largeBankSales",
-      "office": "LargeBankOffice10",
+      "user_id": "user43",
+      "role": "Customer",
+      "position": "Director",
+      "tenant": "Reseller",
       "registered": true,
       "projects": [],
       "supervisee": [],
       "payrolling_permissions": false,
       "clearance_level": 5
+    },
+    {
+      "user_id": "user44",
+      "role": "Admin",
+      "position": "SeniorOfficeManager",
+      "tenant": "LondonOffice",
+      "registered": false,
+      "projects": [],
+      "supervisee": [],
+      "payrolling_permissions": false,
+      "clearance_level": 2
     },
     {
       "user_id": "user45",
-      "role": "Employee",
-      "position": "OfficeManager",
-      "tenant": "LargeBankLeasing",
-      "department": "largeBankLeasingCustomerCare",
-      "office": "LargeBankLeasingOffice1",
-      "registered": true,
-      "projects": [],
-      "supervisee": [],
-      "payrolling_permissions": false,
-      "clearance_level": 2
-    },
-    {
-      "user_id": "user46",
-      "role": "Employee",
-      "position": "Director",
-      "tenant": "EuropeRegion",
-      "registered": false,
-      "projects": [],
-      "supervisee": [],
-      "payrolling_permissions": false,
-      "clearance_level": 4
-    },
-    {
-      "user_id": "user47",
-      "role": "Employee",
-      "position": "InsuranceAgent",
-      "tenant": "LargeBankLeasing",
-      "department": "largeBankLeasingSales",
-      "office": "LargeBankLeasingOffice2",
-      "registered": false,
-      "projects": [],
-      "supervisee": [],
-      "payrolling_permissions": false,
-      "clearance_level": 2
-    },
-    {
-      "user_id": "user48",
-      "role": "Employee",
-      "position": "InsuranceAgent",
-      "tenant": "LondonOffice",
+      "role": "Admin",
+      "position": "SeniorOfficeManager",
+      "tenant": "NewsAgency",
       "registered": true,
       "projects": [],
       "supervisee": [],
@@ -578,23 +525,10 @@
       "clearance_level": 5
     },
     {
-      "user_id": "user49",
-      "role": "Employee",
-      "position": "OfficeManager",
+      "user_id": "user46",
+      "role": "Customer",
+      "position": "Director",
       "tenant": "LondonOffice",
-      "registered": true,
-      "projects": [],
-      "supervisee": [],
-      "payrolling_permissions": false,
-      "clearance_level": 1
-    },
-    {
-      "user_id": "user50",
-      "role": "Employee",
-      "position": "SeniorOfficeManager",
-      "tenant": "LargeBank",
-      "department": "largeBankIT",
-      "office": "LargeBankOffice1",
       "registered": true,
       "projects": [],
       "supervisee": [],
@@ -602,10 +536,23 @@
       "clearance_level": 5
     },
     {
-      "user_id": "user51",
+      "user_id": "user47",
       "role": "Employee",
-      "position": "SeniorOfficeManager",
-      "tenant": "EuropeRegion",
+      "position": "Secretary",
+      "tenant": "LargeBank",
+      "department": "largeBankSales",
+      "office": "LargeBankOffice8",
+      "registered": true,
+      "projects": [],
+      "supervisee": [],
+      "payrolling_permissions": false,
+      "clearance_level": 5
+    },
+    {
+      "user_id": "user48",
+      "role": "Customer",
+      "position": "OfficeManager",
+      "tenant": "LondonOffice",
       "registered": true,
       "projects": [],
       "supervisee": [],
@@ -613,45 +560,21 @@
       "clearance_level": 4
     },
     {
-      "user_id": "user52",
-      "role": "Employee",
-      "position": "InsuranceAgent",
-      "tenant": "LondonOffice",
-      "registered": true,
-      "projects": [],
-      "supervisee": [],
-      "payrolling_permissions": false,
-      "clearance_level": 3
-    },
-    {
-      "user_id": "user53",
-      "role": "Employee",
-      "position": "OfficeManager",
-      "tenant": "LargeBank",
-      "department": "largeBankAudit",
-      "office": "LargeBankOffice10",
+      "user_id": "user49",
+      "role": "Customer",
+      "position": "Secretary",
+      "tenant": "Reseller",
       "registered": false,
       "projects": [],
       "supervisee": [],
       "payrolling_permissions": false,
-      "clearance_level": 1
+      "clearance_level": 2
     },
     {
-      "user_id": "user54",
-      "role": "Employee",
-      "position": "SeniorOfficeManager",
-      "tenant": "Reseller",
-      "registered": true,
-      "projects": [],
-      "supervisee": [],
-      "payrolling_permissions": false,
-      "clearance_level": 5
-    },
-    {
-      "user_id": "user55",
-      "role": "Employee",
-      "position": "InsuranceAgent",
-      "tenant": "LondonOffice",
+      "user_id": "user50",
+      "role": "Manager",
+      "position": "OfficeManager",
+      "tenant": "EuropeRegion",
       "registered": true,
       "projects": [],
       "supervisee": [],
@@ -659,21 +582,12 @@
       "clearance_level": 4
     },
     {
-      "user_id": "user56",
-      "role": "Employee",
+      "user_id": "user51",
+      "role": "Customer",
       "position": "Secretary",
-      "tenant": "EuropeRegion",
-      "registered": true,
-      "projects": [],
-      "supervisee": [],
-      "payrolling_permissions": false,
-      "clearance_level": 5
-    },
-    {
-      "user_id": "user57",
-      "role": "Employee",
-      "position": "OfficeManager",
-      "tenant": "NewsAgency",
+      "tenant": "LargeBank",
+      "department": "largeBankICT",
+      "office": "LargeBankOffice2",
       "registered": true,
       "projects": [],
       "supervisee": [],
@@ -681,31 +595,86 @@
       "clearance_level": 2
     },
     {
-      "user_id": "user58",
-      "role": "Employee",
-      "position": "Secretary",
-      "tenant": "EuropeRegion",
+      "user_id": "user52",
+      "role": "Customer",
+      "position": "InsuranceAgent",
+      "tenant": "LondonOffice",
+      "registered": false,
+      "projects": [],
+      "supervisee": [],
+      "payrolling_permissions": false,
+      "clearance_level": 3
+    },
+    {
+      "user_id": "user53",
+      "role": "Helpdesk",
+      "position": "OfficeManager",
+      "tenant": "NewsAgency",
       "registered": true,
       "projects": [],
       "supervisee": [],
       "payrolling_permissions": false,
-      "clearance_level": 1
+      "clearance_level": 5
+    },
+    {
+      "user_id": "user54",
+      "role": "Customer",
+      "position": "InsuranceAgent",
+      "tenant": "Reseller",
+      "registered": true,
+      "projects": [],
+      "supervisee": [],
+      "payrolling_permissions": false,
+      "clearance_level": 3
+    },
+    {
+      "user_id": "user55",
+      "role": "Helpdesk",
+      "position": "OfficeManager",
+      "tenant": "Reseller",
+      "registered": true,
+      "projects": [],
+      "supervisee": [],
+      "payrolling_permissions": false,
+      "clearance_level": 2
+    },
+    {
+      "user_id": "user56",
+      "role": "Helpdesk",
+      "position": "OfficeManager",
+      "tenant": "LargeBank",
+      "department": "largeBankAudit",
+      "office": "LargeBankOffice3",
+      "registered": true,
+      "projects": [],
+      "supervisee": [],
+      "payrolling_permissions": false,
+      "clearance_level": 4
+    },
+    {
+      "user_id": "user57",
+      "role": "Customer",
+      "position": "InsuranceAgent",
+      "tenant": "LondonOffice",
+      "registered": true,
+      "projects": [],
+      "supervisee": [],
+      "payrolling_permissions": false,
+      "clearance_level": 5
+    },
+    {
+      "user_id": "user58",
+      "role": "Helpdesk",
+      "position": "InsuranceAgent",
+      "tenant": "NewsAgency",
+      "registered": true,
+      "projects": [],
+      "supervisee": [],
+      "payrolling_permissions": false,
+      "clearance_level": 5
     },
     {
       "user_id": "user59",
-      "role": "Employee",
-      "position": "Director",
-      "tenant": "LargeBank",
-      "department": "largeBankSales",
-      "office": "LargeBankOffice4",
-      "registered": true,
-      "projects": [],
-      "supervisee": [],
-      "payrolling_permissions": false,
-      "clearance_level": 1
-    },
-    {
-      "user_id": "user60",
       "role": "Employee",
       "position": "Director",
       "tenant": "Reseller",
@@ -713,26 +682,39 @@
       "projects": [],
       "supervisee": [],
       "payrolling_permissions": false,
-      "clearance_level": 1
+      "clearance_level": 5
     },
     {
-      "user_id": "user61",
-      "role": "Employee",
-      "position": "Secretary",
-      "tenant": "LargeBank",
-      "department": "largeBankAudit",
-      "office": "LargeBankOffice9",
+      "user_id": "user60",
+      "role": "Customer",
+      "position": "Director",
+      "tenant": "EuropeRegion",
       "registered": true,
       "projects": [],
       "supervisee": [],
       "payrolling_permissions": false,
-      "clearance_level": 1
+      "clearance_level": 5
+    },
+    {
+      "user_id": "user61",
+      "role": "Employee",
+      "position": "SeniorOfficeManager",
+      "tenant": "LargeBankLeasing",
+      "department": "largeBankLeasingCustomerCare",
+      "office": "LargeBankLeasingOffice2",
+      "registered": true,
+      "projects": [],
+      "supervisee": [],
+      "payrolling_permissions": false,
+      "clearance_level": 3
     },
     {
       "user_id": "user62",
-      "role": "Employee",
-      "position": "Director",
-      "tenant": "EuropeRegion",
+      "role": "Manager",
+      "position": "SeniorOfficeManager",
+      "tenant": "LargeBankLeasing",
+      "department": "largeBankLeasingSales",
+      "office": "LargeBankLeasingOffice1",
       "registered": true,
       "projects": [],
       "supervisee": [],
@@ -741,20 +723,20 @@
     },
     {
       "user_id": "user63",
-      "role": "Employee",
+      "role": "Helpdesk",
       "position": "Secretary",
-      "tenant": "LondonOffice",
+      "tenant": "NewsAgency",
       "registered": true,
       "projects": [],
       "supervisee": [],
       "payrolling_permissions": false,
-      "clearance_level": 4
+      "clearance_level": 5
     },
     {
       "user_id": "user64",
-      "role": "Employee",
-      "position": "Secretary",
-      "tenant": "NewsAgency",
+      "role": "Helpdesk",
+      "position": "OfficeManager",
+      "tenant": "Reseller",
       "registered": true,
       "projects": [],
       "supervisee": [],
@@ -763,22 +745,24 @@
     },
     {
       "user_id": "user65",
-      "role": "Employee",
-      "position": "InsuranceAgent",
-      "tenant": "LargeBank",
-      "department": "largeBankAudit",
-      "office": "LargeBankOffice6",
-      "registered": false,
+      "role": "Customer",
+      "position": "Secretary",
+      "tenant": "LargeBankLeasing",
+      "department": "largeBankLeasingCustomerCare",
+      "office": "LargeBankLeasingOffice1",
+      "registered": true,
       "projects": [],
       "supervisee": [],
-      "payrolling_permissions": true,
-      "clearance_level": 5
+      "payrolling_permissions": false,
+      "clearance_level": 2
     },
     {
       "user_id": "user66",
       "role": "Employee",
-      "position": "SeniorOfficeManager",
-      "tenant": "NewsAgency",
+      "position": "Director",
+      "tenant": "LargeBankLeasing",
+      "department": "largeBankLeasingSales",
+      "office": "LargeBankLeasingOffice2",
       "registered": true,
       "projects": [],
       "supervisee": [],
@@ -787,20 +771,20 @@
     },
     {
       "user_id": "user67",
-      "role": "Employee",
-      "position": "Director",
+      "role": "Admin",
+      "position": "OfficeManager",
       "tenant": "LondonOffice",
-      "registered": true,
+      "registered": false,
       "projects": [],
       "supervisee": [],
       "payrolling_permissions": false,
-      "clearance_level": 4
+      "clearance_level": 3
     },
     {
       "user_id": "user68",
-      "role": "Employee",
+      "role": "Manager",
       "position": "Secretary",
-      "tenant": "Reseller",
+      "tenant": "EuropeRegion",
       "registered": true,
       "projects": [],
       "supervisee": [],
@@ -809,53 +793,7 @@
     },
     {
       "user_id": "user69",
-      "role": "Employee",
-      "position": "Secretary",
-      "tenant": "NewsAgency",
-      "registered": false,
-      "projects": [],
-      "supervisee": [],
-      "payrolling_permissions": false,
-      "clearance_level": 5
-    },
-    {
-      "user_id": "user70",
-      "role": "Employee",
-      "position": "InsuranceAgent",
-      "tenant": "LondonOffice",
-      "registered": true,
-      "projects": [],
-      "supervisee": [],
-      "payrolling_permissions": false,
-      "clearance_level": 3
-    },
-    {
-      "user_id": "user71",
-      "role": "Employee",
-      "position": "InsuranceAgent",
-      "tenant": "NewsAgency",
-      "registered": true,
-      "projects": [],
-      "supervisee": [],
-      "payrolling_permissions": false,
-      "clearance_level": 4
-    },
-    {
-      "user_id": "user72",
-      "role": "Employee",
-      "position": "Director",
-      "tenant": "LargeBank",
-      "department": "largeBankICT",
-      "office": "LargeBankOffice10",
-      "registered": false,
-      "projects": [],
-      "supervisee": [],
-      "payrolling_permissions": false,
-      "clearance_level": 1
-    },
-    {
-      "user_id": "user73",
-      "role": "Employee",
+      "role": "Manager",
       "position": "SeniorOfficeManager",
       "tenant": "LargeBankLeasing",
       "department": "largeBankLeasingSales",
@@ -863,25 +801,71 @@
       "registered": true,
       "projects": [],
       "supervisee": [],
-      "payrolling_permissions": false,
+      "payrolling_permissions": true,
       "clearance_level": 1
     },
     {
-      "user_id": "user74",
+      "user_id": "user70",
+      "role": "Helpdesk",
+      "position": "InsuranceAgent",
+      "tenant": "Reseller",
+      "registered": true,
+      "projects": [],
+      "supervisee": [],
+      "payrolling_permissions": true,
+      "clearance_level": 3
+    },
+    {
+      "user_id": "user71",
+      "role": "Helpdesk",
+      "position": "InsuranceAgent",
+      "tenant": "Reseller",
+      "registered": true,
+      "projects": [],
+      "supervisee": [],
+      "payrolling_permissions": true,
+      "clearance_level": 1
+    },
+    {
+      "user_id": "user72",
       "role": "Employee",
-      "position": "SeniorOfficeManager",
-      "tenant": "EuropeRegion",
+      "position": "Director",
+      "tenant": "Reseller",
+      "registered": true,
+      "projects": [],
+      "supervisee": [],
+      "payrolling_permissions": true,
+      "clearance_level": 5
+    },
+    {
+      "user_id": "user73",
+      "role": "Admin",
+      "position": "Secretary",
+      "tenant": "LondonOffice",
       "registered": true,
       "projects": [],
       "supervisee": [],
       "payrolling_permissions": false,
-      "clearance_level": 1
+      "clearance_level": 5
+    },
+    {
+      "user_id": "user74",
+      "role": "Employee",
+      "position": "Secretary",
+      "tenant": "NewsAgency",
+      "registered": true,
+      "projects": [],
+      "supervisee": [],
+      "payrolling_permissions": false,
+      "clearance_level": 3
     },
     {
       "user_id": "user75",
-      "role": "Employee",
-      "position": "SeniorOfficeManager",
-      "tenant": "EuropeRegion",
+      "role": "Customer",
+      "position": "Director",
+      "tenant": "LargeBankLeasing",
+      "department": "largeBankLeasingSales",
+      "office": "LargeBankLeasingOffice1",
       "registered": true,
       "projects": [],
       "supervisee": [],
@@ -890,20 +874,9 @@
     },
     {
       "user_id": "user76",
-      "role": "Employee",
-      "position": "InsuranceAgent",
-      "tenant": "NewsAgency",
-      "registered": false,
-      "projects": [],
-      "supervisee": [],
-      "payrolling_permissions": false,
-      "clearance_level": 2
-    },
-    {
-      "user_id": "user77",
-      "role": "Employee",
-      "position": "Director",
-      "tenant": "EuropeRegion",
+      "role": "Manager",
+      "position": "SeniorOfficeManager",
+      "tenant": "LondonOffice",
       "registered": true,
       "projects": [],
       "supervisee": [],
@@ -911,45 +884,23 @@
       "clearance_level": 3
     },
     {
-      "user_id": "user78",
-      "role": "Employee",
-      "position": "OfficeManager",
-      "tenant": "LargeBank",
-      "department": "largeBankICT",
-      "office": "LargeBankOffice3",
-      "registered": false,
-      "projects": [],
-      "supervisee": [],
-      "payrolling_permissions": true,
-      "clearance_level": 1
-    },
-    {
-      "user_id": "user79",
-      "role": "Employee",
-      "position": "Director",
-      "tenant": "Reseller",
-      "registered": true,
-      "projects": [],
-      "supervisee": [],
-      "payrolling_permissions": false,
-      "clearance_level": 1
-    },
-    {
-      "user_id": "user80",
-      "role": "Employee",
+      "user_id": "user77",
+      "role": "Helpdesk",
       "position": "SeniorOfficeManager",
       "tenant": "Reseller",
       "registered": true,
       "projects": [],
       "supervisee": [],
-      "payrolling_permissions": true,
-      "clearance_level": 2
+      "payrolling_permissions": false,
+      "clearance_level": 5
     },
     {
-      "user_id": "user81",
-      "role": "Employee",
-      "position": "Director",
-      "tenant": "NewsAgency",
+      "user_id": "user78",
+      "role": "Helpdesk",
+      "position": "SeniorOfficeManager",
+      "tenant": "LargeBank",
+      "department": "largeBankAudit",
+      "office": "LargeBankOffice7",
       "registered": true,
       "projects": [],
       "supervisee": [],
@@ -957,22 +908,20 @@
       "clearance_level": 4
     },
     {
-      "user_id": "user82",
-      "role": "Employee",
-      "position": "Secretary",
-      "tenant": "LargeBankLeasing",
-      "department": "largeBankLeasingCustomerCare",
-      "office": "LargeBankLeasingOffice1",
+      "user_id": "user79",
+      "role": "Helpdesk",
+      "position": "OfficeManager",
+      "tenant": "LondonOffice",
       "registered": true,
       "projects": [],
       "supervisee": [],
       "payrolling_permissions": false,
-      "clearance_level": 1
+      "clearance_level": 3
     },
     {
-      "user_id": "user83",
-      "role": "Employee",
-      "position": "InsuranceAgent",
+      "user_id": "user80",
+      "role": "Manager",
+      "position": "SeniorOfficeManager",
       "tenant": "LargeBankLeasing",
       "department": "largeBankLeasingSales",
       "office": "LargeBankLeasingOffice1",
@@ -980,62 +929,95 @@
       "projects": [],
       "supervisee": [],
       "payrolling_permissions": false,
+      "clearance_level": 4
+    },
+    {
+      "user_id": "user81",
+      "role": "Employee",
+      "position": "Director",
+      "tenant": "LargeBankLeasing",
+      "department": "largeBankLeasingSales",
+      "office": "LargeBankLeasingOffice2",
+      "registered": true,
+      "projects": [],
+      "supervisee": [],
+      "payrolling_permissions": false,
+      "clearance_level": 1
+    },
+    {
+      "user_id": "user82",
+      "role": "Customer",
+      "position": "Secretary",
+      "tenant": "LondonOffice",
+      "registered": false,
+      "projects": [],
+      "supervisee": [],
+      "payrolling_permissions": false,
       "clearance_level": 3
+    },
+    {
+      "user_id": "user83",
+      "role": "Helpdesk",
+      "position": "SeniorOfficeManager",
+      "tenant": "Reseller",
+      "registered": true,
+      "projects": [],
+      "supervisee": [],
+      "payrolling_permissions": false,
+      "clearance_level": 2
     },
     {
       "user_id": "user84",
       "role": "Employee",
-      "position": "Secretary",
+      "position": "OfficeManager",
       "tenant": "LondonOffice",
       "registered": true,
       "projects": [],
       "supervisee": [],
-      "payrolling_permissions": true,
-      "clearance_level": 1
+      "payrolling_permissions": false,
+      "clearance_level": 3
     },
     {
       "user_id": "user85",
-      "role": "Employee",
-      "position": "OfficeManager",
-      "tenant": "EuropeRegion",
-      "registered": true,
-      "projects": [],
-      "supervisee": [],
-      "payrolling_permissions": true,
-      "clearance_level": 5
-    },
-    {
-      "user_id": "user86",
-      "role": "Employee",
-      "position": "Secretary",
-      "tenant": "LargeBank",
-      "department": "largeBankIT",
-      "office": "LargeBankOffice1",
+      "role": "Customer",
+      "position": "SeniorOfficeManager",
+      "tenant": "Reseller",
       "registered": false,
-      "projects": [],
-      "supervisee": [],
-      "payrolling_permissions": true,
-      "clearance_level": 4
-    },
-    {
-      "user_id": "user87",
-      "role": "Employee",
-      "position": "InsuranceAgent",
-      "tenant": "NewsAgency",
-      "registered": true,
       "projects": [],
       "supervisee": [],
       "payrolling_permissions": false,
       "clearance_level": 4
     },
     {
+      "user_id": "user86",
+      "role": "Customer",
+      "position": "Director",
+      "tenant": "LondonOffice",
+      "registered": true,
+      "projects": [],
+      "supervisee": [],
+      "payrolling_permissions": true,
+      "clearance_level": 2
+    },
+    {
+      "user_id": "user87",
+      "role": "Customer",
+      "position": "InsuranceAgent",
+      "tenant": "LargeBankLeasing",
+      "department": "largeBankLeasingCustomerCare",
+      "office": "LargeBankLeasingOffice2",
+      "registered": true,
+      "projects": [],
+      "supervisee": [],
+      "payrolling_permissions": false,
+      "clearance_level": 1
+    },
+    {
       "user_id": "user88",
       "role": "Employee",
-      "position": "OfficeManager",
-      "tenant": "LargeBank",
-      "department": "largeBankICT",
-      "office": "LargeBankOffice9",
-      "registered": false,
+      "position": "SeniorOfficeManager",
+      "tenant": "Reseller",
+      "registered": true,
       "projects": [],
       "supervisee": [],
       "payrolling_permissions": false,
@@ -1044,41 +1026,10 @@
     {
       "user_id": "user89",
       "role": "Employee",
-      "position": "InsuranceAgent",
-      "tenant": "Reseller",
-      "registered": true,
-      "projects": [],
-      "supervisee": [],
-      "payrolling_permissions": false,
-      "clearance_level": 4
-    },
-    {
-      "user_id": "user90",
-      "role": "Employee",
-      "position": "SeniorOfficeManager",
-      "tenant": "Reseller",
-      "registered": true,
-      "projects": [],
-      "supervisee": [],
-      "payrolling_permissions": true,
-      "clearance_level": 1
-    },
-    {
-      "user_id": "user91",
-      "role": "Employee",
-      "position": "Director",
-      "tenant": "NewsAgency",
-      "registered": false,
-      "projects": [],
-      "supervisee": [],
-      "payrolling_permissions": false,
-      "clearance_level": 2
-    },
-    {
-      "user_id": "user92",
-      "role": "Employee",
-      "position": "Director",
-      "tenant": "NewsAgency",
+      "position": "Secretary",
+      "tenant": "LargeBank",
+      "department": "largeBankAudit",
+      "office": "LargeBankOffice1",
       "registered": true,
       "projects": [],
       "supervisee": [],
@@ -1086,10 +1037,10 @@
       "clearance_level": 3
     },
     {
-      "user_id": "user93",
-      "role": "Employee",
+      "user_id": "user90",
+      "role": "Helpdesk",
       "position": "OfficeManager",
-      "tenant": "NewsAgency",
+      "tenant": "LondonOffice",
       "registered": true,
       "projects": [],
       "supervisee": [],
@@ -1097,36 +1048,12 @@
       "clearance_level": 5
     },
     {
-      "user_id": "user94",
-      "role": "Employee",
-      "position": "Director",
-      "tenant": "EuropeRegion",
-      "registered": true,
-      "projects": [],
-      "supervisee": [],
-      "payrolling_permissions": false,
-      "clearance_level": 5
-    },
-    {
-      "user_id": "user95",
-      "role": "Employee",
+      "user_id": "user91",
+      "role": "Manager",
       "position": "Director",
       "tenant": "LargeBank",
-      "department": "largeBankAudit",
-      "office": "LargeBankOffice1",
-      "registered": true,
-      "projects": [],
-      "supervisee": [],
-      "payrolling_permissions": false,
-      "clearance_level": 5
-    },
-    {
-      "user_id": "user96",
-      "role": "Employee",
-      "position": "Secretary",
-      "tenant": "LargeBankLeasing",
-      "department": "largeBankLeasingCustomerCare",
-      "office": "LargeBankLeasingOffice2",
+      "department": "largeBankIT",
+      "office": "LargeBankOffice10",
       "registered": true,
       "projects": [],
       "supervisee": [],
@@ -1134,147 +1061,207 @@
       "clearance_level": 4
     },
     {
-      "user_id": "user97",
-      "role": "Employee",
+      "user_id": "user92",
+      "role": "Customer",
       "position": "Secretary",
+      "tenant": "NewsAgency",
+      "registered": true,
+      "projects": [],
+      "supervisee": [],
+      "payrolling_permissions": true,
+      "clearance_level": 5
+    },
+    {
+      "user_id": "user93",
+      "role": "Helpdesk",
+      "position": "InsuranceAgent",
+      "tenant": "LargeBankLeasing",
+      "department": "largeBankLeasingCustomerCare",
+      "office": "LargeBankLeasingOffice2",
+      "registered": true,
+      "projects": [],
+      "supervisee": [],
+      "payrolling_permissions": false,
+      "clearance_level": 2
+    },
+    {
+      "user_id": "user94",
+      "role": "Manager",
+      "position": "Director",
       "tenant": "EuropeRegion",
       "registered": false,
       "projects": [],
       "supervisee": [],
       "payrolling_permissions": false,
-      "clearance_level": 1
+      "clearance_level": 3
+    },
+    {
+      "user_id": "user95",
+      "role": "Customer",
+      "position": "Director",
+      "tenant": "LondonOffice",
+      "registered": true,
+      "projects": [],
+      "supervisee": [],
+      "payrolling_permissions": false,
+      "clearance_level": 3
+    },
+    {
+      "user_id": "user96",
+      "role": "Customer",
+      "position": "SeniorOfficeManager",
+      "tenant": "EuropeRegion",
+      "registered": true,
+      "projects": [],
+      "supervisee": [],
+      "payrolling_permissions": false,
+      "clearance_level": 5
+    },
+    {
+      "user_id": "user97",
+      "role": "Helpdesk",
+      "position": "OfficeManager",
+      "tenant": "LondonOffice",
+      "registered": true,
+      "projects": [],
+      "supervisee": [],
+      "payrolling_permissions": false,
+      "clearance_level": 3
     },
     {
       "user_id": "user98",
-      "role": "Employee",
-      "position": "InsuranceAgent",
-      "tenant": "Reseller",
+      "role": "Customer",
+      "position": "SeniorOfficeManager",
+      "tenant": "LargeBankLeasing",
+      "department": "largeBankLeasingCustomerCare",
+      "office": "LargeBankLeasingOffice2",
       "registered": true,
       "projects": [],
       "supervisee": [],
       "payrolling_permissions": false,
-      "clearance_level": 2
+      "clearance_level": 5
     },
     {
       "user_id": "user99",
-      "role": "Employee",
-      "position": "SeniorOfficeManager",
-      "tenant": "Reseller",
-      "registered": true,
+      "role": "Helpdesk",
+      "position": "Secretary",
+      "tenant": "LargeBank",
+      "department": "largeBankIT",
+      "office": "LargeBankOffice3",
+      "registered": false,
       "projects": [],
       "supervisee": [],
       "payrolling_permissions": false,
-      "clearance_level": 2
+      "clearance_level": 4
     }
   ],
   "resources": [
     {
       "resource_id": "doc0",
-      "resource_type": "TrafficFine",
-      "owner": "user6",
-      "tenant": "NewsAgency",
+      "resource_type": "BankingNote",
+      "owner": "user95",
+      "tenant": "LondonOffice",
       "recipients": [
-        "user49",
-        "user70",
-        "user84",
-        "user1",
-        "user69"
+        "user91",
+        "user60",
+        "user81",
+        "user8",
+        "user33"
       ],
-      "is_confidential": true,
-      "contains_personal_info": false,
-      "security_level": 5
+      "is_confidential": false,
+      "contains_personal_info": true,
+      "security_level": 1
     },
     {
       "resource_id": "doc1",
       "resource_type": "TrafficFine",
-      "owner": "user90",
-      "tenant": "Reseller",
+      "owner": "user41",
+      "tenant": "LondonOffice",
       "recipients": [
-        "user62",
-        "user14",
-        "user15",
-        "user90"
+        "user29",
+        "user57",
+        "user89",
+        "user67",
+        "user86"
       ],
       "is_confidential": true,
+      "contains_personal_info": false,
+      "security_level": 4
+    },
+    {
+      "resource_id": "doc2",
+      "resource_type": "BankingNote",
+      "owner": "user19",
+      "tenant": "Reseller",
+      "recipients": [
+        "user37",
+        "user44",
+        "user23",
+        "user67",
+        "user49"
+      ],
+      "is_confidential": true,
+      "contains_personal_info": false,
+      "security_level": 1
+    },
+    {
+      "resource_id": "doc3",
+      "resource_type": "BankingNote",
+      "owner": "user49",
+      "tenant": "Reseller",
+      "recipients": [
+        "user63",
+        "user47",
+        "user81",
+        "user42",
+        "user28"
+      ],
+      "is_confidential": false,
       "contains_personal_info": false,
       "security_level": 2
     },
     {
-      "resource_id": "doc2",
-      "resource_type": "SalesOffer",
-      "owner": "user46",
-      "tenant": "EuropeRegion",
+      "resource_id": "doc4",
+      "resource_type": "Contract",
+      "owner": "user88",
+      "tenant": "Reseller",
       "recipients": [
-        "user99",
-        "user68",
-        "user23",
-        "user37",
-        "user75"
+        "user82",
+        "user5",
+        "user18",
+        "user9"
       ],
       "is_confidential": false,
       "contains_personal_info": false,
       "security_level": 1
     },
     {
-      "resource_id": "doc3",
-      "resource_type": "SalesOffer",
-      "owner": "user7",
+      "resource_id": "doc5",
+      "resource_type": "Paycheck",
+      "owner": "user6",
       "tenant": "LondonOffice",
       "recipients": [
-        "user39",
-        "user79",
-        "user77",
-        "user84",
-        "user4"
+        "user36",
+        "user41",
+        "user0",
+        "user87",
+        "user46"
       ],
-      "is_confidential": true,
-      "contains_personal_info": false,
-      "security_level": 5
-    },
-    {
-      "resource_id": "doc4",
-      "resource_type": "Paycheck",
-      "owner": "user4",
-      "tenant": "LargeBank",
-      "department": "largeBankIT",
-      "office": "LargeBankOffice6",
-      "recipients": [
-        "user40",
-        "user71",
-        "user49",
-        "user5",
-        "user38"
-      ],
-      "is_confidential": true,
-      "contains_personal_info": false,
-      "security_level": 5
-    },
-    {
-      "resource_id": "doc5",
-      "resource_type": "TrafficFine",
-      "owner": "user57",
-      "tenant": "NewsAgency",
-      "recipients": [
-        "user80",
-        "user43",
-        "user90",
-        "user51",
-        "user64"
-      ],
-      "is_confidential": true,
+      "is_confidential": false,
       "contains_personal_info": false,
       "security_level": 5
     },
     {
       "resource_id": "doc6",
-      "resource_type": "Contract",
-      "owner": "user62",
-      "tenant": "EuropeRegion",
+      "resource_type": "BankingNote",
+      "owner": "user53",
+      "tenant": "NewsAgency",
       "recipients": [
-        "user56",
-        "user40",
+        "user53",
         "user33",
-        "user92"
+        "user46",
+        "user67",
+        "user75"
       ],
       "is_confidential": false,
       "contains_personal_info": false,
@@ -1282,119 +1269,113 @@
     },
     {
       "resource_id": "doc7",
-      "resource_type": "BankingNote",
-      "owner": "user21",
-      "tenant": "NewsAgency",
+      "resource_type": "SalesOffer",
+      "owner": "user32",
+      "tenant": "Reseller",
       "recipients": [
-        "user70",
-        "user45",
-        "user44",
-        "user54",
-        "user62"
+        "user41",
+        "user73",
+        "user58",
+        "user72",
+        "user18"
       ],
-      "is_confidential": true,
-      "contains_personal_info": false,
-      "security_level": 4
+      "is_confidential": false,
+      "contains_personal_info": true,
+      "security_level": 2
     },
     {
       "resource_id": "doc8",
-      "resource_type": "TrafficFine",
-      "owner": "user81",
-      "tenant": "NewsAgency",
+      "resource_type": "SalesOffer",
+      "owner": "user31",
+      "tenant": "EuropeRegion",
       "recipients": [
-        "user50",
-        "user17",
-        "user87",
-        "user93",
-        "user83"
+        "user62",
+        "user75",
+        "user61",
+        "user69",
+        "user52"
       ],
       "is_confidential": false,
-      "contains_personal_info": false,
-      "security_level": 3
+      "contains_personal_info": true,
+      "security_level": 1
     },
     {
       "resource_id": "doc9",
-      "resource_type": "BankingNote",
-      "owner": "user4",
+      "resource_type": "Paycheck",
+      "owner": "user0",
       "tenant": "LargeBank",
-      "department": "largeBankIT",
-      "office": "LargeBankOffice6",
+      "department": "largeBankICT",
+      "office": "LargeBankOffice8",
       "recipients": [
-        "user3",
-        "user2",
-        "user71",
-        "user49",
-        "user79"
-      ],
-      "is_confidential": true,
-      "contains_personal_info": false,
-      "security_level": 5
-    },
-    {
-      "resource_id": "doc10",
-      "resource_type": "TrafficFine",
-      "owner": "user40",
-      "tenant": "LargeBankLeasing",
-      "department": "largeBankLeasingCustomerCare",
-      "office": "LargeBankLeasingOffice1",
-      "recipients": [
-        "user84",
-        "user75",
-        "user55",
-        "user47",
-        "user97"
-      ],
-      "is_confidential": false,
-      "contains_personal_info": false,
-      "security_level": 3
-    },
-    {
-      "resource_id": "doc11",
-      "resource_type": "BankingNote",
-      "owner": "user63",
-      "tenant": "LondonOffice",
-      "recipients": [
-        "user12",
-        "user25",
-        "user3",
-        "user64",
-        "user43"
+        "user70",
+        "user99",
+        "user38",
+        "user76",
+        "user1"
       ],
       "is_confidential": false,
       "contains_personal_info": true,
       "security_level": 3
     },
     {
-      "resource_id": "doc12",
-      "resource_type": "TrafficFine",
-      "owner": "user73",
-      "tenant": "LargeBankLeasing",
-      "department": "largeBankLeasingSales",
-      "office": "LargeBankLeasingOffice2",
+      "resource_id": "doc10",
+      "resource_type": "SalesOffer",
+      "owner": "user37",
+      "tenant": "EuropeRegion",
       "recipients": [
-        "user56",
-        "user37",
-        "user62",
-        "user13",
-        "user8"
+        "user18",
+        "user79",
+        "user85",
+        "user49",
+        "user48"
       ],
       "is_confidential": true,
+      "contains_personal_info": false,
+      "security_level": 3
+    },
+    {
+      "resource_id": "doc11",
+      "resource_type": "SalesOffer",
+      "owner": "user2",
+      "tenant": "NewsAgency",
+      "recipients": [
+        "user23",
+        "user32",
+        "user87",
+        "user90",
+        "user1"
+      ],
+      "is_confidential": false,
       "contains_personal_info": false,
       "security_level": 2
     },
     {
-      "resource_id": "doc13",
-      "resource_type": "TrafficFine",
-      "owner": "user95",
-      "tenant": "LargeBank",
-      "department": "largeBankAudit",
-      "office": "LargeBankOffice1",
+      "resource_id": "doc12",
+      "resource_type": "Contract",
+      "owner": "user9",
+      "tenant": "EuropeRegion",
       "recipients": [
-        "user25",
-        "user57",
-        "user84",
-        "user40",
-        "user60"
+        "user7",
+        "user93",
+        "user73",
+        "user81",
+        "user55"
+      ],
+      "is_confidential": false,
+      "contains_personal_info": true,
+      "security_level": 5
+    },
+    {
+      "resource_id": "doc13",
+      "resource_type": "Invoice",
+      "owner": "user68",
+      "tenant": "EuropeRegion",
+      "recipients": [
+        "user11",
+        "user85",
+        "user80",
+        "user92",
+        "user41"
       ],
       "is_confidential": true,
       "contains_personal_info": false,
@@ -1402,169 +1383,165 @@
     },
     {
       "resource_id": "doc14",
-      "resource_type": "BankingNote",
-      "owner": "user94",
-      "tenant": "EuropeRegion",
+      "resource_type": "SalesOffer",
+      "owner": "user13",
+      "tenant": "NewsAgency",
       "recipients": [
-        "user46",
-        "user83",
-        "user51",
-        "user26",
-        "user78"
+        "user2",
+        "user86",
+        "user41",
+        "user13",
+        "user43"
       ],
       "is_confidential": false,
-      "contains_personal_info": false,
+      "contains_personal_info": true,
       "security_level": 4
     },
     {
       "resource_id": "doc15",
       "resource_type": "Invoice",
-      "owner": "user91",
+      "owner": "user92",
       "tenant": "NewsAgency",
       "recipients": [
-        "user90",
-        "user36",
-        "user68",
-        "user14",
-        "user64"
+        "user76",
+        "user7",
+        "user4",
+        "user27",
+        "user1"
       ],
-      "is_confidential": false,
-      "contains_personal_info": true,
+      "is_confidential": true,
+      "contains_personal_info": false,
       "security_level": 5
     },
     {
       "resource_id": "doc16",
-      "resource_type": "Invoice",
-      "owner": "user24",
+      "resource_type": "SalesOffer",
+      "owner": "user89",
       "tenant": "LargeBank",
-      "department": "largeBankSales",
-      "office": "LargeBankOffice10",
+      "department": "largeBankAudit",
+      "office": "LargeBankOffice1",
       "recipients": [
+        "user21",
+        "user38",
+        "user49",
         "user32",
-        "user12",
-        "user56",
-        "user79",
-        "user63"
+        "user76"
       ],
       "is_confidential": false,
       "contains_personal_info": false,
-      "security_level": 4
+      "security_level": 2
     },
     {
       "resource_id": "doc17",
-      "resource_type": "TrafficFine",
-      "owner": "user78",
-      "tenant": "LargeBank",
-      "department": "largeBankICT",
-      "office": "LargeBankOffice3",
+      "resource_type": "SalesOffer",
+      "owner": "user10",
+      "tenant": "EuropeRegion",
       "recipients": [
-        "user94",
-        "user26",
-        "user52",
-        "user28",
-        "user51"
+        "user75",
+        "user98",
+        "user50",
+        "user73",
+        "user48"
+      ],
+      "is_confidential": false,
+      "contains_personal_info": false,
+      "security_level": 5
+    },
+    {
+      "resource_id": "doc18",
+      "resource_type": "SalesOffer",
+      "owner": "user3",
+      "tenant": "LargeBankLeasing",
+      "department": "largeBankLeasingCustomerCare",
+      "office": "LargeBankLeasingOffice1",
+      "recipients": [
+        "user38",
+        "user95",
+        "user20",
+        "user3",
+        "user12"
+      ],
+      "is_confidential": false,
+      "contains_personal_info": false,
+      "security_level": 3
+    },
+    {
+      "resource_id": "doc19",
+      "resource_type": "TrafficFine",
+      "owner": "user52",
+      "tenant": "LondonOffice",
+      "recipients": [
+        "user43",
+        "user0",
+        "user74",
+        "user57",
+        "user77"
+      ],
+      "is_confidential": true,
+      "contains_personal_info": false,
+      "security_level": 2
+    },
+    {
+      "resource_id": "doc20",
+      "resource_type": "Contract",
+      "owner": "user86",
+      "tenant": "LondonOffice",
+      "recipients": [
+        "user17",
+        "user40",
+        "user63",
+        "user33",
+        "user4"
       ],
       "is_confidential": true,
       "contains_personal_info": false,
       "security_level": 4
     },
     {
-      "resource_id": "doc18",
-      "resource_type": "BankingNote",
-      "owner": "user88",
-      "tenant": "LargeBank",
-      "department": "largeBankICT",
-      "office": "LargeBankOffice9",
+      "resource_id": "doc21",
+      "resource_type": "Contract",
+      "owner": "user22",
+      "tenant": "Reseller",
       "recipients": [
-        "user81",
-        "user88",
-        "user21",
-        "user30",
-        "user12"
+        "user41",
+        "user49",
+        "user5",
+        "user44",
+        "user98"
       ],
       "is_confidential": true,
       "contains_personal_info": false,
       "security_level": 3
     },
     {
-      "resource_id": "doc19",
-      "resource_type": "BankingNote",
-      "owner": "user47",
-      "tenant": "LargeBankLeasing",
-      "department": "largeBankLeasingSales",
-      "office": "LargeBankLeasingOffice2",
-      "recipients": [
-        "user56",
-        "user55",
-        "user66",
-        "user58",
-        "user36"
-      ],
-      "is_confidential": true,
-      "contains_personal_info": true,
-      "security_level": 5
-    },
-    {
-      "resource_id": "doc20",
-      "resource_type": "BankingNote",
-      "owner": "user78",
-      "tenant": "LargeBank",
-      "department": "largeBankICT",
-      "office": "LargeBankOffice3",
-      "recipients": [
-        "user73",
-        "user84",
-        "user74",
-        "user21",
-        "user5"
-      ],
-      "is_confidential": true,
-      "contains_personal_info": false,
-      "security_level": 1
-    },
-    {
-      "resource_id": "doc21",
-      "resource_type": "TrafficFine",
-      "owner": "user89",
-      "tenant": "Reseller",
-      "recipients": [
-        "user96",
-        "user0",
-        "user54",
-        "user13",
-        "user12"
-      ],
-      "is_confidential": true,
-      "contains_personal_info": false,
-      "security_level": 2
-    },
-    {
       "resource_id": "doc22",
-      "resource_type": "Invoice",
-      "owner": "user61",
-      "tenant": "LargeBank",
-      "department": "largeBankAudit",
-      "office": "LargeBankOffice9",
+      "resource_type": "SalesOffer",
+      "owner": "user37",
+      "tenant": "EuropeRegion",
       "recipients": [
-        "user29",
-        "user19",
-        "user2"
+        "user70",
+        "user38",
+        "user69",
+        "user45",
+        "user33"
       ],
-      "is_confidential": true,
+      "is_confidential": false,
       "contains_personal_info": false,
-      "security_level": 2
+      "security_level": 4
     },
     {
       "resource_id": "doc23",
       "resource_type": "Invoice",
-      "owner": "user10",
-      "tenant": "LondonOffice",
+      "owner": "user36",
+      "tenant": "LargeBankLeasing",
+      "department": "largeBankLeasingSales",
+      "office": "LargeBankLeasingOffice2",
       "recipients": [
-        "user51",
-        "user48",
-        "user55",
-        "user34",
-        "user47"
+        "user31",
+        "user73",
+        "user76",
+        "user72",
+        "user29"
       ],
       "is_confidential": false,
       "contains_personal_info": false,
@@ -1572,149 +1549,148 @@
     },
     {
       "resource_id": "doc24",
-      "resource_type": "Contract",
-      "owner": "user82",
-      "tenant": "LargeBankLeasing",
-      "department": "largeBankLeasingCustomerCare",
-      "office": "LargeBankLeasingOffice1",
+      "resource_type": "Invoice",
+      "owner": "user16",
+      "tenant": "EuropeRegion",
       "recipients": [
-        "user31",
-        "user15",
-        "user74",
-        "user7",
-        "user0"
+        "user99",
+        "user10",
+        "user89",
+        "user9",
+        "user77"
       ],
       "is_confidential": true,
-      "contains_personal_info": false,
-      "security_level": 3
+      "contains_personal_info": true,
+      "security_level": 5
     },
     {
       "resource_id": "doc25",
-      "resource_type": "SalesOffer",
-      "owner": "user67",
+      "resource_type": "Paycheck",
+      "owner": "user18",
       "tenant": "LondonOffice",
       "recipients": [
-        "user66",
-        "user28",
-        "user4",
-        "user96"
-      ],
-      "is_confidential": true,
-      "contains_personal_info": false,
-      "security_level": 4
-    },
-    {
-      "resource_id": "doc26",
-      "resource_type": "BankingNote",
-      "owner": "user37",
-      "tenant": "EuropeRegion",
-      "recipients": [
-        "user13",
-        "user39",
-        "user3",
-        "user35"
+        "user42",
+        "user60",
+        "user30",
+        "user26",
+        "user33"
       ],
       "is_confidential": true,
       "contains_personal_info": false,
       "security_level": 5
     },
     {
-      "resource_id": "doc27",
-      "resource_type": "Contract",
-      "owner": "user28",
-      "tenant": "LargeBankLeasing",
-      "department": "largeBankLeasingCustomerCare",
-      "office": "LargeBankLeasingOffice2",
+      "resource_id": "doc26",
+      "resource_type": "BankingNote",
+      "owner": "user11",
+      "tenant": "LondonOffice",
       "recipients": [
-        "user67",
-        "user3",
-        "user53",
-        "user32",
-        "user48"
+        "user71",
+        "user37",
+        "user25",
+        "user90",
+        "user16"
       ],
-      "is_confidential": false,
+      "is_confidential": true,
       "contains_personal_info": false,
       "security_level": 3
     },
     {
-      "resource_id": "doc28",
-      "resource_type": "BankingNote",
-      "owner": "user35",
-      "tenant": "EuropeRegion",
+      "resource_id": "doc27",
+      "resource_type": "TrafficFine",
+      "owner": "user84",
+      "tenant": "LondonOffice",
       "recipients": [
-        "user78",
-        "user5",
-        "user84",
-        "user75",
-        "user17"
+        "user44",
+        "user25",
+        "user24",
+        "user9",
+        "user20"
       ],
-      "is_confidential": true,
+      "is_confidential": false,
+      "contains_personal_info": false,
+      "security_level": 5
+    },
+    {
+      "resource_id": "doc28",
+      "resource_type": "Contract",
+      "owner": "user87",
+      "tenant": "LargeBankLeasing",
+      "department": "largeBankLeasingCustomerCare",
+      "office": "LargeBankLeasingOffice2",
+      "recipients": [
+        "user25",
+        "user20",
+        "user64",
+        "user14",
+        "user5"
+      ],
+      "is_confidential": false,
+      "contains_personal_info": false,
+      "security_level": 4
+    },
+    {
+      "resource_id": "doc29",
+      "resource_type": "Invoice",
+      "owner": "user91",
+      "tenant": "LargeBank",
+      "department": "largeBankIT",
+      "office": "LargeBankOffice10",
+      "recipients": [
+        "user19",
+        "user94",
+        "user67",
+        "user24",
+        "user35"
+      ],
+      "is_confidential": false,
       "contains_personal_info": false,
       "security_level": 1
     },
     {
-      "resource_id": "doc29",
-      "resource_type": "SalesOffer",
-      "owner": "user1",
-      "tenant": "NewsAgency",
-      "recipients": [
-        "user26",
-        "user80",
-        "user86",
-        "user79",
-        "user60"
-      ],
-      "is_confidential": true,
-      "contains_personal_info": true,
-      "security_level": 4
-    },
-    {
       "resource_id": "doc30",
-      "resource_type": "Invoice",
-      "owner": "user3",
-      "tenant": "LargeBankLeasing",
-      "department": "largeBankLeasingCustomerCare",
-      "office": "LargeBankLeasingOffice2",
-      "recipients": [
-        "user67",
-        "user7",
-        "user70",
-        "user56",
-        "user39"
-      ],
-      "is_confidential": true,
-      "contains_personal_info": false,
-      "security_level": 3
-    },
-    {
-      "resource_id": "doc31",
-      "resource_type": "Contract",
-      "owner": "user86",
+      "resource_type": "Paycheck",
+      "owner": "user47",
       "tenant": "LargeBank",
-      "department": "largeBankIT",
-      "office": "LargeBankOffice1",
+      "department": "largeBankSales",
+      "office": "LargeBankOffice8",
       "recipients": [
-        "user59",
-        "user82",
-        "user20",
-        "user70",
-        "user19"
+        "user58",
+        "user2",
+        "user92",
+        "user83"
       ],
       "is_confidential": false,
       "contains_personal_info": false,
-      "security_level": 2
+      "security_level": 5
+    },
+    {
+      "resource_id": "doc31",
+      "resource_type": "Paycheck",
+      "owner": "user41",
+      "tenant": "LondonOffice",
+      "recipients": [
+        "user74",
+        "user9",
+        "user55",
+        "user90",
+        "user77"
+      ],
+      "is_confidential": false,
+      "contains_personal_info": false,
+      "security_level": 4
     },
     {
       "resource_id": "doc32",
-      "resource_type": "Invoice",
-      "owner": "user7",
-      "tenant": "LondonOffice",
+      "resource_type": "Paycheck",
+      "owner": "user22",
+      "tenant": "Reseller",
       "recipients": [
-        "user61",
-        "user54",
-        "user83",
-        "user21",
-        "user2"
+        "user64",
+        "user81",
+        "user35",
+        "user55",
+        "user7"
       ],
       "is_confidential": false,
       "contains_personal_info": false,
@@ -1723,240 +1699,242 @@
     {
       "resource_id": "doc33",
       "resource_type": "Paycheck",
-      "owner": "user14",
+      "owner": "user16",
       "tenant": "EuropeRegion",
       "recipients": [
-        "user88",
-        "user94",
-        "user93",
-        "user42"
+        "user82",
+        "user37",
+        "user22",
+        "user70",
+        "user73"
       ],
       "is_confidential": true,
       "contains_personal_info": false,
-      "security_level": 2
+      "security_level": 3
     },
     {
       "resource_id": "doc34",
       "resource_type": "BankingNote",
-      "owner": "user43",
-      "tenant": "NewsAgency",
+      "owner": "user60",
+      "tenant": "EuropeRegion",
       "recipients": [
-        "user24",
-        "user70",
-        "user95",
-        "user61",
-        "user57"
+        "user65",
+        "user57",
+        "user59",
+        "user66",
+        "user63"
       ],
       "is_confidential": false,
       "contains_personal_info": false,
-      "security_level": 4
+      "security_level": 2
     },
     {
       "resource_id": "doc35",
-      "resource_type": "BankingNote",
-      "owner": "user84",
-      "tenant": "LondonOffice",
+      "resource_type": "SalesOffer",
+      "owner": "user92",
+      "tenant": "NewsAgency",
       "recipients": [
-        "user92",
-        "user66",
-        "user85",
+        "user99",
+        "user8",
+        "user46",
+        "user98",
+        "user97"
+      ],
+      "is_confidential": false,
+      "contains_personal_info": false,
+      "security_level": 2
+    },
+    {
+      "resource_id": "doc36",
+      "resource_type": "TrafficFine",
+      "owner": "user32",
+      "tenant": "Reseller",
+      "recipients": [
+        "user35",
+        "user10",
         "user1",
-        "user54"
+        "user64",
+        "user48"
       ],
       "is_confidential": false,
       "contains_personal_info": false,
       "security_level": 1
     },
     {
-      "resource_id": "doc36",
+      "resource_id": "doc37",
       "resource_type": "TrafficFine",
-      "owner": "user86",
-      "tenant": "LargeBank",
-      "department": "largeBankIT",
-      "office": "LargeBankOffice1",
+      "owner": "user96",
+      "tenant": "EuropeRegion",
       "recipients": [
+        "user76",
+        "user70",
+        "user11",
+        "user63",
+        "user45"
+      ],
+      "is_confidential": true,
+      "contains_personal_info": false,
+      "security_level": 5
+    },
+    {
+      "resource_id": "doc38",
+      "resource_type": "SalesOffer",
+      "owner": "user10",
+      "tenant": "EuropeRegion",
+      "recipients": [
+        "user30",
+        "user17",
+        "user66",
+        "user69",
+        "user64"
+      ],
+      "is_confidential": true,
+      "contains_personal_info": false,
+      "security_level": 1
+    },
+    {
+      "resource_id": "doc39",
+      "resource_type": "Paycheck",
+      "owner": "user90",
+      "tenant": "LondonOffice",
+      "recipients": [
+        "user64",
+        "user42",
+        "user79",
+        "user15",
+        "user0"
+      ],
+      "is_confidential": true,
+      "contains_personal_info": true,
+      "security_level": 4
+    },
+    {
+      "resource_id": "doc40",
+      "resource_type": "TrafficFine",
+      "owner": "user75",
+      "tenant": "LargeBankLeasing",
+      "department": "largeBankLeasingSales",
+      "office": "LargeBankLeasingOffice1",
+      "recipients": [
+        "user38",
+        "user67",
+        "user36",
+        "user87",
+        "user53"
+      ],
+      "is_confidential": false,
+      "contains_personal_info": false,
+      "security_level": 5
+    },
+    {
+      "resource_id": "doc41",
+      "resource_type": "Paycheck",
+      "owner": "user15",
+      "tenant": "NewsAgency",
+      "recipients": [
+        "user74",
+        "user92",
+        "user79",
+        "user66",
+        "user39"
+      ],
+      "is_confidential": false,
+      "contains_personal_info": false,
+      "security_level": 2
+    },
+    {
+      "resource_id": "doc42",
+      "resource_type": "Paycheck",
+      "owner": "user30",
+      "tenant": "Reseller",
+      "recipients": [
+        "user26",
+        "user45",
+        "user75",
         "user49",
-        "user21",
-        "user35",
-        "user80"
+        "user77"
       ],
       "is_confidential": false,
       "contains_personal_info": false,
       "security_level": 3
     },
     {
-      "resource_id": "doc37",
-      "resource_type": "Invoice",
-      "owner": "user93",
-      "tenant": "NewsAgency",
+      "resource_id": "doc43",
+      "resource_type": "Contract",
+      "owner": "user22",
+      "tenant": "Reseller",
       "recipients": [
-        "user68",
-        "user94",
-        "user14",
-        "user51",
-        "user35"
+        "user45",
+        "user57",
+        "user83",
+        "user6",
+        "user89"
       ],
-      "is_confidential": false,
+      "is_confidential": true,
+      "contains_personal_info": false,
+      "security_level": 5
+    },
+    {
+      "resource_id": "doc44",
+      "resource_type": "BankingNote",
+      "owner": "user12",
+      "tenant": "LargeBankLeasing",
+      "department": "largeBankLeasingSales",
+      "office": "LargeBankLeasingOffice1",
+      "recipients": [
+        "user23",
+        "user91",
+        "user54",
+        "user4",
+        "user65"
+      ],
+      "is_confidential": true,
       "contains_personal_info": false,
       "security_level": 4
     },
     {
-      "resource_id": "doc38",
+      "resource_id": "doc45",
       "resource_type": "Paycheck",
-      "owner": "user91",
-      "tenant": "NewsAgency",
+      "owner": "user16",
+      "tenant": "EuropeRegion",
       "recipients": [
-        "user53",
-        "user45",
-        "user61",
-        "user96",
-        "user4"
+        "user29",
+        "user19",
+        "user33",
+        "user2",
+        "user21"
       ],
       "is_confidential": true,
       "contains_personal_info": true,
       "security_level": 3
     },
     {
-      "resource_id": "doc39",
-      "resource_type": "TrafficFine",
-      "owner": "user44",
-      "tenant": "LargeBank",
-      "department": "largeBankSales",
-      "office": "LargeBankOffice10",
+      "resource_id": "doc46",
+      "resource_type": "Invoice",
+      "owner": "user90",
+      "tenant": "LondonOffice",
       "recipients": [
-        "user1",
-        "user80",
-        "user14",
-        "user95",
-        "user35"
+        "user64",
+        "user86",
+        "user36",
+        "user52",
+        "user79"
       ],
       "is_confidential": false,
       "contains_personal_info": false,
-      "security_level": 5
-    },
-    {
-      "resource_id": "doc40",
-      "resource_type": "BankingNote",
-      "owner": "user91",
-      "tenant": "NewsAgency",
-      "recipients": [
-        "user60",
-        "user3",
-        "user76",
-        "user0",
-        "user70"
-      ],
-      "is_confidential": true,
-      "contains_personal_info": false,
-      "security_level": 4
-    },
-    {
-      "resource_id": "doc41",
-      "resource_type": "Contract",
-      "owner": "user68",
-      "tenant": "Reseller",
-      "recipients": [
-        "user29",
-        "user92",
-        "user4",
-        "user59",
-        "user2"
-      ],
-      "is_confidential": true,
-      "contains_personal_info": false,
       "security_level": 1
-    },
-    {
-      "resource_id": "doc42",
-      "resource_type": "BankingNote",
-      "owner": "user97",
-      "tenant": "EuropeRegion",
-      "recipients": [
-        "user68",
-        "user22",
-        "user4",
-        "user15",
-        "user20"
-      ],
-      "is_confidential": true,
-      "contains_personal_info": false,
-      "security_level": 3
-    },
-    {
-      "resource_id": "doc43",
-      "resource_type": "BankingNote",
-      "owner": "user84",
-      "tenant": "LondonOffice",
-      "recipients": [
-        "user11",
-        "user19",
-        "user88",
-        "user86",
-        "user26"
-      ],
-      "is_confidential": true,
-      "contains_personal_info": false,
-      "security_level": 1
-    },
-    {
-      "resource_id": "doc44",
-      "resource_type": "Invoice",
-      "owner": "user90",
-      "tenant": "Reseller",
-      "recipients": [
-        "user70",
-        "user67",
-        "user55",
-        "user51",
-        "user62"
-      ],
-      "is_confidential": true,
-      "contains_personal_info": false,
-      "security_level": 5
-    },
-    {
-      "resource_id": "doc45",
-      "resource_type": "TrafficFine",
-      "owner": "user57",
-      "tenant": "NewsAgency",
-      "recipients": [
-        "user17",
-        "user20",
-        "user81",
-        "user83",
-        "user15"
-      ],
-      "is_confidential": true,
-      "contains_personal_info": false,
-      "security_level": 3
-    },
-    {
-      "resource_id": "doc46",
-      "resource_type": "BankingNote",
-      "owner": "user98",
-      "tenant": "Reseller",
-      "recipients": [
-        "user52",
-        "user70",
-        "user64",
-        "user39",
-        "user44"
-      ],
-      "is_confidential": true,
-      "contains_personal_info": false,
-      "security_level": 2
     },
     {
       "resource_id": "doc47",
-      "resource_type": "Contract",
-      "owner": "user49",
-      "tenant": "LondonOffice",
+      "resource_type": "SalesOffer",
+      "owner": "user63",
+      "tenant": "NewsAgency",
       "recipients": [
-        "user6",
-        "user81",
-        "user58",
-        "user99",
-        "user33"
+        "user63",
+        "user85",
+        "user12",
+        "user82",
+        "user45"
       ],
       "is_confidential": true,
       "contains_personal_info": false,
@@ -1964,197 +1942,50 @@
     },
     {
       "resource_id": "doc48",
-      "resource_type": "TrafficFine",
-      "owner": "user5",
+      "resource_type": "SalesOffer",
+      "owner": "user26",
       "tenant": "LargeBank",
-      "department": "largeBankIT",
-      "office": "LargeBankOffice4",
+      "department": "largeBankSales",
+      "office": "LargeBankOffice1",
       "recipients": [
-        "user86",
-        "user88",
-        "user64",
-        "user84",
-        "user2"
-      ],
-      "is_confidential": true,
-      "contains_personal_info": false,
-      "security_level": 3
-    },
-    {
-      "resource_id": "doc49",
-      "resource_type": "TrafficFine",
-      "owner": "user1",
-      "tenant": "NewsAgency",
-      "recipients": [
-        "user50",
-        "user88",
-        "user16",
-        "user52"
-      ],
-      "is_confidential": true,
-      "contains_personal_info": false,
-      "security_level": 5
-    },
-    {
-      "resource_id": "doc50",
-      "resource_type": "Invoice",
-      "owner": "user67",
-      "tenant": "LondonOffice",
-      "recipients": [
-        "user57",
-        "user33",
-        "user60",
-        "user73",
-        "user12"
-      ],
-      "is_confidential": true,
-      "contains_personal_info": false,
-      "security_level": 4
-    },
-    {
-      "resource_id": "doc51",
-      "resource_type": "BankingNote",
-      "owner": "user5",
-      "tenant": "LargeBank",
-      "department": "largeBankIT",
-      "office": "LargeBankOffice4",
-      "recipients": [
-        "user17",
-        "user81",
-        "user35",
-        "user7",
-        "user82"
-      ],
-      "is_confidential": false,
-      "contains_personal_info": false,
-      "security_level": 3
-    },
-    {
-      "resource_id": "doc52",
-      "resource_type": "BankingNote",
-      "owner": "user47",
-      "tenant": "LargeBankLeasing",
-      "department": "largeBankLeasingSales",
-      "office": "LargeBankLeasingOffice2",
-      "recipients": [
-        "user22",
-        "user84",
-        "user44",
-        "user5",
-        "user34"
-      ],
-      "is_confidential": true,
-      "contains_personal_info": false,
-      "security_level": 5
-    },
-    {
-      "resource_id": "doc53",
-      "resource_type": "Contract",
-      "owner": "user1",
-      "tenant": "NewsAgency",
-      "recipients": [
-        "user21",
-        "user74",
-        "user18",
-        "user65",
-        "user7"
-      ],
-      "is_confidential": true,
-      "contains_personal_info": false,
-      "security_level": 2
-    },
-    {
-      "resource_id": "doc54",
-      "resource_type": "Invoice",
-      "owner": "user93",
-      "tenant": "NewsAgency",
-      "recipients": [
-        "user65",
-        "user14",
-        "user73",
-        "user27",
-        "user50"
-      ],
-      "is_confidential": false,
-      "contains_personal_info": false,
-      "security_level": 3
-    },
-    {
-      "resource_id": "doc55",
-      "resource_type": "Contract",
-      "owner": "user43",
-      "tenant": "NewsAgency",
-      "recipients": [
-        "user95",
-        "user34",
-        "user62",
-        "user68",
-        "user19"
-      ],
-      "is_confidential": false,
-      "contains_personal_info": false,
-      "security_level": 5
-    },
-    {
-      "resource_id": "doc56",
-      "resource_type": "Invoice",
-      "owner": "user92",
-      "tenant": "NewsAgency",
-      "recipients": [
-        "user8",
-        "user38",
-        "user62",
-        "user11",
-        "user45"
-      ],
-      "is_confidential": true,
-      "contains_personal_info": false,
-      "security_level": 3
-    },
-    {
-      "resource_id": "doc57",
-      "resource_type": "BankingNote",
-      "owner": "user11",
-      "tenant": "NewsAgency",
-      "recipients": [
-        "user23",
         "user72",
-        "user49",
-        "user56",
-        "user20"
+        "user4",
+        "user58",
+        "user43",
+        "user67"
       ],
       "is_confidential": true,
       "contains_personal_info": true,
-      "security_level": 3
+      "security_level": 5
     },
     {
-      "resource_id": "doc58",
-      "resource_type": "Paycheck",
-      "owner": "user66",
-      "tenant": "NewsAgency",
-      "recipients": [
-        "user0",
-        "user26",
-        "user92",
-        "user60",
-        "user62"
-      ],
-      "is_confidential": true,
-      "contains_personal_info": false,
-      "security_level": 1
-    },
-    {
-      "resource_id": "doc59",
-      "resource_type": "BankingNote",
-      "owner": "user96",
+      "resource_id": "doc49",
+      "resource_type": "SalesOffer",
+      "owner": "user61",
       "tenant": "LargeBankLeasing",
       "department": "largeBankLeasingCustomerCare",
       "office": "LargeBankLeasingOffice2",
       "recipients": [
-        "user66",
-        "user22",
-        "user87",
+        "user43",
+        "user13",
+        "user84",
+        "user1",
+        "user45"
+      ],
+      "is_confidential": false,
+      "contains_personal_info": false,
+      "security_level": 3
+    },
+    {
+      "resource_id": "doc50",
+      "resource_type": "Paycheck",
+      "owner": "user44",
+      "tenant": "LondonOffice",
+      "recipients": [
         "user41",
+        "user42",
+        "user54",
+        "user26",
         "user73"
       ],
       "is_confidential": true,
@@ -2162,16 +1993,171 @@
       "security_level": 1
     },
     {
-      "resource_id": "doc60",
+      "resource_id": "doc51",
+      "resource_type": "Contract",
+      "owner": "user36",
+      "tenant": "LargeBankLeasing",
+      "department": "largeBankLeasingSales",
+      "office": "LargeBankLeasingOffice2",
+      "recipients": [
+        "user13",
+        "user98",
+        "user0",
+        "user81"
+      ],
+      "is_confidential": false,
+      "contains_personal_info": true,
+      "security_level": 5
+    },
+    {
+      "resource_id": "doc52",
+      "resource_type": "BankingNote",
+      "owner": "user41",
+      "tenant": "LondonOffice",
+      "recipients": [
+        "user8",
+        "user52",
+        "user37",
+        "user99",
+        "user76"
+      ],
+      "is_confidential": false,
+      "contains_personal_info": false,
+      "security_level": 4
+    },
+    {
+      "resource_id": "doc53",
+      "resource_type": "Contract",
+      "owner": "user11",
+      "tenant": "LondonOffice",
+      "recipients": [
+        "user36",
+        "user69",
+        "user44",
+        "user94",
+        "user63"
+      ],
+      "is_confidential": false,
+      "contains_personal_info": false,
+      "security_level": 1
+    },
+    {
+      "resource_id": "doc54",
       "resource_type": "Paycheck",
-      "owner": "user18",
+      "owner": "user92",
       "tenant": "NewsAgency",
       "recipients": [
-        "user57",
-        "user56",
-        "user5",
-        "user86",
+        "user33",
+        "user14",
+        "user95",
+        "user9",
+        "user44"
+      ],
+      "is_confidential": false,
+      "contains_personal_info": false,
+      "security_level": 4
+    },
+    {
+      "resource_id": "doc55",
+      "resource_type": "BankingNote",
+      "owner": "user0",
+      "tenant": "LargeBank",
+      "department": "largeBankICT",
+      "office": "LargeBankOffice8",
+      "recipients": [
+        "user3",
+        "user50",
+        "user46",
+        "user15",
+        "user43"
+      ],
+      "is_confidential": false,
+      "contains_personal_info": false,
+      "security_level": 4
+    },
+    {
+      "resource_id": "doc56",
+      "resource_type": "SalesOffer",
+      "owner": "user80",
+      "tenant": "LargeBankLeasing",
+      "department": "largeBankLeasingSales",
+      "office": "LargeBankLeasingOffice1",
+      "recipients": [
+        "user9",
+        "user82",
+        "user24",
+        "user85",
         "user79"
+      ],
+      "is_confidential": false,
+      "contains_personal_info": false,
+      "security_level": 4
+    },
+    {
+      "resource_id": "doc57",
+      "resource_type": "SalesOffer",
+      "owner": "user66",
+      "tenant": "LargeBankLeasing",
+      "department": "largeBankLeasingSales",
+      "office": "LargeBankLeasingOffice2",
+      "recipients": [
+        "user51",
+        "user69",
+        "user48",
+        "user38",
+        "user92"
+      ],
+      "is_confidential": true,
+      "contains_personal_info": false,
+      "security_level": 2
+    },
+    {
+      "resource_id": "doc58",
+      "resource_type": "BankingNote",
+      "owner": "user14",
+      "tenant": "LargeBank",
+      "department": "largeBankAudit",
+      "office": "LargeBankOffice7",
+      "recipients": [
+        "user87",
+        "user48",
+        "user96",
+        "user16",
+        "user33"
+      ],
+      "is_confidential": true,
+      "contains_personal_info": false,
+      "security_level": 2
+    },
+    {
+      "resource_id": "doc59",
+      "resource_type": "TrafficFine",
+      "owner": "user91",
+      "tenant": "LargeBank",
+      "department": "largeBankIT",
+      "office": "LargeBankOffice10",
+      "recipients": [
+        "user1",
+        "user51",
+        "user16",
+        "user59",
+        "user24"
+      ],
+      "is_confidential": true,
+      "contains_personal_info": false,
+      "security_level": 1
+    },
+    {
+      "resource_id": "doc60",
+      "resource_type": "Contract",
+      "owner": "user83",
+      "tenant": "Reseller",
+      "recipients": [
+        "user46",
+        "user40",
+        "user71",
+        "user12",
+        "user38"
       ],
       "is_confidential": true,
       "contains_personal_info": false,
@@ -2180,78 +2166,79 @@
     {
       "resource_id": "doc61",
       "resource_type": "Paycheck",
-      "owner": "user51",
+      "owner": "user16",
       "tenant": "EuropeRegion",
       "recipients": [
-        "user73",
-        "user59",
-        "user67",
-        "user2",
-        "user13"
+        "user7",
+        "user78",
+        "user68",
+        "user83",
+        "user73"
       ],
       "is_confidential": true,
-      "contains_personal_info": true,
+      "contains_personal_info": false,
       "security_level": 3
     },
     {
       "resource_id": "doc62",
-      "resource_type": "Paycheck",
-      "owner": "user87",
-      "tenant": "NewsAgency",
+      "resource_type": "TrafficFine",
+      "owner": "user47",
+      "tenant": "LargeBank",
+      "department": "largeBankSales",
+      "office": "LargeBankOffice8",
       "recipients": [
-        "user40",
-        "user73",
-        "user95",
-        "user99",
-        "user1"
+        "user47",
+        "user83",
+        "user49",
+        "user23",
+        "user89"
       ],
       "is_confidential": false,
       "contains_personal_info": false,
-      "security_level": 2
+      "security_level": 5
     },
     {
       "resource_id": "doc63",
-      "resource_type": "TrafficFine",
-      "owner": "user70",
-      "tenant": "LondonOffice",
+      "resource_type": "Invoice",
+      "owner": "user29",
+      "tenant": "EuropeRegion",
       "recipients": [
-        "user34",
-        "user33",
-        "user23",
-        "user45",
-        "user13"
+        "user82",
+        "user99",
+        "user1",
+        "user15",
+        "user34"
       ],
-      "is_confidential": true,
+      "is_confidential": false,
       "contains_personal_info": false,
       "security_level": 4
     },
     {
       "resource_id": "doc64",
-      "resource_type": "BankingNote",
-      "owner": "user26",
-      "tenant": "Reseller",
+      "resource_type": "SalesOffer",
+      "owner": "user95",
+      "tenant": "LondonOffice",
       "recipients": [
-        "user0",
-        "user14",
-        "user85",
-        "user34",
-        "user83"
+        "user47",
+        "user45",
+        "user38",
+        "user71",
+        "user62"
       ],
-      "is_confidential": false,
-      "contains_personal_info": true,
-      "security_level": 1
+      "is_confidential": true,
+      "contains_personal_info": false,
+      "security_level": 5
     },
     {
       "resource_id": "doc65",
-      "resource_type": "TrafficFine",
-      "owner": "user52",
-      "tenant": "LondonOffice",
+      "resource_type": "Paycheck",
+      "owner": "user24",
+      "tenant": "Reseller",
       "recipients": [
-        "user20",
-        "user42",
-        "user22",
-        "user6",
-        "user70"
+        "user2",
+        "user12",
+        "user80",
+        "user82"
       ],
       "is_confidential": false,
       "contains_personal_info": false,
@@ -2259,280 +2246,282 @@
     },
     {
       "resource_id": "doc66",
-      "resource_type": "TrafficFine",
-      "owner": "user23",
-      "tenant": "Reseller",
+      "resource_type": "Paycheck",
+      "owner": "user89",
+      "tenant": "LargeBank",
+      "department": "largeBankAudit",
+      "office": "LargeBankOffice1",
       "recipients": [
-        "user17",
-        "user48",
-        "user27",
-        "user91",
-        "user6"
+        "user37",
+        "user89",
+        "user12",
+        "user81",
+        "user63"
       ],
       "is_confidential": true,
       "contains_personal_info": false,
-      "security_level": 5
+      "security_level": 1
     },
     {
       "resource_id": "doc67",
       "resource_type": "BankingNote",
-      "owner": "user85",
-      "tenant": "EuropeRegion",
+      "owner": "user19",
+      "tenant": "Reseller",
       "recipients": [
-        "user56",
-        "user22",
-        "user86",
-        "user64",
-        "user51"
+        "user31",
+        "user24",
+        "user88",
+        "user27",
+        "user69"
       ],
-      "is_confidential": false,
+      "is_confidential": true,
       "contains_personal_info": false,
-      "security_level": 3
+      "security_level": 2
     },
     {
       "resource_id": "doc68",
       "resource_type": "Paycheck",
-      "owner": "user4",
-      "tenant": "LargeBank",
-      "department": "largeBankIT",
-      "office": "LargeBankOffice6",
+      "owner": "user69",
+      "tenant": "LargeBankLeasing",
+      "department": "largeBankLeasingSales",
+      "office": "LargeBankLeasingOffice2",
       "recipients": [
-        "user64",
+        "user50",
+        "user68",
+        "user44",
+        "user17",
+        "user89"
+      ],
+      "is_confidential": false,
+      "contains_personal_info": false,
+      "security_level": 5
+    },
+    {
+      "resource_id": "doc69",
+      "resource_type": "Contract",
+      "owner": "user18",
+      "tenant": "LondonOffice",
+      "recipients": [
         "user6",
+        "user39",
+        "user31",
+        "user20",
+        "user66"
+      ],
+      "is_confidential": true,
+      "contains_personal_info": true,
+      "security_level": 4
+    },
+    {
+      "resource_id": "doc70",
+      "resource_type": "Paycheck",
+      "owner": "user77",
+      "tenant": "Reseller",
+      "recipients": [
+        "user3",
+        "user70",
+        "user47",
+        "user77",
+        "user48"
+      ],
+      "is_confidential": true,
+      "contains_personal_info": false,
+      "security_level": 2
+    },
+    {
+      "resource_id": "doc71",
+      "resource_type": "SalesOffer",
+      "owner": "user43",
+      "tenant": "Reseller",
+      "recipients": [
+        "user1",
+        "user33",
+        "user2",
+        "user90",
+        "user67"
+      ],
+      "is_confidential": false,
+      "contains_personal_info": false,
+      "security_level": 5
+    },
+    {
+      "resource_id": "doc72",
+      "resource_type": "Contract",
+      "owner": "user49",
+      "tenant": "Reseller",
+      "recipients": [
+        "user29",
+        "user96",
+        "user7",
+        "user4",
+        "user69"
+      ],
+      "is_confidential": true,
+      "contains_personal_info": false,
+      "security_level": 3
+    },
+    {
+      "resource_id": "doc73",
+      "resource_type": "Invoice",
+      "owner": "user65",
+      "tenant": "LargeBankLeasing",
+      "department": "largeBankLeasingCustomerCare",
+      "office": "LargeBankLeasingOffice1",
+      "recipients": [
+        "user62",
+        "user23",
+        "user31",
         "user9",
-        "user98",
-        "user7"
+        "user21"
+      ],
+      "is_confidential": false,
+      "contains_personal_info": true,
+      "security_level": 3
+    },
+    {
+      "resource_id": "doc74",
+      "resource_type": "SalesOffer",
+      "owner": "user16",
+      "tenant": "EuropeRegion",
+      "recipients": [
+        "user37",
+        "user3",
+        "user29",
+        "user97",
+        "user32"
       ],
       "is_confidential": false,
       "contains_personal_info": false,
       "security_level": 3
     },
     {
-      "resource_id": "doc69",
-      "resource_type": "SalesOffer",
-      "owner": "user3",
-      "tenant": "LargeBankLeasing",
-      "department": "largeBankLeasingCustomerCare",
-      "office": "LargeBankLeasingOffice2",
-      "recipients": [
-        "user11",
-        "user2",
-        "user40",
-        "user90",
-        "user83"
-      ],
-      "is_confidential": false,
-      "contains_personal_info": true,
-      "security_level": 1
-    },
-    {
-      "resource_id": "doc70",
+      "resource_id": "doc75",
       "resource_type": "Invoice",
-      "owner": "user53",
-      "tenant": "LargeBank",
-      "department": "largeBankAudit",
-      "office": "LargeBankOffice10",
-      "recipients": [
-        "user41",
-        "user76",
-        "user30",
-        "user39",
-        "user8"
-      ],
-      "is_confidential": true,
-      "contains_personal_info": true,
-      "security_level": 2
-    },
-    {
-      "resource_id": "doc71",
-      "resource_type": "Contract",
-      "owner": "user82",
+      "owner": "user12",
       "tenant": "LargeBankLeasing",
-      "department": "largeBankLeasingCustomerCare",
+      "department": "largeBankLeasingSales",
       "office": "LargeBankLeasingOffice1",
       "recipients": [
-        "user98",
-        "user14",
-        "user96",
-        "user63",
-        "user57"
-      ],
-      "is_confidential": true,
-      "contains_personal_info": false,
-      "security_level": 4
-    },
-    {
-      "resource_id": "doc72",
-      "resource_type": "TrafficFine",
-      "owner": "user34",
-      "tenant": "NewsAgency",
-      "recipients": [
-        "user96",
-        "user16",
-        "user35",
-        "user34",
-        "user55"
+        "user12",
+        "user67",
+        "user47",
+        "user49",
+        "user83"
       ],
       "is_confidential": true,
       "contains_personal_info": false,
       "security_level": 5
     },
     {
-      "resource_id": "doc73",
-      "resource_type": "Contract",
-      "owner": "user6",
+      "resource_id": "doc76",
+      "resource_type": "TrafficFine",
+      "owner": "user92",
       "tenant": "NewsAgency",
       "recipients": [
-        "user98",
-        "user97",
-        "user35",
-        "user25",
-        "user52"
+        "user14",
+        "user38",
+        "user22",
+        "user1",
+        "user33"
       ],
       "is_confidential": false,
       "contains_personal_info": false,
-      "security_level": 2
-    },
-    {
-      "resource_id": "doc74",
-      "resource_type": "Invoice",
-      "owner": "user52",
-      "tenant": "LondonOffice",
-      "recipients": [
-        "user50",
-        "user58",
-        "user32",
-        "user13",
-        "user88"
-      ],
-      "is_confidential": true,
-      "contains_personal_info": false,
-      "security_level": 4
-    },
-    {
-      "resource_id": "doc75",
-      "resource_type": "TrafficFine",
-      "owner": "user80",
-      "tenant": "Reseller",
-      "recipients": [
-        "user36",
-        "user46",
-        "user31",
-        "user89",
-        "user82"
-      ],
-      "is_confidential": true,
-      "contains_personal_info": false,
-      "security_level": 4
-    },
-    {
-      "resource_id": "doc76",
-      "resource_type": "SalesOffer",
-      "owner": "user75",
-      "tenant": "EuropeRegion",
-      "recipients": [
-        "user1",
-        "user87",
-        "user67",
-        "user36",
-        "user55"
-      ],
-      "is_confidential": true,
-      "contains_personal_info": true,
       "security_level": 4
     },
     {
       "resource_id": "doc77",
-      "resource_type": "Contract",
-      "owner": "user97",
-      "tenant": "EuropeRegion",
+      "resource_type": "Invoice",
+      "owner": "user2",
+      "tenant": "NewsAgency",
       "recipients": [
-        "user50",
-        "user95",
-        "user48",
-        "user19",
-        "user96"
+        "user98",
+        "user67",
+        "user2",
+        "user52",
+        "user76"
       ],
       "is_confidential": true,
-      "contains_personal_info": true,
+      "contains_personal_info": false,
       "security_level": 2
     },
     {
       "resource_id": "doc78",
-      "resource_type": "TrafficFine",
-      "owner": "user24",
+      "resource_type": "Paycheck",
+      "owner": "user51",
       "tenant": "LargeBank",
-      "department": "largeBankSales",
-      "office": "LargeBankOffice10",
+      "department": "largeBankICT",
+      "office": "LargeBankOffice2",
       "recipients": [
-        "user35",
-        "user42",
-        "user33",
-        "user31",
-        "user86"
+        "user2",
+        "user47",
+        "user84",
+        "user76",
+        "user79"
       ],
-      "is_confidential": false,
-      "contains_personal_info": true,
-      "security_level": 3
+      "is_confidential": true,
+      "contains_personal_info": false,
+      "security_level": 2
     },
     {
       "resource_id": "doc79",
-      "resource_type": "BankingNote",
-      "owner": "user87",
-      "tenant": "NewsAgency",
+      "resource_type": "Contract",
+      "owner": "user78",
+      "tenant": "LargeBank",
+      "department": "largeBankAudit",
+      "office": "LargeBankOffice7",
       "recipients": [
-        "user19",
-        "user78",
-        "user95",
-        "user54"
+        "user12",
+        "user45",
+        "user84",
+        "user50",
+        "user24"
       ],
       "is_confidential": true,
       "contains_personal_info": false,
-      "security_level": 1
+      "security_level": 2
     },
     {
       "resource_id": "doc80",
+      "resource_type": "Paycheck",
+      "owner": "user18",
+      "tenant": "LondonOffice",
+      "recipients": [
+        "user64",
+        "user40",
+        "user65",
+        "user90",
+        "user56"
+      ],
+      "is_confidential": false,
+      "contains_personal_info": false,
+      "security_level": 5
+    },
+    {
+      "resource_id": "doc81",
       "resource_type": "Contract",
-      "owner": "user26",
+      "owner": "user23",
       "tenant": "Reseller",
       "recipients": [
-        "user16",
-        "user14",
-        "user69",
-        "user36",
-        "user21"
+        "user71",
+        "user70",
+        "user20",
+        "user99"
       ],
-      "is_confidential": true,
+      "is_confidential": false,
       "contains_personal_info": true,
       "security_level": 1
     },
     {
-      "resource_id": "doc81",
-      "resource_type": "TrafficFine",
-      "owner": "user51",
-      "tenant": "EuropeRegion",
-      "recipients": [
-        "user77",
-        "user12",
-        "user56",
-        "user76",
-        "user71"
-      ],
-      "is_confidential": true,
-      "contains_personal_info": false,
-      "security_level": 3
-    },
-    {
       "resource_id": "doc82",
-      "resource_type": "Invoice",
-      "owner": "user84",
-      "tenant": "LondonOffice",
+      "resource_type": "TrafficFine",
+      "owner": "user92",
+      "tenant": "NewsAgency",
       "recipients": [
-        "user17",
-        "user1",
-        "user28",
-        "user78",
-        "user11"
+        "user85",
+        "user34",
+        "user58",
+        "user11",
+        "user54"
       ],
       "is_confidential": true,
       "contains_personal_info": false,
@@ -2540,49 +2529,51 @@
     },
     {
       "resource_id": "doc83",
-      "resource_type": "Paycheck",
-      "owner": "user78",
-      "tenant": "LargeBank",
-      "department": "largeBankICT",
-      "office": "LargeBankOffice3",
+      "resource_type": "SalesOffer",
+      "owner": "user38",
+      "tenant": "EuropeRegion",
       "recipients": [
-        "user34",
-        "user27",
-        "user63",
-        "user58",
-        "user14"
+        "user17",
+        "user9",
+        "user98",
+        "user1",
+        "user97"
       ],
       "is_confidential": false,
-      "contains_personal_info": false,
+      "contains_personal_info": true,
       "security_level": 4
     },
     {
       "resource_id": "doc84",
-      "resource_type": "SalesOffer",
-      "owner": "user46",
-      "tenant": "EuropeRegion",
+      "resource_type": "BankingNote",
+      "owner": "user78",
+      "tenant": "LargeBank",
+      "department": "largeBankAudit",
+      "office": "LargeBankOffice7",
       "recipients": [
-        "user9",
-        "user89",
-        "user93",
-        "user27",
-        "user95"
+        "user84",
+        "user17",
+        "user18",
+        "user10",
+        "user74"
       ],
-      "is_confidential": false,
+      "is_confidential": true,
       "contains_personal_info": false,
-      "security_level": 1
+      "security_level": 3
     },
     {
       "resource_id": "doc85",
-      "resource_type": "TrafficFine",
-      "owner": "user92",
-      "tenant": "NewsAgency",
+      "resource_type": "SalesOffer",
+      "owner": "user99",
+      "tenant": "LargeBank",
+      "department": "largeBankIT",
+      "office": "LargeBankOffice3",
       "recipients": [
-        "user3",
-        "user97",
-        "user80",
-        "user51",
-        "user74"
+        "user78",
+        "user58",
+        "user75",
+        "user24",
+        "user88"
       ],
       "is_confidential": true,
       "contains_personal_info": false,
@@ -2590,15 +2581,15 @@
     },
     {
       "resource_id": "doc86",
-      "resource_type": "Paycheck",
-      "owner": "user46",
-      "tenant": "EuropeRegion",
+      "resource_type": "Contract",
+      "owner": "user86",
+      "tenant": "LondonOffice",
       "recipients": [
-        "user73",
-        "user91",
-        "user42",
+        "user75",
         "user20",
-        "user63"
+        "user63",
+        "user3",
+        "user98"
       ],
       "is_confidential": false,
       "contains_personal_info": false,
@@ -2607,223 +2598,219 @@
     {
       "resource_id": "doc87",
       "resource_type": "BankingNote",
-      "owner": "user66",
-      "tenant": "NewsAgency",
+      "owner": "user3",
+      "tenant": "LargeBankLeasing",
+      "department": "largeBankLeasingCustomerCare",
+      "office": "LargeBankLeasingOffice1",
       "recipients": [
-        "user93",
-        "user33",
-        "user72",
-        "user88",
-        "user23"
+        "user16",
+        "user55",
+        "user31",
+        "user34",
+        "user40"
       ],
-      "is_confidential": true,
+      "is_confidential": false,
       "contains_personal_info": false,
-      "security_level": 2
+      "security_level": 4
     },
     {
       "resource_id": "doc88",
       "resource_type": "BankingNote",
-      "owner": "user36",
-      "tenant": "LargeBankLeasing",
-      "department": "largeBankLeasingSales",
-      "office": "LargeBankLeasingOffice2",
+      "owner": "user38",
+      "tenant": "EuropeRegion",
       "recipients": [
-        "user94",
-        "user76",
-        "user22",
-        "user80"
+        "user41",
+        "user12",
+        "user42",
+        "user43",
+        "user48"
       ],
-      "is_confidential": true,
-      "contains_personal_info": false,
-      "security_level": 2
+      "is_confidential": false,
+      "contains_personal_info": true,
+      "security_level": 3
     },
     {
       "resource_id": "doc89",
-      "resource_type": "SalesOffer",
-      "owner": "user61",
+      "resource_type": "TrafficFine",
+      "owner": "user99",
       "tenant": "LargeBank",
-      "department": "largeBankAudit",
-      "office": "LargeBankOffice9",
+      "department": "largeBankIT",
+      "office": "LargeBankOffice3",
       "recipients": [
-        "user21",
-        "user25",
-        "user67",
-        "user4",
-        "user38"
+        "user24",
+        "user35",
+        "user39",
+        "user65"
       ],
-      "is_confidential": false,
+      "is_confidential": true,
       "contains_personal_info": false,
-      "security_level": 2
+      "security_level": 3
     },
     {
       "resource_id": "doc90",
       "resource_type": "Contract",
-      "owner": "user61",
-      "tenant": "LargeBank",
-      "department": "largeBankAudit",
-      "office": "LargeBankOffice9",
-      "recipients": [
-        "user21",
-        "user39",
-        "user47",
-        "user35",
-        "user2"
-      ],
-      "is_confidential": true,
-      "contains_personal_info": false,
-      "security_level": 4
-    },
-    {
-      "resource_id": "doc91",
-      "resource_type": "Invoice",
-      "owner": "user93",
-      "tenant": "NewsAgency",
-      "recipients": [
-        "user45",
-        "user66",
-        "user79",
-        "user0",
-        "user34"
-      ],
-      "is_confidential": false,
-      "contains_personal_info": false,
-      "security_level": 5
-    },
-    {
-      "resource_id": "doc92",
-      "resource_type": "BankingNote",
-      "owner": "user39",
+      "owner": "user23",
       "tenant": "Reseller",
       "recipients": [
-        "user26",
-        "user74",
-        "user57",
-        "user35",
-        "user49"
-      ],
-      "is_confidential": false,
-      "contains_personal_info": false,
-      "security_level": 2
-    },
-    {
-      "resource_id": "doc93",
-      "resource_type": "Paycheck",
-      "owner": "user57",
-      "tenant": "NewsAgency",
-      "recipients": [
-        "user31",
-        "user0",
-        "user67",
-        "user76",
+        "user49",
+        "user60",
+        "user81",
+        "user15",
         "user73"
       ],
       "is_confidential": true,
       "contains_personal_info": false,
-      "security_level": 2
+      "security_level": 1
     },
     {
-      "resource_id": "doc94",
+      "resource_id": "doc91",
       "resource_type": "TrafficFine",
-      "owner": "user65",
-      "tenant": "LargeBank",
-      "department": "largeBankAudit",
-      "office": "LargeBankOffice6",
+      "owner": "user9",
+      "tenant": "EuropeRegion",
       "recipients": [
-        "user72",
-        "user1",
-        "user97",
-        "user18",
-        "user3"
+        "user17",
+        "user58",
+        "user5",
+        "user46",
+        "user52"
       ],
-      "is_confidential": false,
+      "is_confidential": true,
       "contains_personal_info": false,
       "security_level": 3
     },
     {
-      "resource_id": "doc95",
-      "resource_type": "BankingNote",
-      "owner": "user20",
-      "tenant": "Reseller",
+      "resource_id": "doc92",
+      "resource_type": "SalesOffer",
+      "owner": "user58",
+      "tenant": "NewsAgency",
       "recipients": [
-        "user71",
-        "user33",
-        "user14",
-        "user8",
-        "user12"
+        "user40",
+        "user79",
+        "user44",
+        "user6",
+        "user58"
       ],
       "is_confidential": true,
       "contains_personal_info": false,
-      "security_level": 4
+      "security_level": 5
     },
     {
-      "resource_id": "doc96",
+      "resource_id": "doc93",
       "resource_type": "Contract",
-      "owner": "user41",
+      "owner": "user73",
       "tenant": "LondonOffice",
       "recipients": [
-        "user26",
+        "user99",
+        "user19",
+        "user30",
         "user43",
-        "user32",
-        "user53",
-        "user49"
+        "user33"
+      ],
+      "is_confidential": true,
+      "contains_personal_info": false,
+      "security_level": 1
+    },
+    {
+      "resource_id": "doc94",
+      "resource_type": "TrafficFine",
+      "owner": "user81",
+      "tenant": "LargeBankLeasing",
+      "department": "largeBankLeasingSales",
+      "office": "LargeBankLeasingOffice2",
+      "recipients": [
+        "user39",
+        "user77",
+        "user57",
+        "user84",
+        "user60"
+      ],
+      "is_confidential": true,
+      "contains_personal_info": false,
+      "security_level": 1
+    },
+    {
+      "resource_id": "doc95",
+      "resource_type": "Paycheck",
+      "owner": "user91",
+      "tenant": "LargeBank",
+      "department": "largeBankIT",
+      "office": "LargeBankOffice10",
+      "recipients": [
+        "user1",
+        "user89",
+        "user77",
+        "user22",
+        "user11"
       ],
       "is_confidential": false,
       "contains_personal_info": false,
       "security_level": 5
     },
     {
-      "resource_id": "doc97",
-      "resource_type": "SalesOffer",
-      "owner": "user44",
-      "tenant": "LargeBank",
-      "department": "largeBankSales",
-      "office": "LargeBankOffice10",
+      "resource_id": "doc96",
+      "resource_type": "TrafficFine",
+      "owner": "user65",
+      "tenant": "LargeBankLeasing",
+      "department": "largeBankLeasingCustomerCare",
+      "office": "LargeBankLeasingOffice1",
       "recipients": [
-        "user99",
-        "user92",
-        "user0",
-        "user57",
-        "user76"
+        "user39",
+        "user3",
+        "user4",
+        "user42",
+        "user70"
       ],
-      "is_confidential": false,
-      "contains_personal_info": true,
+      "is_confidential": true,
+      "contains_personal_info": false,
+      "security_level": 4
+    },
+    {
+      "resource_id": "doc97",
+      "resource_type": "Paycheck",
+      "owner": "user86",
+      "tenant": "LondonOffice",
+      "recipients": [
+        "user26",
+        "user69",
+        "user92",
+        "user43",
+        "user38"
+      ],
+      "is_confidential": true,
+      "contains_personal_info": false,
       "security_level": 1
     },
     {
       "resource_id": "doc98",
-      "resource_type": "Contract",
-      "owner": "user2",
-      "tenant": "LargeBankLeasing",
-      "department": "largeBankLeasingSales",
-      "office": "LargeBankLeasingOffice2",
+      "resource_type": "Paycheck",
+      "owner": "user52",
+      "tenant": "LondonOffice",
       "recipients": [
-        "user71",
-        "user45",
-        "user17",
-        "user46",
-        "user0"
+        "user60",
+        "user12",
+        "user52",
+        "user82",
+        "user10"
+      ],
+      "is_confidential": false,
+      "contains_personal_info": false,
+      "security_level": 1
+    },
+    {
+      "resource_id": "doc99",
+      "resource_type": "Contract",
+      "owner": "user82",
+      "tenant": "LondonOffice",
+      "recipients": [
+        "user59",
+        "user20",
+        "user86",
+        "user65",
+        "user87"
       ],
       "is_confidential": true,
       "contains_personal_info": false,
       "security_level": 3
-    },
-    {
-      "resource_id": "doc99",
-      "resource_type": "Invoice",
-      "owner": "user15",
-      "tenant": "LargeBank",
-      "department": "largeBankHR",
-      "office": "LargeBankOffice9",
-      "recipients": [
-        "user24",
-        "user4",
-        "user15",
-        "user37",
-        "user14"
-      ],
-      "is_confidential": true,
-      "contains_personal_info": true,
-      "security_level": 4
     }
   ],
   "rules": [
@@ -2891,25 +2878,6 @@
     },
     {
       "id": 2,
-      "description": "Owner can view their own document.",
-      "user_conditions": [],
-      "resource_conditions": [],
-      "actions": [
-        "View"
-      ],
-      "comparison_conditions": [
-        {
-          "left": {
-            "AttributeName": "Uid"
-          },
-          "operator": "Equals",
-          "right": {
-            "AttributeName": "Owner"
-          }
-        }
-      ]
-    },{
-      "id": 3,
       "description": "Combined Rule: clearance_level >= security_level AND uid in recipients AND role = employee AND type = invoice.",
       "user_conditions": [
         {
@@ -2953,41 +2921,7 @@
       ]
     },
     {
-      "id": 4,
-      "description": "Combined Rule: clearance_level >= security_level AND uid in recipients AND role = employee AND type = invoice.",
-      "user_conditions": [
-        {
-          "left": {
-            "AttributeName": "Role"
-          },
-          "operator": "Equals",
-          "right": {
-            "AttributeValue": {
-              "Role": "Employee"
-            }
-          }
-        }
-      ],
-      "resource_conditions": [
-        {
-          "left": {
-            "AttributeName": "Type"
-          },
-          "operator": "Equals",
-          "right": {
-            "AttributeValue": {
-              "ResourceType": "Invoice"
-            }
-          }
-        }
-      ],
-      "actions": [
-        "View"
-      ],
-      "comparison_conditions": []
-    },
-    {
-      "id": 5,
+      "id": 3,
       "description": "Combined Rule: clearance_level >= security_level AND uid in recipients AND role = employee AND type = invoice.",
       "user_conditions": [
         {
@@ -3031,7 +2965,7 @@
       ]
     },
     {
-      "id":6,
+      "id": 4,
       "description": "Combined Rule: clearance_level >= security_level AND uid in recipients AND role = employee AND type = invoice.",
       "user_conditions": [
         {
