@@ -6,8 +6,9 @@ mod simple_loop;
 mod example_data;
 mod z3_solver;
 
+use crate::example_data::edocument_with_access_level::generate_and_save_json;
 use crate::types::university_types::{UniversityAbacData, UniversityAbac, UniversityDomainParser};
-use crate::types::edocument_types::{EdocumentAbacData, EdocumentAbac, EdocumentDomainParser};
+use crate::types::edocument_types::{EdocumentAbacData, EdocumentAbac};
 use crate::types::types::GenericAbacParser;
 use simple_loop::{simple_loop, improved_simple_loop, parallel_indexed_loop};
 
@@ -40,39 +41,44 @@ impl Domain {
     }
 }
 
+use clap::Parser;
+
+#[derive(Parser, Debug)]
+#[command(author, version, about, long_about = None)]
+struct Args {
+    #[arg(short, long)]
+    solver: String,
+
+    #[arg(short, long)]
+    json_path: String,
+}
+
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let args: Vec<String> = env::args().collect();
+    let args = Args::parse();
 
-    if args.contains(&"--generate-json".to_string()) {
-        println!("Generating JSON data...");
-        example_data::edocument_with_access_level::generate_and_save_json();
-        return Ok(());
-    }
-
-    if args.contains(&"--try-z3".to_string()) {
-        println!("Trying Z3 solver...");
-        z3_solver::solve_real_world_scenario("output/edocument_with_clearance.json").map_err(|e| e as Box<dyn std::error::Error>)?;
-        return Ok(());
-    }
-    
-    let domain = if args.len() > 1 {
-        // コマンドライン引数で指定
-        match args[1].as_str() {
-            "university" | "uni" => Domain::University,
-            "edocument" | "edoc" => Domain::Edocument,
-            _ => {
-                eprintln!("不明なドメイン: {}. 利用可能: university, edocument", args[1]);
-                std::process::exit(1);
-            }
+    match args.solver.as_str() {
+        "simple" => {
+            println!("Running simple loop solver...");
+            let json_content: String = std::fs::read_to_string(&args.json_path)
+                .map_err(|e| format!("Failed to read JSON file {}: {}", &args.json_path, e))?;
+            let parsed_abac: EdocumentAbac = serde_json::from_str(&json_content)
+                .map_err(|e| format!("Failed to parse JSON from {}: {}", &args.json_path, e))?;
+            parallel_indexed_loop(parsed_abac)?;
         }
-    } else {
-        // 対話式選択
-        select_domain_interactive()?
-    };
-
-    println!("=== {} ドメインを使用して実行します ===", domain.name());
-    
-    run_analysis(domain)?;
+        "z3" => {
+            println!("Running z3 solver...");
+            z3_solver::solve_real_world_scenario(&args.json_path)?;
+        }
+        "generate-json" => {
+            println!("Generating JSON file...");
+            generate_and_save_json();
+            println!("JSON file generated successfully");
+        }
+        _ => {
+            eprintln!("Unknown solver: {}. Available solvers: simple, z3", args.solver);
+            std::process::exit(1);
+        }
+    }
 
     Ok(())
 }
@@ -118,7 +124,7 @@ fn run_analysis(domain: Domain) -> Result<(), Box<dyn std::error::Error>> {
         Domain::Edocument => {
             let json_file_path = "output/edocument_with_clearance.json";
             println!("=== {} を読み込み中... ===", json_file_path);
-            let json_content = std::fs::read_to_string(json_file_path)
+            let json_content: String = std::fs::read_to_string(json_file_path)
                 .map_err(|e| format!("Failed to read JSON file {}: {}", json_file_path, e))?;
             let parsed_abac: EdocumentAbacData = serde_json::from_str(&json_content)
                 .map_err(|e| format!("Failed to parse JSON from {}: {}", json_file_path, e))?;

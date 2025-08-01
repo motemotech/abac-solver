@@ -64,9 +64,10 @@ pub fn generate_edocument_data_with_clearance(
     for i in 0..n_users {
         let mut user = EdocumentUserAttribute::new(format!("user{}", i));
         let tenant = random_choice(&tenants).unwrap().clone();
+        let role = random_choice(&[Role::Employee, Role::Manager, Role::Admin, Role::Helpdesk, Role::Customer]).unwrap();
         
         user.tenant = Some(tenant.clone());
-        user.role = Some(Role::Employee);
+        user.role = Some(role.clone());
         user.position = random_choice(&positions).map(|p| p.clone());
         user.department = departments.get(&tenant).and_then(|deps| random_choice(deps)).map(|d| d.clone());
         

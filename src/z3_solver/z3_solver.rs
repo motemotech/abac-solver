@@ -159,7 +159,8 @@ Found {} matching pairs:", solutions.len());
 /// It then iterates through each rule, using Z3's push/pop mechanism for efficient, scoped rule evaluation.
 pub fn solve_real_world_scenario(json_path: &str) -> Result<(), Box<dyn std::error::Error>> {
     println!("--- Running Real-World ABAC Solver from '{}' ---", json_path);
-    let cfg = Config::new();
+    let mut cfg = Config::new();
+    // cfg.set_bool_param_value("parallel.enable", true);
     let ctx = Context::new(&cfg);
     let solver = Solver::new(&ctx);
 
@@ -422,7 +423,7 @@ fn translate_condition<'a>(
                 (&condition.right, &condition.left)
             };
 
-            let scalar_z3 = match translate_expr_to_int(ctx, scalar_expr, attr_funcs, u_var, r_var, get_int, context) {
+            let scalar_z3 = match translate_expr_to_int(ctx, scalar_expr, attr_funcs, u_var, r_var, get_int, context, true) {
                 Some(s) => s,
                 None => return Bool::from_bool(ctx, false),
             };
@@ -456,8 +457,8 @@ fn translate_condition<'a>(
             }
         },
         _ => {
-            let left = translate_expr_to_int(ctx, &condition.left, attr_funcs, u_var, r_var, get_int, context);
-            let right = translate_expr_to_int(ctx, &condition.right, attr_funcs, u_var, r_var, get_int, context);
+            let left = translate_expr_to_int(ctx, &condition.left, attr_funcs, u_var, r_var, get_int, context, true);
+            let right = translate_expr_to_int(ctx, &condition.right, attr_funcs, u_var, r_var, get_int, context, false);
 
             if let (Some(left), Some(right)) = (left, right) {
                 match condition.operator {
@@ -483,27 +484,46 @@ fn translate_expr_to_int<'a>(
     r_var: &Dynamic<'a>,
     get_int: &impl Fn(&AttributeValue) -> i64,
     context: &AttributeContext,
+    is_left: bool,
 ) -> Option<Int<'a>> {
     match expr {
         AttributeExpression::AttributeName(name) => {
             let (user_func_opt, resource_func_opt) = attr_funcs.get(name)?;
+            
             let z3_func_opt = match context {
                 AttributeContext::User => user_func_opt.as_ref(),
                 AttributeContext::Resource => resource_func_opt.as_ref(),
-                AttributeContext::Comparison => user_func_opt.as_ref().or(resource_func_opt.as_ref()),
+                AttributeContext::Comparison => {
+                    // If it's a comparison, we need to decide whether to use the user or resource function.
+                    // A simple heuristic: if a user function exists, use it for the left side of the comparison.
+                    // If a resource function exists, use it for the right side.
+                    // This handles cases like `user.department == resource.department`.
+                    if is_left {
+                        user_func_opt.as_ref().or(resource_func_opt.as_ref())
+                    } else {
+                        resource_func_opt.as_ref().or(user_func_opt.as_ref())
+                    }
+                }
             };
+
             if let Some(Z3Func::Single(func)) = z3_func_opt {
-                let entity_var = match context {
-                    AttributeContext::User => u_var,
-                    AttributeContext::Resource => r_var,
-                    AttributeContext::Comparison => if user_func_opt.is_some() { u_var } else { r_var },
+                let entity_var = if user_func_opt.is_some() && (matches!(context, AttributeContext::User) || (matches!(context, AttributeContext::Comparison) && is_left)) {
+                    u_var
+                } else {
+                    r_var
                 };
                 Some(func.apply(&[entity_var]).as_int().unwrap())
             } else {
                 None
             }
         }
-        AttributeExpression::AttributeValue(val) => Some(Int::from_i64(ctx, get_int(val))),
+        AttributeExpression::AttributeValue(val) => {
+            if let AttributeValue::Integer(i) = val {
+                Some(Int::from_i64(ctx, *i as i64))
+            } else {
+                Some(Int::from_i64(ctx, get_int(val)))
+            }
+        }
         AttributeExpression::ValueSet(_) => None,
     }
 }
