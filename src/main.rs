@@ -1,5 +1,6 @@
 use std::env;
 use std::io::{self, Write};
+use std::time::Instant;
 
 mod types;
 mod simple_loop;
@@ -67,7 +68,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         }
         "z3" => {
             println!("Running z3 solver...");
+            let start_time = Instant::now();
             z3_solver::solve_real_world_scenario(&args.json_path)?;
+            let end_time = Instant::now();
+            let duration = end_time.duration_since(start_time);
+            println!("Z3 solver execution time: {:?}", duration);
+            println!("Z3 solver execution time (milliseconds): {}", duration.as_millis());
+            println!("Z3 solver execution time (seconds): {:.3}", duration.as_secs_f64());
         }
         "generate-json" => {
             println!("Generating JSON file...");
